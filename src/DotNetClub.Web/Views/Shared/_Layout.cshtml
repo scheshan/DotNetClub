@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+    <link href="~/lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/styles/site.css" rel="stylesheet" />
+
+    @if (IsSectionDefined("Header"))
+    {
+        @await RenderSectionAsync("Header")
+    }
+</head>
+<body>
+    <nav class="navbar navbar-default">
+        <div class="container">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">DotNetClub</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <form class="navbar-form navbar-left" role="search">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="站内搜索">
+                    </div>
+                </form>
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a asp-action="Index" asp-controller="Home">首页</a></li>
+                    <li><a asp-action="Messages" asp-controller="My">未读消息</a></li>
+                    <li><a asp-action="GetStart" asp-controller="Home">新手入门</a></li>
+                    <li><a asp-action="Api" asp-controller="Home">API</a></li>
+                    <li><a asp-action="About" asp-controller="Home">关于</a></li>
+                    <li><a asp-action="Settings" asp-controller="My">设置</a></li>
+                    <li><a asp-action="Register" asp-controller="Account">注册</a></li>
+                    <li><a asp-action="Login" asp-controller="Account">登录</a></li>
+                    <li><a asp-action="LogOut" asp-controller="Account">退出</a></li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </div><!-- /.container-fluid -->
+    </nav>
+
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    <footer style="background:#FFFFFF;">
+        <div class="container text-muted">
+            <div id="footer_main">
+                <p class="links">
+                    <a href="/rss">RSS</a>
+                    |
+                    <a href="https://github.com/cnodejs/nodeclub/">源码地址</a>
+                </p>
+
+                <p>AspNet Core打造的社区，致力于 Asp.Net 的技术研究。</p>
+                <p>
+                    服务器搭建在
+                    <a href="https://www.digitalocean.com/?refcode=eba02656eeb3" target="_blank" data-label="digitalocean">
+                        阿里云
+                    </a>
+                    ，存储赞助商为
+                    <a href="http://www.qiniu.com/?ref=cnode" target="_blank" data-label="qiniu_bottom">
+                        七牛
+                    </a>
+                </p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

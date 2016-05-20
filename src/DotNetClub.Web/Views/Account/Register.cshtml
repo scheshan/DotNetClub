@@ -1,0 +1,98 @@
+﻿@using DotNetClub.Web.ViewModels.Account
+@model RegisterViewModel
+@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+    Layout = @"_Layout.cshtml";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ol class="breadcrumb">
+            <li><a asp-action="Index" asp-controller="Home">首页</a></li>
+            <li>注册</li>
+        </ol>
+    </div>
+    <div class="panel-body">
+        @if(Model.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <form method="post" asp-action="Register" asp-controller="Account" asp-antiforgery="true" id="frmRegister" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-2 control-label">用户名</label>
+                <div class="col-md-4">
+                    <input name="UserName" id="txtUserName" type="text" class="form-control" required maxlength="20" value="@Model.Model.UserName"/>
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">密码</label>
+                <div class="col-md-4">
+                    <input name="Password" id="txtPassword" type="password" class="form-control" required maxlength="20" />
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">确认密码</label>
+                <div class="col-md-4">
+                    <input name="ConfirmPassword" type="password" class="form-control" />
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">Email</label>
+                <div class="col-md-4">
+                    <input name="Email" type="email" class="form-control" required maxlength="100" value="@Model.Model.Email"/>
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <button class="btn btn-primary">注册</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#frmRegister").validate({
+        rules: {
+            UserName: "alphanumeric",
+            ConfirmPassword: {
+                equalTo: "#txtPassword"
+            }
+        },
+        messages: {
+            UserName: {
+                required: "请输入用户名",
+                minlength: "用户名长度必须为6-16位",
+                maxlength: "用户名长度必须为6-16位",
+                alphanumeric: "用户名只能是字母和数字的组合",
+                remote: "账号已被注册"
+            },
+            Password: "请输入6-16位的密码",
+            Email: {
+                required: "请输入正确格式的Email账号",
+                email: "请输入正确格式的Email账号",
+                remote: "邮箱已被注册"
+            },
+            ConfirmPassword: "确认密码不一致"
+        },
+        highlight: function (element) {
+            $(element).parent().parent().addClass('has-error');
+        },
+        success: function (element) {
+            $(element).parent().parent().removeClass('has-error');
+            $(element).remove();
+        },
+        errorPlacement: function (err, element) {
+            err.addClass("help-block text-danger");
+            element.parent().next().append(err);
+        },
+        errorElement: "span"
+    })
+</script>

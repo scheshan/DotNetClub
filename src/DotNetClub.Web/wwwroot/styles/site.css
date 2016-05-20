@@ -1,0 +1,17 @@
+﻿body {
+    background:#e1e1e1;
+    font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti !important;
+}
+footer{
+    margin-top:20px;
+    background:#ffffff;
+    padding:20px 0;
+}
+
+.panel-heading .breadcrumb{
+    margin:0px;
+    padding:0px;
+}
+.control-label{
+    font-weight:normal;
+}

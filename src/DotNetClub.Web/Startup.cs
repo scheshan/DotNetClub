@@ -9,6 +9,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using DotNetClub.Core.Data;
+using DotNetClub.Core;
+using Newtonsoft.Json.Serialization;
 
 namespace DotNetClub.Web
 {
@@ -18,9 +20,8 @@ namespace DotNetClub.Web
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
-            
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+
             Configuration = builder.Build();
         }
 
@@ -29,11 +30,20 @@ namespace DotNetClub.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddSingleton<IConfiguration>(this.Configuration);
+
+            services.AddDataProtection();
             // Add framework services.
             services.AddDbContext<ClubContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("DotNetClub.Web")));
 
-            services.AddMvc();
+            services.AddMvc().AddJsonOptions(option=>
+            {
+                option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH;mm:ss";
+            });
+
+            services.AddCoreServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -54,6 +64,8 @@ namespace DotNetClub.Web
             }
 
             app.UseStaticFiles();
+
+            app.UseMiddleware<InitClientManagerMiddleware>();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 

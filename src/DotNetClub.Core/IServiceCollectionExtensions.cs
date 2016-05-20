@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using DotNetClub.Core.Service;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,10 @@ namespace DotNetClub.Core
     {
         public static void AddCoreServices(this IServiceCollection services)
         {
+            services.AddScoped<CategoryService>()
+                .AddScoped<AccountService>();
 
+            services.AddScoped<ClientManager>();
         }
     }
 }

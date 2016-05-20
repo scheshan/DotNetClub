@@ -17,12 +17,14 @@ namespace DotNetClub.Core.Data.Mappings
 
             builder.Property(t => t.ID).UseSqlServerIdentityColumn();
             builder.Property(t => t.UserName).IsRequired().HasMaxLength(20);
-            builder.Property(t => t.Password).IsRequired().HasMaxLength(500);
+            builder.Property(t => t.Password).IsRequired().HasMaxLength(100);
+            builder.Property(t => t.Salt).IsRequired().HasMaxLength(50);
             builder.Property(t => t.Email).IsRequired().HasMaxLength(100);
             builder.Property(t => t.DisplayName).IsRequired().HasMaxLength(20);
             builder.Property(t => t.Location).HasMaxLength(200);
             builder.Property(t => t.Signature).HasMaxLength(500);
             builder.Property(t => t.WebSite).HasMaxLength(200);
+            builder.Property(t => t.Token).HasMaxLength(32);
         }
     }
 }
