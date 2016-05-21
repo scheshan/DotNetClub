@@ -12,7 +12,8 @@ namespace DotNetClub.Core
         public static void AddCoreServices(this IServiceCollection services)
         {
             services.AddScoped<CategoryService>()
-                .AddScoped<AccountService>();
+                .AddScoped<AccountService>()
+                .AddScoped<UserService>();
 
             services.AddScoped<ClientManager>();
         }

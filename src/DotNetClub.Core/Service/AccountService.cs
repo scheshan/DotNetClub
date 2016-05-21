@@ -2,6 +2,7 @@
 using DotNetClub.Core.Entity;
 using DotNetClub.Core.Model;
 using DotNetClub.Core.Model.Account;
+using DotNetClub.Core.Utility;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -54,7 +55,7 @@ namespace DotNetClub.Core.Service
                 IsBlock = false,
                 UserName = userName,
                 Salt = Convert.ToBase64String(salt),
-                Password = this.ComputePassword(salt, password)
+                Password = EncryptHelper.Encrypt(salt, password)
             };
 
             this.DbContext.Add(entity);
@@ -88,7 +89,7 @@ namespace DotNetClub.Core.Service
             }
 
             byte[] salt = Convert.FromBase64String(user.Salt);
-            password = this.ComputePassword(salt, password);
+            password = EncryptHelper.Encrypt(salt, password);
 
             if (password != user.Password)
             {
@@ -100,18 +101,6 @@ namespace DotNetClub.Core.Service
             await this.DbContext.SaveChangesAsync();
 
             result.Success = true;
-            return result;
-        }
-
-        private string ComputePassword(byte[] salt, string password)
-        {
-            string result = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
-
             return result;
         }
 

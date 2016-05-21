@@ -17,7 +17,7 @@ namespace DotNetClub.Core
 
         private HttpContext HttpContext { get; set; }
 
-        private string CookieName
+        public string CookieName
         {
             get
             {
@@ -75,6 +75,12 @@ namespace DotNetClub.Core
 
             var user = this.DbContext.Users.SingleOrDefault(t => t.Token == this.Token && t.Active == true && t.IsBlock == false);
             this.CurrentUser = user;
+        }
+
+        public void ReloadUserInfo()
+        {
+            this.CurrentUser = null;
+            this.InitUser();
         }
     }
 }

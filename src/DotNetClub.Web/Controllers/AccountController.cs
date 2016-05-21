@@ -1,4 +1,5 @@
-﻿using DotNetClub.Core.Model.Account;
+﻿using DotNetClub.Core;
+using DotNetClub.Core.Model.Account;
 using DotNetClub.Core.Resource;
 using DotNetClub.Core.Service;
 using DotNetClub.Web.ViewModels.Account;
@@ -18,9 +19,12 @@ namespace DotNetClub.Web.Controllers
     {
         private AccountService AccountService { get; set; }
 
-        public AccountController(AccountService accountService)
+        private ClientManager ClientManager { get; set; }
+
+        public AccountController(AccountService accountService, ClientManager clientManager)
         {
             this.AccountService = accountService;
+            this.ClientManager = clientManager;
         }
 
         [HttpGet("register")]
@@ -99,28 +103,37 @@ namespace DotNetClub.Web.Controllers
 
             if (result.Success)
             {
-                return this.View(vm);
+                this.Response.Cookies.Append(this.ClientManager.CookieName, result.Token);
+
+                return this.RedirectToAction("Index", "Home");
             }
             else
             {
                 switch (result.ErrorCode)
                 {
                     case LoginResult.LoginErrorCode.InvalidPassword:
-                        vm.ErrorMessage = "";
+                        vm.ErrorMessage = "密码错误";
                         break;
                     case LoginResult.LoginErrorCode.UserIsBlocked:
-                        vm.ErrorMessage = "";
+                        vm.ErrorMessage = "用户已被禁用";
                         break;
                     case LoginResult.LoginErrorCode.UserNotActive:
-                        vm.ErrorMessage = "";
+                        vm.ErrorMessage = "用户未激活";
                         break;
                     case LoginResult.LoginErrorCode.UserNotExist:
-                        vm.ErrorMessage = "";
+                        vm.ErrorMessage = "用户不存在";
                         break;
                 }
 
                 return this.View(vm);
             }
+        }
+
+        [HttpGet("logout")]
+        public IActionResult LogOut()
+        {
+            this.Response.Cookies.Delete(this.ClientManager.CookieName);
+            return this.RedirectToAction("Index", "Home");
         }
     }
 }

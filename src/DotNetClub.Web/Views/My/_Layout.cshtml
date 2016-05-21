@@ -1,0 +1,17 @@
+﻿@using DotNetClub.Core
+@inject ClientManager clientManager
+
+@{
+    Layout = @"~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="col-md-9">
+    @RenderBody()
+</div>
+<div class="col-md-3">
+    @await Component.InvokeAsync("UserInfoPanel", new { user = clientManager.CurrentUser })
+
+    @await Component.InvokeAsync("NewPostPanel")
+
+    @await Component.InvokeAsync("LinksPanel")
+</div>

@@ -1,0 +1,33 @@
+﻿@using DotNetClub.Core.Entity
+@model User
+
+@if (Model != null)
+{
+    <div class="panel panel-default">
+        <div class="panel-heading">个人信息</div>
+        <div class="panel-body">
+            <p>
+                <a asp-action="Index" asp-controller="User" asp-route-userName="@Model.UserName">
+                    <img src="http://gravatar.com/avatar/e1a53c7126a79e67eaf3ad66f0e7766b?size=48" />
+                </a>
+                <a asp-action="Index" asp-controller="User" asp-route-userName="@Model.UserName">
+                    @Model.DisplayName
+                </a>
+            </p>
+            <i class="text-muted">
+                <small>
+                    @(Model.Signature ?? "这家伙很懒，什么个性签名都没有留下")
+                </small>
+            </i>
+        </div>
+    </div>
+}
+else
+{
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h5>DotNetClub:AspNet Core中文社区</h5>
+            您可以 <a asp-action="Login" asp-controller="Account">登录</a> 或 <a asp-action="Register" asp-controller="Account">注册</a>
+        </div>
+    </div>
+}

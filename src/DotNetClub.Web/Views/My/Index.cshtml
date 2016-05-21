@@ -1,0 +1,106 @@
+﻿@using DotNetClub.Core
+@inject ClientManager clientManager
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ol class="breadcrumb">
+            <li><a asp-action="Index" asp-controller="Home">首页</a></li>
+            <li>设置</li>
+        </ol>
+    </div>
+    <div class="panel-body">
+        @if(ViewBag.SettingsResult != null)
+        {
+            if(ViewBag.SettingsResult.Success)
+            {
+                <div class="alert alert-success">修改信息成功</div>
+            }
+            else
+            {
+                <div class="alert alert-danger">@ViewBag.SettingsResult.ErrorMessage</div>
+            }
+        }
+        <form class="form-horizontal" method="post" asp-antiforgery="true" asp-action="EditSettings" asp-controller="My">
+            <div class="form-group">
+                <label class="control-label col-md-2">用户名</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" readonly value="@clientManager.CurrentUser.UserName"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">Email</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" readonly value="@clientManager.CurrentUser.Email"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">昵称</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" value="@clientManager.CurrentUser.DisplayName" required name="DisplayName" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">个人网站</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" value="@clientManager.CurrentUser.WebSite" name="WebSite" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">所在地点</label>
+                <div class="col-md-4">
+                    <input type="text" class="form-control" value="@clientManager.CurrentUser.Location" name="Location" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">个性签名</label>
+                <div class="col-md-4">
+                    <textarea class="form-control" name="Signature">@clientManager.CurrentUser.Signature</textarea>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-4 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">保存设置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">修改密码</div>
+    <div class="panel-body">
+        @if (ViewBag.PasswordResult != null)
+        {
+            if (ViewBag.PasswordResult.Success)
+            {
+                <div class="alert alert-success">修改密码成功</div>
+            }
+            else
+            {
+                <div class="alert alert-danger">@ViewBag.PasswordResult.ErrorMessage</div>
+            }
+        }
+
+        <form class="form-horizontal" method="post" asp-antiforgery="true" asp-action="EditPassword" asp-controller="My">
+            <div class="form-group">
+                <label class="control-label col-md-2">原密码</label>
+                <div class="col-md-4">
+                    <input type="password" class="form-control" name="OldPassword" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">新密码</label>
+                <div class="col-md-4">
+                    <input type="password" class="form-control" name="NewPassword" required />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-4 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">修改密码</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@await Component.InvokeAsync("UserInfoPanel", clientManager.CurrentUser)

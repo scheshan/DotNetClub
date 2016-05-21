@@ -1,0 +1,65 @@
+﻿@using DotNetClub.Web.ViewModels.Account
+@model LoginViewModel
+@{
+    Layout = @"_Layout.cshtml";
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ol class="breadcrumb">
+            <li><a asp-action="Index" asp-controller="Home">首页</a></li>
+            <li>登录</li>
+        </ol>
+    </div>
+    <div class="panel-body">
+        @if (Model.ErrorMessage != null)
+        {
+            <div class="alert alert-danger">@Model.ErrorMessage</div>
+        }
+
+        <form method="post" asp-action="Login" asp-controller="Account" asp-antiforgery="true" id="frmLogin" class="form-horizontal">
+            <div class="form-group">
+                <label class="col-md-2 control-label">用户名</label>
+                <div class="col-md-4">
+                    <input name="UserName" id="txtUserName" type="text" class="form-control" required value="@Model.Model.UserName" />
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">密码</label>
+                <div class="col-md-4">
+                    <input name="Password" id="txtPassword" type="password" class="form-control" required />
+                </div>
+                <div class="col-md-6"></div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-10 col-md-offset-2">
+                    <button class="btn btn-primary">登录</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $("#frmLogin").validate({
+        messages: {
+            UserName: {
+                required: "请输入用户名"
+            },
+            Password: "请输入密码"
+        },
+        highlight: function (element) {
+            $(element).parent().parent().addClass('has-error');
+        },
+        success: function (element) {
+            $(element).parent().parent().removeClass('has-error');
+            $(element).remove();
+        },
+        errorPlacement: function (err, element) {
+            err.addClass("help-block text-danger");
+            element.parent().next().append(err);
+        },
+        errorElement: "span"
+    })
+</script>

@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@using DotNetClub.Core
+@inject ClientManager clientManager
+
+<!DOCTYPE html>
 
 <html>
 <head>
@@ -15,6 +18,7 @@
     }
 </head>
 <body>
+    <!-- #region header -->
     <nav class="navbar navbar-default">
         <div class="container">
             <!-- Brand and toggle get grouped for better mobile display -->
@@ -37,23 +41,34 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li><a asp-action="Index" asp-controller="Home">首页</a></li>
+                    @if (clientManager.IsLogin)
+                    {
                     <li><a asp-action="Messages" asp-controller="My">未读消息</a></li>
+                    }
                     <li><a asp-action="GetStart" asp-controller="Home">新手入门</a></li>
                     <li><a asp-action="Api" asp-controller="Home">API</a></li>
                     <li><a asp-action="About" asp-controller="Home">关于</a></li>
+                    @if (clientManager.IsLogin)
+                    {
                     <li><a asp-action="Settings" asp-controller="My">设置</a></li>
+                    <li><a asp-action="LogOut" asp-controller="Account">退出</a></li>
+                    }
+                    else
+                    {
                     <li><a asp-action="Register" asp-controller="Account">注册</a></li>
                     <li><a asp-action="Login" asp-controller="Account">登录</a></li>
-                    <li><a asp-action="LogOut" asp-controller="Account">退出</a></li>
+                    }
                 </ul>
             </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->
     </nav>
+    <!-- #endregion -->
 
     <div class="container">
         @RenderBody()
     </div>
 
+    <!-- #region footer -->
     <footer style="background:#FFFFFF;">
         <div class="container text-muted">
             <div id="footer_main">
@@ -77,5 +92,6 @@
             </div>
         </div>
     </footer>
+    <!-- #endregion -->
 </body>
 </html>
