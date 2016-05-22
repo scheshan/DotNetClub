@@ -9,6 +9,8 @@ namespace DotNetClub.Web.ViewModels.User
     {
         public Core.Entity.User User { get; set; }
 
-        public List<Core.Entity.Topic> RecentTopicList { get; set; }
+        public List<Core.Entity.Topic> RecentCreatedTopicList { get; set; }
+
+        public List<Core.Entity.Topic> RecentCommentedTopicList { get; set; }
     }
 }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Web.Controllers
 {
+    [Route("user")]
     public class UserController : Controller
     {
         private UserService UserService { get; set; }
@@ -20,7 +21,7 @@ namespace DotNetClub.Web.Controllers
             this.TopicService = topicService;
         }
 
-        [HttpGet("user/{userName}")]
+        [HttpGet("{userName}")]
         public async Task<IActionResult> Index(string userName)
         {
             var user = await this.UserService.Get(userName);
@@ -34,12 +35,13 @@ namespace DotNetClub.Web.Controllers
 
             var vm = new IndexViewModel();
             vm.User = user;
-            vm.RecentTopicList = await this.TopicService.QueryByUser(10, user.ID);
+            vm.RecentCreatedTopicList = await this.TopicService.QueryRecentCreatedTopicList(10, user.ID);
+            vm.RecentCommentedTopicList = await this.TopicService.QueryRecentCommentedTopicList(10, user.ID);
 
             return this.View(vm);
         }
 
-        [HttpGet("user/{userName}/topics")]
+        [HttpGet("{userName}/topics")]
         public async Task<IActionResult> Topics(string userName, int page = 1)
         {
             var user = await this.UserService.Get(userName);
@@ -55,6 +57,26 @@ namespace DotNetClub.Web.Controllers
             }        
 
             var topicResult = await this.TopicService.QueryCreatedTopicList(user.ID, page, 20);
+
+            return this.View(topicResult);
+        }
+
+        [HttpGet("{userName}/comments")]
+        public async Task<IActionResult> Comments(string userName, int page = 1)
+        {
+            var user = await this.UserService.Get(userName);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+            ViewBag.User = user;
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            var topicResult = await this.TopicService.QueryCommentedTopicList(user.ID, page, 20);
 
             return this.View(topicResult);
         }

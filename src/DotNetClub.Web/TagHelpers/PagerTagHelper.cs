@@ -46,7 +46,12 @@ namespace DotNetClub.Web.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            if (PageIndex <= 0 || PageSize <= 0 || Total <= 0)
+            if (this.Total < 0)
+            {
+                return;
+            }
+
+            if (PageIndex <= 0 || PageSize <= 0)
             {
                 this.SetErrorMessage(output, "错误的分页参数");
                 return;

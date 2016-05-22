@@ -52,10 +52,10 @@ namespace DotNetClub.Core.Service
             return result;
         }
 
-        public async Task<List<Topic>> QueryByUser(int count, int createUser, params int[] exclude)
+        public async Task<List<Topic>> QueryRecentCreatedTopicList(int count, int userID, params int[] exclude)
         {
             var query = this.CreateDefaultQuery()
-                .Where(t => t.CreateUserID == createUser)
+                .Where(t => t.CreateUserID == userID)
                 .OrderByDescending(t => t.ID)
                 .Take(count);
 
@@ -71,10 +71,28 @@ namespace DotNetClub.Core.Service
             return result;
         }
 
-        public async Task<PagedResult<Topic>> QueryCreatedTopicList(int createUser, int pageIndex, int pageSize)
+        public async Task<List<Topic>> QueryRecentCommentedTopicList(int count, int userID)
+        {
+            var commentedTopicIDList = await this.DbContext.Comments.Where(t => t.CreateUserID == userID && !t.IsDelete)
+                .OrderByDescending(t => t.ID)
+                .Select(t => t.TopicID)
+                .Distinct()
+                .Take(count)
+                .ToListAsync();
+
+            var topicList = await this.CreateDefaultQuery()
+                .Where(t => commentedTopicIDList.Contains(t.ID))
+                .ToListAsync();
+
+            topicList = topicList.OrderBy(t => commentedTopicIDList.IndexOf(t.ID)).ToList();
+
+            return topicList;
+        }
+
+        public async Task<PagedResult<Topic>> QueryCreatedTopicList(int userID, int pageIndex, int pageSize)
         {
             var query = this.CreateDefaultQuery()
-                .Where(t => t.CreateUserID == createUser)
+                .Where(t => t.CreateUserID == userID)
                 .OrderByDescending(t => t.ID);
 
             int total = query.Count();
@@ -82,6 +100,28 @@ namespace DotNetClub.Core.Service
             var topicList = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
 
             this.FillModel(topicList.ToArray());
+
+            return new PagedResult<Topic>(topicList, pageIndex, pageSize, total);
+        }
+
+        public async Task<PagedResult<Topic>> QueryCommentedTopicList(int userID, int pageIndex, int pageSize)
+        {
+            var topicIDQuery = this.DbContext.Comments.Where(t => t.CreateUserID == userID && !t.IsDelete)
+                .OrderByDescending(t => t.ID)
+                .Select(t => t.TopicID)
+                .Distinct();
+
+            int total = topicIDQuery.Count();
+
+            var topicIDList = await topicIDQuery.Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            var topicList = await this.CreateDefaultQuery()
+                .Where(t => topicIDList.Contains(t.ID))
+                .ToListAsync();
+
+            topicList = topicList.OrderBy(t => topicIDList.IndexOf(t.ID)).ToList();
 
             return new PagedResult<Topic>(topicList, pageIndex, pageSize, total);
         }

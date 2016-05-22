@@ -41,16 +41,25 @@
 <div class="panel panel-default">
     <div class="panel-heading">最近创建的话题</div>
     <div class="panel-body noPadding">
-        @Html.Partial("_TopicList", Model.RecentTopicList)
+        @Html.Partial("_TopicList", Model.RecentCreatedTopicList)
     </div>
+    @if (Model.RecentCreatedTopicList.Count > 0)
+    {
     <div class="panel-footer">
         <a asp-action="Topics" asp-controller="User" asp-route-userName="@Model.User.UserName" class="text-muted">查看更多»</a>
     </div>
+    }
 </div>
 
 <div class="panel panel-default">
     <div class="panel-heading">最近参与的话题</div>
-    <div class="panel-body">
-
+    <div class="panel-body noPadding">
+        @Html.Partial("_TopicList", Model.RecentCommentedTopicList)
     </div>
+    @if (Model.RecentCommentedTopicList.Count > 0)
+    {
+    <div class="panel-footer">
+        <a asp-action="Comments" asp-controller="User" asp-route-userName="@Model.User.UserName" class="text-muted">查看更多»</a>
+    </div>
+    }
 </div>
