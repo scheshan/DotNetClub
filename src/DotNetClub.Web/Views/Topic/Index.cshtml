@@ -1,4 +1,6 @@
 ﻿@using DotNetClub.Web.ViewModels.Topic
+@using DotNetClub.Core
+@inject ClientManager clientManager
 @model IndexViewModel
 
 @{
@@ -54,6 +56,8 @@
         </div>
     }
 
+    @if (clientManager.IsLogin)
+    {
     <div class="panel panel-default">
         <div class="panel-heading">添加回复</div>
         <div class="panel-body">
@@ -68,6 +72,7 @@
             </form>
         </div>
     </div>
+    }
 </div>
 
 <div class="col-md-3">
