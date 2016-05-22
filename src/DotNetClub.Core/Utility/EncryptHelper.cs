@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace DotNetClub.Core.Utility
@@ -18,6 +19,17 @@ namespace DotNetClub.Core.Utility
                 numBytesRequested: 256 / 8));
 
             return output;
+        }
+
+        public static string Md5(string input)
+        {
+            using (var md5 = System.Security.Cryptography.MD5.Create())
+            {
+                byte[] inputData = Encoding.UTF8.GetBytes(input);
+                var encryptData = md5.ComputeHash(inputData);
+
+                return BitConverter.ToString(encryptData).Replace("-", "");
+            }
         }
     }
 }

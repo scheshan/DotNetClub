@@ -1,0 +1,23 @@
+﻿@using DotNetClub.Core.Entity
+@model List<Topic>
+
+<div class="panel panel-default">
+    <div class="panel-heading">无人回复的话题</div>
+    <div class="panel-body">
+        <ul class="list-unstyled">
+            @if (Model.Count > 0)
+            {
+                foreach (var topic in Model)
+                {
+                    <li class="text-nowrap">
+                        <a asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID">@topic.Title</a>
+                    </li>
+                }
+            }
+            else
+            {
+                <li>无</li>
+            }
+        </ul>
+    </div>
+</div>

@@ -8,5 +8,7 @@ namespace DotNetClub.Web.ViewModels.User
     public class IndexViewModel
     {
         public Core.Entity.User User { get; set; }
+
+        public List<Core.Entity.Topic> RecentTopicList { get; set; }
     }
 }

@@ -8,10 +8,6 @@ namespace DotNetClub.Web.ViewModels.My
 {
     public class EditSettingsModel
     {
-        [Required]
-        [StringLength(20)]
-        public string DisplayName { get; set; }
-
         [StringLength(200)]
         public string WebSite { get; set; }
 

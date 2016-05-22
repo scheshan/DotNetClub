@@ -50,7 +50,6 @@ namespace DotNetClub.Core.Service
             {
                 Active = true,
                 CreateDate = DateTime.Now,
-                DisplayName = userName,
                 Email = email,
                 IsBlock = false,
                 UserName = userName,

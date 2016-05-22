@@ -17,8 +17,6 @@ namespace DotNetClub.Core.Entity
 
         public string Email { get; set; }
 
-        public string DisplayName { get; set; }
-
         public string WebSite { get; set; }
 
         public string Location { get; set; }

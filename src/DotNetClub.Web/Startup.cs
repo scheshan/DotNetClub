@@ -35,7 +35,13 @@ namespace DotNetClub.Web
             services.AddDataProtection();
             // Add framework services.
             services.AddDbContext<ClubContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), b => b.MigrationsAssembly("DotNetClub.Web")));
+                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
+                b => 
+                {
+                    b.MigrationsAssembly("DotNetClub.Web");
+                    b.UseRowNumberForPaging();
+                })
+            );
 
             services.AddMvc().AddJsonOptions(option=>
             {

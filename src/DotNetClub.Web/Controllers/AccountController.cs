@@ -5,6 +5,7 @@ using DotNetClub.Core.Service;
 using DotNetClub.Web.ViewModels.Account;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -103,7 +104,7 @@ namespace DotNetClub.Web.Controllers
 
             if (result.Success)
             {
-                this.Response.Cookies.Append(this.ClientManager.CookieName, result.Token);
+                this.Response.Cookies.Append(this.ClientManager.CookieName, result.Token, new CookieOptions { Expires = DateTime.Now.AddDays(30) });
 
                 return this.RedirectToAction("Index", "Home");
             }

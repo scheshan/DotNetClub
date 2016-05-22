@@ -47,7 +47,7 @@ namespace DotNetClub.Web.Controllers
                 return this.View("Index");
             }
 
-            await this.UserService.EditUserInfo(ClientManager.CurrentUser.ID, model.DisplayName, model.WebSite, model.Location, model.Signature);
+            await this.UserService.EditUserInfo(ClientManager.CurrentUser.ID, model.WebSite, model.Location, model.Signature);
 
             ViewBag.SettingsResult = new OperationResult();
 

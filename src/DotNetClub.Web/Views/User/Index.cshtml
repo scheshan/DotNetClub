@@ -1,11 +1,86 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@model DotNetClub.Web.ViewModels.User.IndexViewModel
 
-<div class="row">
-    <div class="col-md-9">
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ol class="breadcrumb">
+            <li><a asp-action="Index" asp-controller="Home">首页</a></li>
+            <li>用户信息</li>
+        </ol>
+    </div>
+    <div class="panel-body">
+        <p>
+            <useravatar email="@Model.User.Email" size="48" title="@Model.User.UserName"></useravatar>
+            @Model.User.UserName
+        </p>
+
+        <p>
+            <ul class="list-unstyled text-muted">
+                @if (!string.IsNullOrWhiteSpace(Model.User.WebSite))
+                {
+                    <li>
+                        <i class="fa fa-lg fa-fw fa-home"></i>
+                        <a target="_blank" href="@Model.User.WebSite">@Model.User.WebSite</a>
+                    </li>
+                }
+                @if (!String.IsNullOrWhiteSpace(Model.User.Location))
+                {                    
+                    <li>
+                        <i class="fa fa-lg fa-fw fa-map-marker"></i>
+                        @Model.User.Location
+                    </li>
+                }
+            </ul>
+        </p>
+
+        <p class="text-muted">
+            注册时间: <datetime date="@Model.User.CreateDate"></datetime>
+        </p>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">最近创建的话题</div>
+    <div class="panel-body noPaddingTopAndBottom">
+        @if (Model.RecentTopicList.Count > 0)
+            {
+                foreach (var topic in Model.RecentTopicList)
+                {
+                <div class="topic-item">
+                    <a class="pull-left" asp-action="Index" asp-controller="User" asp-route-userName="@topic.CreateUser.UserName">
+                        <useravatar email="@topic.CreateUser.Email" title="@topic.CreateUser.UserName" size="32"></useravatar>
+                    </a>
+
+                    <span class="text-muted pull-left comments">
+                        @topic.ReplyCount
+                        /
+                        @topic.VisitCount
+                    </span>
+
+                    <span class="pull-right text-muted">
+                        <small>
+                            <datetime date="@topic.CreateDate"></datetime>
+                        </small>
+                    </span>
+
+                    <div class="text-nowrap topic-title-wrapper">
+                        <a asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" class="topic-title">@topic.Title</a>
+                    </div>
+                </div>
+            }
+        }
+        else
+        {
+            <div>无</div>
+        }
+    </div>
+    <div class="panel-footer">
+        <a asp-action="Topics" asp-controller="User" asp-route-userName="@Model.User.UserName" class="text-muted">查看更多»</a>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">最近参与的话题</div>
+    <div class="panel-body">
 
     </div>
 </div>

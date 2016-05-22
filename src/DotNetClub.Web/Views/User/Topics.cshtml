@@ -1,0 +1,47 @@
+﻿@model DotNetClub.Core.Model.PagedResult<DotNetClub.Core.Entity.Topic>
+@{
+    var user = ViewBag.User as DotNetClub.Core.Entity.User;
+}
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <ol class="breadcrumb">
+            <li><a asp-action="Index" asp-controller="Home">主页</a></li>
+            <li><a asp-action="Index" asp-controller="User" asp-route-userName="@user.UserName">@($"{user.UserName}的主页")</a></li>
+        </ol>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">@user.UserName 创建的话题</div>
+    <div class="panel-body noPaddingTopAndBottom">
+        @foreach (var topic in Model.Data)
+        {
+            <div class="topic-item">
+                <a class="pull-left" asp-action="Index" asp-controller="User" asp-route-userName="@topic.CreateUser.UserName">
+                    <useravatar email="@topic.CreateUser.Email" size="32"></useravatar>
+                </a>
+
+                <span class="text-muted pull-left comments">
+                    @topic.ReplyCount
+                    /
+                    @topic.VisitCount
+                </span>
+
+                <span class="pull-right text-muted">
+                    <small>
+                        <datetime date="@topic.CreateDate"></datetime>
+                    </small>
+                </span>
+
+                <div class="text-nowrap topic-title-wrapper">
+                    <a asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" class="topic-title">@topic.Title</a>
+                </div>
+            </div>
+        }
+
+        <div class="text-center">
+            <pager page-index="@Model.PageIndex" page-size="@Model.PageSize" total="@Model.Total"></pager>
+        </div>
+    </div>
+</div>

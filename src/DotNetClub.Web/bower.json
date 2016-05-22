@@ -1,8 +1,10 @@
 {
-	"name": "asp.net",
-	"private": true,
+  "name": "asp.net",
+  "private": true,
   "dependencies": {
     "bootstrap": "3.3.6",
-    "jquery.validate": "*"
+    "jquery.validate": "*",
+    "editor.md": "1.5.0",
+    "font-awesome": "4.6.1"
   }
 }

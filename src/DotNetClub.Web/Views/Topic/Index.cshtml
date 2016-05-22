@@ -1,0 +1,45 @@
+﻿@using DotNetClub.Web.ViewModels.Topic
+@model IndexViewModel
+
+@{
+}
+
+
+<div class="col-md-9">
+    <div class="panel panel-default">
+        <div class="panel-body">
+            <h4>
+                <strong>@Model.Topic.Title</strong>
+            </h4>
+            <p class="text-muted">
+                <ul class="list-inline text-muted" style="font-size:12px;">
+                    <li>发布于: <datetime date="@Model.Topic.CreateDate"></datetime></li>
+                    <li>作者: <a asp-action="Index" asp-controller="User" asp-route-userName="@Model.Topic.CreateUser.UserName">@Model.Topic.CreateUser.UserName</a></li>
+                    <li>@Model.Topic.VisitCount 次浏览</li>
+                    <li>来自: @Model.Topic.CategoryModel.Name</li>
+                </ul>
+            </p>
+
+            <hr />
+
+            <p>
+                @Model.Topic.Content
+            </p>
+        </div>
+    </div>
+
+    <div class="panel panel-default">
+        <div class="panel-heading">添加回复</div>
+        <div class="panel-body">
+
+        </div>
+    </div>
+</div>
+
+<div class="col-md-3">
+    @await Component.InvokeAsync("UserInfoPanel", new { user = Model.Topic.CreateUser })
+
+    @await Component.InvokeAsync("UserOtherTopicsPanel", new { userID = Model.Topic.CreateUserID, count = 10, exclude = new int[] { Model.Topic.ID } })
+
+    @await Component.InvokeAsync("NoCommentsTopicPanel", new { count = 10 })
+</div>

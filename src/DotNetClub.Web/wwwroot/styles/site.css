@@ -15,3 +15,42 @@ footer{
 .control-label{
     font-weight:normal;
 }
+
+div.topic-item{
+    line-height:32px;
+    border-bottom: 1px solid #e1e1e1;
+    padding:10px 0;
+}
+
+div.topic-item span.comments{
+    margin:0 15px;
+}
+
+div.topic-item img.avatar{
+    height:32px;
+}
+
+div.topic-item .topic-title-wrapper{
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    overflow:hidden;
+    height:32px;
+}
+
+div.topic-item .topic-title-wrapper .topic-title{
+    display:inline-block; 
+    max-width:70%; 
+    overflow:hidden; 
+    text-overflow:ellipsis;
+    white-space: nowrap;
+    line-height:32px;
+}
+
+.topic-item:last-child{
+    border-bottom:none;
+}
+
+.noPaddingTopAndBottom{
+    padding-bottom:0;
+    padding-top:0;
+}

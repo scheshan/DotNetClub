@@ -34,5 +34,10 @@ namespace DotNetClub.Core.Service
 
             return categoryList;
         }
+
+        public CategoryModel Get(string key)
+        {
+            return this.All().SingleOrDefault(t => t.Key == key);
+        }
     }
 }
