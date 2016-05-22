@@ -1,0 +1,53 @@
+﻿using DotNetClub.Core;
+using DotNetClub.Core.Service;
+using DotNetClub.Web.ViewModels.Comment;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace DotNetClub.Web.Controllers
+{
+    [Route("comment")]
+    public class CommentController : Controller
+    {
+        private CommentService CommentService { get; set; }
+
+        private ClientManager ClientManager { get; set; }
+
+        public CommentController(CommentService commentService, ClientManager clientManager)
+        {
+            this.CommentService = commentService;
+            this.ClientManager = clientManager;
+        }
+
+        [HttpPost("add")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Add(AddCommentModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                string message = this.ModelState.Values.Where(t => t.ValidationState == ModelValidationState.Invalid)
+                    .Select(t => t.Errors.FirstOrDefault())
+                    .FirstOrDefault()
+                    .ErrorMessage;
+                
+                return this.View((object)message);
+            }
+
+            var result = await this.CommentService.Add(model.TopicID, model.Content, model.ReplyTo, this.ClientManager.CurrentUser.ID);
+
+            if (result.Success)
+            {
+                string url = this.Url.Action("Index", "Topic", new { id = model.TopicID });
+                return this.Redirect($"{url}#comment{result.Data.Value}");
+            }
+            else
+            {
+                return this.View((object)result.ErrorMessage);
+            }
+        }
+    }
+}

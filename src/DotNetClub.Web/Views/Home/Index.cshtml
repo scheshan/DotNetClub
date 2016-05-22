@@ -9,7 +9,7 @@
                 <a class="tab @(tab.Selected ? "active" : "")" asp-action="Index" asp-controller="Home" asp-route-tab="@tab.Value">@tab.Text</a>
             }
         </div>
-        <div class="panel-body noPaddingTopAndBottom">
+        <div class="panel-body noPadding">
             @Html.Partial("_TopicList", Model.TopicList.Data)
 
             @if (Model.TopicList.Total > 0)

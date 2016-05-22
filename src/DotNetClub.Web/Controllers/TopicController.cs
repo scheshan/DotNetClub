@@ -17,13 +17,16 @@ namespace DotNetClub.Web.Controllers
 
         private TopicService TopicService { get; set; }
 
+        private CommentService CommentService { get; set; }
+
         private ClientManager ClientManager { get; set; }
 
-        public TopicController(CategoryService categoryService, TopicService topicService, ClientManager clientManager)
+        public TopicController(CategoryService categoryService, TopicService topicService, CommentService commentService, ClientManager clientManager)
         {
             this.CategoryService = categoryService;
             this.TopicService = topicService;
             this.ClientManager = clientManager;
+            this.CommentService = commentService;
         }
 
         [HttpGet("{id:int}")]
@@ -38,6 +41,7 @@ namespace DotNetClub.Web.Controllers
 
             var vm = new IndexViewModel();
             vm.Topic = topic;
+            vm.CommentList = await this.CommentService.QueryByTopic(id);
 
             return this.View(vm);
         }

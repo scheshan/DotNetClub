@@ -28,10 +28,44 @@
         </div>
     </div>
 
+    @if(Model.CommentList.Count > 0)
+    {
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                @Model.CommentList.Count 回复
+            </div>
+            <div class="panel-body">                
+                @foreach(var comment in Model.CommentList)
+                {
+                    <div>
+                        <p>
+                            <useravatar email="@comment.CreateUser.Email" size="32"></useravatar>
+                            <small>
+                                <a>@comment.CreateUser.UserName</a>
+                                <datetime date="@comment.CreateDate"></datetime>
+                            </small>
+                        </p>
+                        <p style="padding-left:40px;">
+                            @comment.Content
+                        </p>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
     <div class="panel panel-default">
         <div class="panel-heading">添加回复</div>
         <div class="panel-body">
-
+            <form method="post" asp-action="Add" asp-controller="Comment" asp-antiforgery="true">
+                <input type="hidden" name="TopicID" value="@Model.Topic.ID"/>
+                <div class="form-group">
+                    <textarea name="Content" class="form-control" rows="10"></textarea>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

@@ -9,5 +9,7 @@ namespace DotNetClub.Web.ViewModels.Topic
     public class IndexViewModel
     {
         public Core.Entity.Topic Topic { get; set; }
+
+        public List<Core.Entity.Comment> CommentList { get; set; }
     }
 }

@@ -16,33 +16,36 @@ footer{
     font-weight:normal;
 }
 
-div.topic-item{
+div.cell{
     line-height:32px;
     border-bottom: 1px solid #e1e1e1;
-    padding:10px 0;
+    padding:10px 15px;
 }
 
-div.topic-item span.comments{
+div.cell span.comments{
     margin:0 0 0 15px;
+    width:70px;
+    overflow:hidden;
+    text-align:center;
 }
 
-div.topic-item span.category{
+div.cell span.category{
     margin:0 0 0 15px;
     line-height:32px;
 }
 
-div.topic-item img.avatar{
+div.cell img.avatar{
     height:32px;
 }
 
-div.topic-item .topic-title-wrapper{
+div.cell .topic-title-wrapper{
     text-overflow:ellipsis;
     white-space: nowrap;
     overflow:hidden;
     height:32px;
 }
 
-div.topic-item .topic-title-wrapper .topic-title{
+div.cell .topic-title-wrapper .topic-title{
     display:inline-block; 
     max-width:70%; 
     overflow:hidden; 
@@ -52,13 +55,17 @@ div.topic-item .topic-title-wrapper .topic-title{
     margin: 0 0 0 15px;
 }
 
-.topic-item:last-child{
+div.cell:last-child{
     border-bottom:none;
 }
 
 .noPaddingTopAndBottom{
     padding-bottom:0;
     padding-top:0;
+}
+
+.noPadding{
+    padding:0;
 }
 
 .pagination{

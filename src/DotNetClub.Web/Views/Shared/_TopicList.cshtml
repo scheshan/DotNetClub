@@ -5,7 +5,7 @@
 {
     foreach (var topic in Model)
     {
-        <div class="topic-item">
+        <div class="cell">
             <a class="pull-left" asp-action="Index" asp-controller="User" asp-route-userName="@topic.CreateUser.UserName">
                 <useravatar email="@topic.CreateUser.Email" title="@topic.CreateUser.UserName" size="32"></useravatar>
             </a>
@@ -35,5 +35,5 @@
 }
 else
 {
-    <div class="topic-item">无主题</div>
+    <div class="cell">无主题</div>
 }

@@ -14,7 +14,8 @@ namespace DotNetClub.Core
             services.AddScoped<CategoryService>()
                 .AddScoped<AccountService>()
                 .AddScoped<UserService>()
-                .AddScoped<TopicService>();
+                .AddScoped<TopicService>()
+                .AddScoped<CommentService>();
 
             services.AddScoped<ClientManager>();
         }
