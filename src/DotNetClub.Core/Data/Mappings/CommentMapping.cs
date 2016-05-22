@@ -9,23 +9,19 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace DotNetClub.Core.Data.Mappings
 {
-    public sealed class TopicMapping
+    public sealed class CommentMapping
     {
-        public static void Map(EntityTypeBuilder<Topic> builder)
+        public static void Map(EntityTypeBuilder<Comment> builder)
         {
-            builder.ForSqlServerToTable("Topic");
+            builder.ForSqlServerToTable("Comment");
 
             builder.HasKey(t => t.ID);
             builder.Property(t => t.ID).UseSqlServerIdentityColumn();
 
-            builder.Property(t => t.Title).IsRequired().HasMaxLength(100);
             builder.Property(t => t.Content).IsRequired();
-            builder.Property(t => t.Category).IsRequired().HasMaxLength(50);
 
+            builder.HasOne(t => t.Topic).WithMany().HasForeignKey(t => t.TopicID).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(t => t.CreateUser).WithMany().HasForeignKey(t => t.CreateUserID).OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne(t => t.LastReplyUser).WithMany().HasForeignKey(t => t.LastReplyUserID).OnDelete(DeleteBehavior.Restrict);
-
-            builder.Ignore(t => t.CategoryModel);
         }
     }
 }

@@ -8,10 +8,10 @@
         <div class="panel-body">
             <p>
                 <a asp-action="Index" asp-controller="User" asp-route-userName="@Model.UserName">
-                    <img src="http://gravatar.com/avatar/e1a53c7126a79e67eaf3ad66f0e7766b?size=48" />
+                    <useravatar email="@Model.Email" size="48" title="@Model.UserName"></useravatar>
                 </a>
                 <a asp-action="Index" asp-controller="User" asp-route-userName="@Model.UserName">
-                    @Model.DisplayName
+                    @Model.UserName
                 </a>
             </p>
             <i class="text-muted">

@@ -14,6 +14,8 @@ namespace DotNetClub.Core.Data
 
         public DbSet<Topic> Topics { get; set; }
 
+        public DbSet<Comment> Comments { get; set; }
+
         public ClubContext(DbContextOptions<ClubContext> options)
             : base(options)
         {
@@ -26,6 +28,7 @@ namespace DotNetClub.Core.Data
 
             modelBuilder.Entity<User>(UserMapping.Map);
             modelBuilder.Entity<Topic>(TopicMapping.Map);
+            modelBuilder.Entity<Comment>(CommentMapping.Map);
         }
     }
 }

@@ -18,6 +18,11 @@ namespace DotNetClub.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(int count)
         {
+            if(count < 1)
+            {
+                count = 10;
+            }
+
             var topicList = await this.TopicService.QueryNoCommentTopicList(count);
 
             return this.View(topicList);

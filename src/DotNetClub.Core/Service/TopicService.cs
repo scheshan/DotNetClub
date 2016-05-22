@@ -44,7 +44,8 @@ namespace DotNetClub.Core.Service
 
         public async Task<Topic> Get(int id)
         {
-            var result = await this.DbContext.Topics.Include(t => t.CreateUser).SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+            var result = await this.CreateDefaultQuery()
+                .SingleOrDefaultAsync(t => t.ID == id);
 
             this.FillModel(result);
 
@@ -53,8 +54,8 @@ namespace DotNetClub.Core.Service
 
         public async Task<List<Topic>> QueryByUser(int count, int createUser, params int[] exclude)
         {
-            var query = this.DbContext.Topics.Where(t => !t.IsDelete && t.CreateUserID == createUser)
-                .Include(t => t.CreateUser)
+            var query = this.CreateDefaultQuery()
+                .Where(t => t.CreateUserID == createUser)
                 .OrderByDescending(t => t.ID)
                 .Take(count);
 
@@ -72,8 +73,8 @@ namespace DotNetClub.Core.Service
 
         public async Task<PagedResult<Topic>> QueryCreatedTopicList(int createUser, int pageIndex, int pageSize)
         {
-            var query = this.DbContext.Topics.Where(t => !t.IsDelete && t.CreateUserID == createUser)
-                .Include(t => t.CreateUser)
+            var query = this.CreateDefaultQuery()
+                .Where(t => t.CreateUserID == createUser)
                 .OrderByDescending(t => t.ID);
 
             int total = query.Count();
@@ -87,8 +88,8 @@ namespace DotNetClub.Core.Service
 
         public async Task<List<Topic>> QueryNoCommentTopicList(int count)
         {
-            var query = this.DbContext.Topics.Where(t => !t.IsDelete && t.ReplyCount == 0)
-                .Include(t => t.CreateUser)
+            var query = this.CreateDefaultQuery()
+                .Where(t => t.ReplyCount == 0)
                 .OrderByDescending(t => t.ID)
                 .Take(count);
 
@@ -99,6 +100,47 @@ namespace DotNetClub.Core.Service
             return result;
         }
 
+        public async Task<PagedResult<Topic>> Query(string category, bool? recommand, int pageIndex, int pageSize)
+        {
+            var query = this.CreateDefaultQuery();
+            if (!string.IsNullOrWhiteSpace(category))
+            {
+                query = query.Where(t => t.Category == category);
+            }
+            if (recommand.HasValue)
+            {
+                query = query.Where(t => t.Recommand == recommand.Value);
+            }
+
+            int total = query.Count();
+
+            query = query.OrderByDescending(t => t.ID)
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize);
+
+            var topicList = await query.ToListAsync();
+
+            this.FillModel(topicList.ToArray());
+
+            return new PagedResult<Topic>(topicList, pageIndex, pageSize, total);
+        }
+
+        /// <summary>
+        /// 创建默认的查询对象
+        /// </summary>
+        /// <returns></returns>
+        private IQueryable<Topic> CreateDefaultQuery()
+        {
+            return this.DbContext.Topics.Where(t => !t.IsDelete)
+                .Include(t => t.LastReplyUser)
+                .Include(t => t.CreateUser)
+                .AsQueryable();
+        }
+
+        /// <summary>
+        /// 填充实体里的数据
+        /// </summary>
+        /// <param name="topicList"></param>
         private void FillModel(params Topic[] topicList)
         {
             if (topicList != null && topicList.Length > 0)

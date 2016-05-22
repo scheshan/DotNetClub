@@ -23,7 +23,12 @@ div.topic-item{
 }
 
 div.topic-item span.comments{
-    margin:0 15px;
+    margin:0 0 0 15px;
+}
+
+div.topic-item span.category{
+    margin:0 0 0 15px;
+    line-height:32px;
 }
 
 div.topic-item img.avatar{
@@ -44,6 +49,7 @@ div.topic-item .topic-title-wrapper .topic-title{
     text-overflow:ellipsis;
     white-space: nowrap;
     line-height:32px;
+    margin: 0 0 0 15px;
 }
 
 .topic-item:last-child{
@@ -53,4 +59,19 @@ div.topic-item .topic-title-wrapper .topic-title{
 .noPaddingTopAndBottom{
     padding-bottom:0;
     padding-top:0;
+}
+
+.pagination{
+    margin: 10px 0;
+}
+
+a.tab{
+    padding: 5px 10px;
+    color:#337ab7;
+    border-radius:3px;
+}
+
+a.tab.active{
+    background:#337ab7;
+    color:#ffffff;
 }

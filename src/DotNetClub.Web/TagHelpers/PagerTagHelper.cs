@@ -77,7 +77,7 @@ namespace DotNetClub.Web.TagHelpers
 
             output.TagName = "ul";
             output.TagMode = TagMode.StartTagAndEndTag;
-            output.Attributes.Add("class", "pagination");
+            output.Attributes.Add("class", "pagination pagination-sm");
 
             StringBuilder sb = new StringBuilder();
 

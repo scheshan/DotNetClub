@@ -1,6 +1,33 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
-asdadsa
+﻿@using DotNetClub.Web.ViewModels.Home
+@model IndexViewModel
+
+<div class="col-md-9">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            @foreach (var tab in Model.TabList)
+            {
+                <a class="tab @(tab.Selected ? "active" : "")" asp-action="Index" asp-controller="Home" asp-route-tab="@tab.Value">@tab.Text</a>
+            }
+        </div>
+        <div class="panel-body noPaddingTopAndBottom">
+            @Html.Partial("_TopicList", Model.TopicList.Data)
+
+            @if (Model.TopicList.Total > 0)
+            {
+            <div class="text-center">
+                <pager page-index="@Model.TopicList.PageIndex" page-size="@Model.TopicList.PageSize" total="@Model.TopicList.Total"></pager>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div class="col-md-3">
+    @await Component.InvokeAsync("LoginInfoPanel")
+
+    @await Component.InvokeAsync("NewTopicPanel")
+
+    @await Component.InvokeAsync("NoCommentsTopicPanel")
+
+    @await Component.InvokeAsync("LinksPanel")
+</div>

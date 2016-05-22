@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Web.ViewComponents
 {
-    public class NewPostPanelViewComponent : ViewComponent
+    public class NewTopicPanelViewComponent : ViewComponent
     {
         public IViewComponentResult Invoke()
         {
