@@ -7,19 +7,18 @@
     {
         <div class="cell">
             <a class="pull-left" asp-action="Index" asp-controller="User" asp-route-userName="@topic.CreateUser.UserName">
-                <useravatar email="@topic.CreateUser.Email" title="@topic.CreateUser.UserName" size="32"></useravatar>
+                <useravatar email="@topic.CreateUser.Email" title="@topic.CreateUser.UserName" size="28"></useravatar>
             </a>
 
-            <span class="text-muted pull-left comments">
-                @topic.ReplyCount
-                /
-                @topic.VisitCount
+            <span class="text-muted pull-left reply-count">
+                <span class="text-info">@topic.ReplyCount</span>
+                <span class="text-muted reply-seperator">/</span>
+                <small class="text-muted">@topic.VisitCount</small>
             </span>
 
             <span class="category pull-left">
                 <span class="label label-default">@topic.CategoryModel.Name</span>
             </span>
-            
 
             <span class="pull-right text-muted">
                 <small>

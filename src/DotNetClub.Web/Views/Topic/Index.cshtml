@@ -34,20 +34,20 @@
             <div class="panel-heading">
                 @Model.CommentList.Count 回复
             </div>
-            <div class="panel-body">                
+            <div class="panel-body noPadding">                
                 @foreach(var comment in Model.CommentList)
                 {
-                    <div>
-                        <p>
-                            <useravatar email="@comment.CreateUser.Email" size="32"></useravatar>
+                    <div class="cell" id="@($"comment{comment.ID}")">
+                        <div>
+                            <useravatar email="@comment.CreateUser.Email" size="28"></useravatar>                            
+                            <a asp-action="Index" asp-controller="User" asp-route-userName="@comment.CreateUser.UserName">@comment.CreateUser.UserName</a>
                             <small>
-                                <a>@comment.CreateUser.UserName</a>
                                 <datetime date="@comment.CreateDate"></datetime>
                             </small>
-                        </p>
-                        <p style="padding-left:40px;">
+                        </div>
+                        <div style="padding-left:40px;">
                             @comment.Content
-                        </p>
+                        </div>
                     </div>
                 }
             </div>

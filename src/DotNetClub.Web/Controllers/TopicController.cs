@@ -39,6 +39,8 @@ namespace DotNetClub.Web.Controllers
                 return this.NotFound();
             }
 
+            await this.TopicService.IncreaseVisitCount(id);
+
             var vm = new IndexViewModel();
             vm.Topic = topic;
             vm.CommentList = await this.CommentService.QueryByTopic(id);

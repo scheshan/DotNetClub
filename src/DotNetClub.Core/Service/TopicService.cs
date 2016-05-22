@@ -125,6 +125,12 @@ namespace DotNetClub.Core.Service
             return new PagedResult<Topic>(topicList, pageIndex, pageSize, total);
         }
 
+        public async Task IncreaseVisitCount(int topicID)
+        {
+            string sql = $"UPDATE Topic SET VisitCount=VisitCount+1 WHERE ID = {topicID}";
+            await this.DbContext.Database.ExecuteSqlCommandAsync(sql);
+        }
+
         /// <summary>
         /// 创建默认的查询对象
         /// </summary>

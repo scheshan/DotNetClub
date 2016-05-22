@@ -8,6 +8,13 @@ footer{
     padding:20px 0;
 }
 
+
+@media (min-width:1200px){
+    .container{
+        width:90%;
+    }
+}
+
 .panel-heading .breadcrumb{
     margin:0px;
     padding:0px;
@@ -17,32 +24,44 @@ footer{
 }
 
 div.cell{
-    line-height:32px;
     border-bottom: 1px solid #e1e1e1;
     padding:10px 15px;
+    overflow:hidden;
+}
+
+div.cell span.reply-count{
+    width:70px;
+    line-height:2em;
+    text-align:center;
+    display:inline-block;
+}
+
+div.cell span.reply-seperator{
+    margin:0 -3px;
 }
 
 div.cell span.comments{
-    margin:0 0 0 15px;
     width:70px;
     overflow:hidden;
     text-align:center;
 }
 
 div.cell span.category{
-    margin:0 0 0 15px;
-    line-height:32px;
+    height:28px;
+    line-height:28px;
 }
 
 div.cell img.avatar{
-    height:32px;
+    height:28px;
 }
 
 div.cell .topic-title-wrapper{
     text-overflow:ellipsis;
     white-space: nowrap;
     overflow:hidden;
-    height:32px;
+    height:28px;
+    line-height:28px;
+    padding:0 5px;
 }
 
 div.cell .topic-title-wrapper .topic-title{
@@ -51,8 +70,7 @@ div.cell .topic-title-wrapper .topic-title{
     overflow:hidden; 
     text-overflow:ellipsis;
     white-space: nowrap;
-    line-height:32px;
-    margin: 0 0 0 15px;
+    line-height:28px;
 }
 
 div.cell:last-child{

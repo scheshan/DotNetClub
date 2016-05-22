@@ -38,6 +38,8 @@ namespace DotNetClub.Web.TagHelpers
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
+            output.TagName = "";
+
             string content = null;
 
             if (!this.Friendly)
