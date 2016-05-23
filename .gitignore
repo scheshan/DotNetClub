@@ -4,9 +4,10 @@
 
 /src/DotNetClub.Web/node_modules
 *.user
-/src/DotNetClub.Core/bin/Debug/netcoreapp1.0
-/src/DotNetClub.Core/obj/Debug/netcoreapp1.0
-/src/DotNetClub.Web/bin/Debug/netcoreapp1.0
-/src/DotNetClub.Web/obj/Debug/netcoreapp1.0
+/src/DotNetClub.Core/bin/
+/src/DotNetClub.Core/obj/
+/src/DotNetClub.Web/bin/
+/src/DotNetClub.Web/obj/
 /src/DotNetClub.Web/wwwroot/lib
 *.suo
+*.lock.json
