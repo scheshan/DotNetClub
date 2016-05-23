@@ -44,6 +44,7 @@ namespace DotNetClub.Web.Controllers
             var vm = new IndexViewModel();
             vm.Topic = topic;
             vm.CommentList = new List<CommentItemModel>();
+            vm.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && topic.CreateUserID == this.ClientManager.CurrentUser.ID);
 
             var commentEntityList = await this.CommentService.QueryByTopic(id);
 
@@ -62,26 +63,26 @@ namespace DotNetClub.Web.Controllers
         [Filters.RequireLogin]
         public IActionResult New()
         {
-            var vm = new NewViewModel();
-
+            var vm = new PostViewModel();
+            vm.IsNew = true;
             vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");        
-            vm.Model = new NewModel();
+            vm.Model = new PostModel();
 
-            return this.View(vm);
+            return this.View("Post", vm);
         }
 
         [HttpPost("new")]
         [Filters.RequireLogin]
-        public async Task<IActionResult> New(NewModel model)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> New(PostModel model)
         {
-            var vm = new NewViewModel();
+            var vm = new PostViewModel();
             vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");
             vm.Model = model;
 
             if (!ModelState.IsValid)
             {
-                vm.ErrorMessage = Core.Resource.Messages.ModelStateNotValid;
-                return this.View(vm);
+                return this.View("_Notice", Core.Resource.Messages.ModelStateNotValid);
             }
             
             var result = await this.TopicService.Add(model.Category, model.Title, model.Content, this.ClientManager.CurrentUser.ID);
@@ -92,8 +93,58 @@ namespace DotNetClub.Web.Controllers
             }
             else
             {
-                vm.ErrorMessage = result.ErrorMessage;
-                return this.View(vm);
+                return this.View("_Notice", result.ErrorMessage);
+            }
+        }
+
+        [HttpGet("{id:int}/edit")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var topic = await this.TopicService.Get(id);
+
+            if (topic == null || topic.CreateUserID != this.ClientManager.CurrentUser.ID)
+            {
+                return this.Forbid();
+            }
+
+            var vm = new PostViewModel();
+            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name", topic.Category);
+            vm.Model = new PostModel
+            {
+                Category = topic.Category,
+                Content = topic.Content,
+                Title = topic.Title
+            };
+
+            return this.View("Post", vm);
+        }
+
+        [HttpPost("{id:int}/edit")]
+        [Filters.RequireLogin]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, PostModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.View("_Notice", Core.Resource.Messages.ModelStateNotValid);
+            }
+
+            var topic = await this.TopicService.Get(id);
+            if (topic == null || topic.CreateUserID != this.ClientManager.CurrentUser.ID)
+            {
+                return this.Forbid();
+            }
+
+            var result = await this.TopicService.Edit(id, model.Category, model.Title, model.Content);
+
+            if (result.Success)
+            {
+                return this.RedirectToAction("Index", "Topic", new { id = id });
+            }
+            else
+            {
+                return this.View("_Notice", result.ErrorMessage);
             }
         }
     }

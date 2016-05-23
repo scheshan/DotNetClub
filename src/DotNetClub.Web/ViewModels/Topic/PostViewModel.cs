@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Web.ViewModels.Topic
 {
-    public class NewViewModel
+    public class PostViewModel
     {
         public SelectList CategoryList { get; set; }
         
-        public NewModel Model { get; set; }
+        public PostModel Model { get; set; }
 
-        public string ErrorMessage { get; set; }
+        public bool IsNew { get; set; }
     }
 }

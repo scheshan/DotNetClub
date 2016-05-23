@@ -11,5 +11,7 @@ namespace DotNetClub.Web.ViewModels.Topic
         public Core.Entity.Topic Topic { get; set; }
 
         public List<CommentItemModel> CommentList { get; set; }
+
+        public bool CanOperate { get; set; }
     }
 }

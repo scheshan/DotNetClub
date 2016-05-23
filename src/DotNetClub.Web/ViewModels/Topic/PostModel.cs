@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Web.ViewModels.Topic
 {
-    public class NewModel
+    public class PostModel
     {
         public string Title { get; set; }
 

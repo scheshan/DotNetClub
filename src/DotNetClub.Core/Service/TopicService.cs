@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using System.Data.SqlClient;
 
 namespace DotNetClub.Core.Service
 {
@@ -50,6 +51,26 @@ namespace DotNetClub.Core.Service
             this.FillModel(result);
 
             return result;
+        }
+
+        public async Task<OperationResult> Edit(int id, string category, string title, string content)
+        {
+            if (this.CategoryService.Get(category) == null)
+            {
+                return OperationResult.Failure("版块不存在");
+            }
+
+            string sql = "UPDATE Topic SET Title=@Title, Content=@Content, Category=@Category, UpdateDate=GETDATE() WHERE ID=@ID";
+
+            var para = new object[4];
+            para[0] = new SqlParameter("@Title", title);
+            para[1] = new SqlParameter("@Content", content);
+            para[2] = new SqlParameter("@Category", category);
+            para[3] = new SqlParameter("@ID", id);
+
+            await this.DbContext.Database.ExecuteSqlCommandAsync(sql, parameters: para);
+
+            return new OperationResult();
         }
 
         public async Task<List<Topic>> QueryRecentCreatedTopicList(int count, int userID, params int[] exclude)

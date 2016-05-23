@@ -1,5 +1,5 @@
 ﻿@using DotNetClub.Web.ViewModels.Topic
-@model NewViewModel
+@model PostViewModel
 
 <script src="~/lib/editor.md/editormd.min.js"></script>
 <link href="~/lib/editor.md/css/editormd.min.css" rel="stylesheet" />
@@ -9,18 +9,11 @@
         <div class="panel-heading">
             <ol class="breadcrumb">
                 <li><a asp-action="Index" asp-controller="Home">首页</a></li>
-                <li>发布话题</li>
+                <li>@(Model.IsNew ? "发布话题" : "编辑话题")</li>
             </ol>
         </div>
         <div class="panel-body">
-            @if (Model.ErrorMessage != null)
-            {
-                <div class="alert alert-danger">
-                    @Model.ErrorMessage
-                </div>
-            }
-
-            <form asp-action="New" asp-controller="Topic">
+            <form method="post" asp-antiforgery="true">
                 <div class="form-group form-inline">
                     <label class="control-label">选择版块:</label>
                     <select name="Category" asp-items="@Model.CategoryList" class="form-control">
@@ -28,10 +21,12 @@
                     </select>
                 </div>
                 <div class="form-group">
-                    <input name="Title" type="text" class="form-control" placeholder="标题字数10字以上" />
+                    <input name="Title" type="text" class="form-control" placeholder="标题字数10字以上" value="@Model.Model.Title" />
                 </div>
                 <div class="form-group">
-                    <div id="txtContent"></div>
+                    <div id="txtContent">
+                        <textarea>@Model.Model.Content</textarea>
+                    </div>
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">提交</button>
@@ -42,19 +37,9 @@
 </div>
 
 <div class="col-md-3">
-    <div class="panel panel-default">
-        <div class="panel-heading">Markdown 语法参考</div>
-        <div class="panel-body">
-            <ol class="list-unstyled">
-                <li><tt>### 单行的标题</tt></li>
-                <li><tt>**粗体**</tt></li>
-                <li><tt>`console.log('行内代码')`</tt></li>
-                <li><tt>```js\n code \n```</tt> 标记代码块</li>
-                <li><tt>[内容](链接)</tt></li>
-                <li><tt>![文字说明](图片链接)</tt></li>
-            </ol>
-        </div>
-    </div>
+    @Html.Partial("_Grammer")
+
+    @Html.Partial("_Guide")
 </div>
 
 <script type="text/javascript">

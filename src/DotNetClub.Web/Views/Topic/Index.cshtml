@@ -22,6 +22,14 @@
                 </ul>
             </div>
 
+            @if(Model.CanOperate)
+            {
+            <div>
+                <a asp-action="Edit" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted"><i class="fa fa-lg fa-edit"></i></a>
+                <a href="#" class="text-muted"><i class="fa fa-lg fa-trash-o"></i></a>
+            </div>    
+            }
+
             <hr />
 
             <div>
