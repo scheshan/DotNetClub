@@ -8,9 +8,9 @@ How to Build and Run:
 3. Go to root directory and run following commands
 
 `
-dotnet restore
-dotnet ef database update
-cd src\DotNetClub.Web
-bower install
+dotnet restore  
+dotnet ef database update  
+cd src\DotNetClub.Web  
+bower install  
 dotnet run
 `

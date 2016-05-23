@@ -9,5 +9,5 @@
 /src/DotNetClub.Web/bin/
 /src/DotNetClub.Web/obj/
 /src/DotNetClub.Web/wwwroot/lib
-*.suo
+.vs/
 *.lock.json
