@@ -10,6 +10,6 @@ namespace DotNetClub.Web.ViewModels.Topic
     {
         public Core.Entity.Topic Topic { get; set; }
 
-        public List<Core.Entity.Comment> CommentList { get; set; }
+        public List<CommentItemModel> CommentList { get; set; }
     }
 }

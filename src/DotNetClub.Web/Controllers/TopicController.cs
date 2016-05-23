@@ -43,7 +43,17 @@ namespace DotNetClub.Web.Controllers
 
             var vm = new IndexViewModel();
             vm.Topic = topic;
-            vm.CommentList = await this.CommentService.QueryByTopic(id);
+            vm.CommentList = new List<CommentItemModel>();
+
+            var commentEntityList = await this.CommentService.QueryByTopic(id);
+
+            foreach (var commentEntity in commentEntityList)
+            {
+                var model = new CommentItemModel(commentEntity);
+                model.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && commentEntity.CreateUserID == this.ClientManager.CurrentUser.ID);
+
+                vm.CommentList.Add(model);
+            }
 
             return this.View(vm);
         }

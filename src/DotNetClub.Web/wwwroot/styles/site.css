@@ -73,8 +73,17 @@ div.cell .topic-title-wrapper .topic-title{
     line-height:28px;
 }
 
+div.cell .user-info{
+    margin-left:5px;
+}
+
 div.cell:last-child{
     border-bottom:none;
+}
+
+.reply-content{
+    padding-left:40px;
+    margin-top:5px;
 }
 
 .noPaddingTopAndBottom{

@@ -13,20 +13,20 @@
             <h4>
                 <strong>@Model.Topic.Title</strong>
             </h4>
-            <p class="text-muted">
+            <div class="text-muted">
                 <ul class="list-inline text-muted" style="font-size:12px;">
                     <li>发布于: <datetime date="@Model.Topic.CreateDate"></datetime></li>
                     <li>作者: <a asp-action="Index" asp-controller="User" asp-route-userName="@Model.Topic.CreateUser.UserName">@Model.Topic.CreateUser.UserName</a></li>
                     <li>@Model.Topic.VisitCount 次浏览</li>
                     <li>来自: @Model.Topic.CategoryModel.Name</li>
                 </ul>
-            </p>
+            </div>
 
             <hr />
 
-            <p>
-                @Model.Topic.Content
-            </p>
+            <div>
+                <markdown content="@Model.Topic.Content"></markdown>
+            </div>
         </div>
     </div>
 
@@ -39,16 +39,28 @@
             <div class="panel-body noPadding">                
                 @foreach(var comment in Model.CommentList)
                 {
-                    <div class="cell" id="@($"comment{comment.ID}")">
+                    <div class="cell" id="@($"comment{comment.Entity.ID}")">
                         <div>
-                            <useravatar email="@comment.CreateUser.Email" size="28"></useravatar>                            
-                            <a asp-action="Index" asp-controller="User" asp-route-userName="@comment.CreateUser.UserName">@comment.CreateUser.UserName</a>
-                            <small>
-                                <datetime date="@comment.CreateDate"></datetime>
-                            </small>
+                            <useravatar email="@comment.Entity.CreateUser.Email" size="28" class="pull-left"></useravatar>                            
+                            <a class="user-info" asp-action="Index" asp-controller="User" asp-route-userName="@comment.Entity.CreateUser.UserName">@comment.Entity.CreateUser.UserName</a>
+                            <small class="reply-date text-muted"><datetime date="@comment.Entity.CreateDate"></datetime></small>
+                            
+                            <span class="pull-right">
+                                <span>
+                                    <a href="#" class="text-muted"><i class="fa fa-thumbs-o-up"></i></a>
+
+                                    <small>@comment.Entity.Ups</small>
+                                </span>
+                                
+                                @if (comment.CanOperate)
+                                {
+                                <a asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="删除" onclick="return confirm('确定要删除此回复吗?')"><i class="fa fa-trash-o"></i></a>
+                                <a href="#" class="text-muted"><i class="fa fa-reply"></i></a>
+                                }
+                            </span>
                         </div>
-                        <div style="padding-left:40px;">
-                            @comment.Content
+                        <div class="reply-content">
+                            @comment.Entity.Content
                         </div>
                     </div>
                 }

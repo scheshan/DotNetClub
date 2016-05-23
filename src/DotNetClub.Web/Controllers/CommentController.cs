@@ -49,5 +49,20 @@ namespace DotNetClub.Web.Controllers
                 return this.View((object)result.ErrorMessage);
             }
         }
+
+        [HttpGet("{id:int}/delete")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var comment = await this.CommentService.Get(id);
+            if (comment == null || comment.CreateUserID != ClientManager.CurrentUser.ID)
+            {
+                return this.Forbid();
+            }
+
+            await this.CommentService.Delete(id);
+
+            return this.RedirectToAction("Index", "Topic", new { id = comment.TopicID });
+        }
     }
 }

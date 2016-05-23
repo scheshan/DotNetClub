@@ -55,5 +55,16 @@ namespace DotNetClub.Core.Service
 
             return await query.ToListAsync();
         }
+
+        public async Task<Comment> Get(int id)
+        {
+            return await this.DbContext.Comments.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+        }
+
+        public async Task Delete(int id)
+        {
+            string sql = $"UPDATE Comment SET IsDelete=1 WHERE ID={id}";
+            await this.DbContext.Database.ExecuteSqlCommandAsync(sql);
+        }
     }
 }

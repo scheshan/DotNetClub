@@ -61,5 +61,11 @@ namespace DotNetClub.Web.Controllers
 
             return this.View(vm);
         }
+
+        [HttpGet("test")]
+        public IActionResult Test()
+        {
+            return this.View();
+        }
     }
 }

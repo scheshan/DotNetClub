@@ -37,6 +37,14 @@ namespace DotNetClub.Core
             }
         }
 
+        public bool IsAdmin
+        {
+            get
+            {
+                return this.IsLogin && this.CurrentUser.UserName == "admin";
+            }
+        }
+
         public ClientManager(IConfiguration configuration, ClubContext dbContext)
         {
             this.Configuration = configuration;
