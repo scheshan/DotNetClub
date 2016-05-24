@@ -64,13 +64,20 @@
                                 @if (comment.CanOperate)
                                 {
                                 <a asp-action="Edit" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="编辑"><i class="fa fa-pencil-square-o"></i></a>
-                                <a asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="删除" onclick="return confirm('确定要删除此回复吗?')"><i class="fa fa-trash-o"></i></a>
-                                <a href="#" class="text-muted"><i class="fa fa-reply"></i></a>
+                                <a asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="删除" onclick="return confirm('确定要删除此回复吗?')"><i class="fa fa-trash-o"></i></a>                                
+                                }
+
+                                @if (clientManager.IsLogin)
+                                {
+                                <a href="javascript:void(0)" class="text-muted" onclick="replyTo('@comment.Entity.ID')"><i class="fa fa-reply"></i></a>
                                 }
                             </span>
                         </div>
                         <div class="reply-content">
                             <markdown content="@comment.Entity.Content"></markdown>
+                        </div>
+                        <div class="reply-to">
+
                         </div>
                     </div>
                 }
@@ -80,11 +87,12 @@
 
     @if (clientManager.IsLogin)
     {
-    <div class="panel panel-default">
+    <div class="panel panel-default" id="replyPanel">
         <div class="panel-heading">添加回复</div>
         <div class="panel-body">
-            <form method="post" asp-action="Add" asp-controller="Comment" asp-antiforgery="true">
+            <form id="frmComment" method="post" asp-action="Add" asp-controller="Comment" asp-antiforgery="true">
                 <input type="hidden" name="TopicID" value="@Model.Topic.ID"/>
+                <input type="hidden" name="ReplyTo" id="hdnReplyTo" value=""/>
                 <div class="form-group">
                     <div id="editor">
                         <textarea class="form-control" rows="10"></textarea>
@@ -92,6 +100,7 @@
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">提交</button>
+                    <button type="button" class="btn btn-default" id="btnCancelReplyTo" onclick="cancelReplyTo()" style="display:none;">取消</button>
                 </div>
             </form>
         </div>
@@ -110,6 +119,24 @@
             placeholder: "",
             watch: false
         });
+
+        function replyTo(id) {
+            var container = $("#comment" + id).find("div.reply-to");
+            $("#frmComment").appendTo(container);
+
+            $("#replyPanel").hide();
+            $("#btnCancelReplyTo").show();
+            $("#hdnReplyTo").val(id);
+        }
+
+        function cancelReplyTo() {
+            var container = $("#replyPanel").find("div.panel-body");
+            $("#frmComment").appendTo(container);
+
+            $("#replyPanel").show();
+            $("#btnCancelReplyTo").hide();
+            $("#hdnReplyTo").val("");
+        }
     </script>
     }
 </div>

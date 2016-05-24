@@ -26,6 +26,19 @@ namespace DotNetClub.Core.Service
                 return OperationResult<int?>.Failure("该主题不存在");
             }
 
+            if (replyTo.HasValue)
+            {
+                var replyToComment = await this.DbContext.Comments.SingleOrDefaultAsync(t => t.ID == replyTo.Value && !t.IsDelete);
+                if (replyToComment == null)
+                {
+                    return OperationResult<int?>.Failure("该评论不存在");
+                }
+                if (replyToComment.TopicID != topicID)
+                {
+                    return OperationResult<int?>.Failure("错误的请求");
+                }
+            }
+
             var entity = new Comment
             {
                 Content = content,
@@ -59,6 +72,16 @@ namespace DotNetClub.Core.Service
         public async Task<Comment> Get(int id)
         {
             return await this.DbContext.Comments.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+        }
+
+        public async Task Edit(int id, string content)
+        {
+            var comment = await this.DbContext.Comments.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+            if (comment != null)
+            {
+                comment.Content = content;
+                await this.DbContext.SaveChangesAsync();
+            }
         }
 
         public async Task Delete(int id)

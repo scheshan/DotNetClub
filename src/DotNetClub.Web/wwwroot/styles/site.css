@@ -100,6 +100,10 @@ div.cell:last-child{
     margin-top:5px;
 }
 
+.reply-to{
+    padding-left:40px;
+}
+
 .noPaddingTopAndBottom{
     padding-bottom:0;
     padding-top:0;

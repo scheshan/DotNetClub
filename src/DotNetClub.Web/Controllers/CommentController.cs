@@ -77,5 +77,21 @@ namespace DotNetClub.Web.Controllers
 
             return this.View("Edit", comment);
         }
+
+        [HttpPost("{id:int}/edit")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Edit(int id, EditCommentModel model)
+        {
+            var comment = await this.CommentService.Get(id);
+            if (comment == null || comment.CreateUserID != ClientManager.CurrentUser.ID)
+            {
+                return this.Forbid();
+            }
+
+            await this.CommentService.Edit(id, model.Content);
+
+            string url = this.Url.Action("Index", "Topic", new { id = comment.TopicID });
+            return this.Redirect($"{url}#comment{id}");
+        }
     }
 }
