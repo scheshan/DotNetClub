@@ -12,18 +12,21 @@ namespace DotNetClub.Core.Service
     {
         private Data.ClubContext DbContext { get; set; }
 
-        public CommentService(Data.ClubContext dbContext)
+        private ClientManager ClientManager { get; set; }
+
+        public CommentService(Data.ClubContext dbContext, ClientManager clientManager)
         {
             this.DbContext = dbContext;
+            this.ClientManager = clientManager;
         }
 
-        public async Task<OperationResult<int?>> Add(int topicID, string content, int? replyTo, int userID)
+        public async Task<OperationResult<Comment>> Add(int topicID, string content, int? replyTo)
         {
             var topic = await this.DbContext.Topics.SingleOrDefaultAsync(t => t.ID == topicID && !t.IsDelete);
 
             if (topic == null)
             {
-                return OperationResult<int?>.Failure("该主题不存在");
+                return OperationResult<Comment>.Failure("该主题不存在");
             }
 
             if (replyTo.HasValue)
@@ -31,11 +34,11 @@ namespace DotNetClub.Core.Service
                 var replyToComment = await this.DbContext.Comments.SingleOrDefaultAsync(t => t.ID == replyTo.Value && !t.IsDelete);
                 if (replyToComment == null)
                 {
-                    return OperationResult<int?>.Failure("该评论不存在");
+                    return OperationResult<Comment>.Failure("该评论不存在");
                 }
                 if (replyToComment.TopicID != topicID)
                 {
-                    return OperationResult<int?>.Failure("错误的请求");
+                    return OperationResult<Comment>.Failure("错误的请求");
                 }
             }
 
@@ -43,20 +46,20 @@ namespace DotNetClub.Core.Service
             {
                 Content = content,
                 CreateDate = DateTime.Now,
-                CreateUserID = userID,
+                CreateUserID = this.ClientManager.CurrentUser.ID,
                 IsDelete = false,
                 ReplyID = replyTo,
                 TopicID = topicID
             };
             topic.ReplyCount++;
             topic.LastReplyDate = DateTime.Now;
-            topic.LastReplyUserID = userID;
+            topic.LastReplyUserID = this.ClientManager.CurrentUser.ID;
 
             this.DbContext.Add(entity);
 
             await this.DbContext.SaveChangesAsync();
 
-            return new OperationResult<int?>(entity.ID);    
+            return new OperationResult<Comment>(entity);
         }
 
         public async Task<List<Comment>> QueryByTopic(int topicID)
@@ -74,20 +77,51 @@ namespace DotNetClub.Core.Service
             return await this.DbContext.Comments.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
         }
 
-        public async Task Edit(int id, string content)
+        public async Task<OperationResult<Comment>> Edit(int id, string content)
         {
             var comment = await this.DbContext.Comments.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
-            if (comment != null)
+            if (comment == null)
             {
-                comment.Content = content;
-                await this.DbContext.SaveChangesAsync();
+                return OperationResult<Comment>.Failure("评论不存在");
             }
+            if (!this.ClientManager.CanOperateComment(comment))
+            {
+                return OperationResult<Comment>.Failure("无权操作");
+            }
+
+            comment.Content = content;
+            await this.DbContext.SaveChangesAsync();
+
+            return new OperationResult<Comment>(comment);
         }
 
-        public async Task Delete(int id)
+        public async Task<OperationResult<Comment>> Delete(int id)
         {
-            string sql = $"UPDATE Comment SET IsDelete=1 WHERE ID={id}";
-            await this.DbContext.Database.ExecuteSqlCommandAsync(sql);
+            var comment = await this.DbContext.Comments.Include(t => t.Topic).SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+
+            if (comment == null)
+            {
+                return OperationResult<Comment>.Failure("评论不存在");
+            }
+            if (!this.ClientManager.CanOperateComment(comment))
+            {
+                return OperationResult<Comment>.Failure("无权操作");
+            }
+
+            if (comment != null)
+            {
+                comment.IsDelete = true;
+                comment.Topic.ReplyCount = comment.Topic.ReplyCount - 1;
+
+                await this.DbContext.SaveChangesAsync();
+            }
+
+            return new OperationResult<Comment>(comment);
+        }
+
+        public async Task<OperationResult<bool?>> Vote(int commentID, int userID)
+        {
+            return null;
         }
     }
 }

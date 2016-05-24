@@ -16,6 +16,10 @@ namespace DotNetClub.Core.Data
 
         public DbSet<Comment> Comments { get; set; }
 
+        public DbSet<UserVote> UserVotes { get; set; }
+
+        public DbSet<UserCollect> UserCollects { get; set; }
+
         public ClubContext(DbContextOptions<ClubContext> options)
             : base(options)
         {
@@ -26,9 +30,11 @@ namespace DotNetClub.Core.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<User>(UserMapping.Map);
-            modelBuilder.Entity<Topic>(TopicMapping.Map);
-            modelBuilder.Entity<Comment>(CommentMapping.Map);
+            modelBuilder.Entity<User>(UserMapping.Map)
+                .Entity<Topic>(TopicMapping.Map)
+                .Entity<Comment>(CommentMapping.Map)
+                .Entity<UserCollect>(UserCollectMapping.Map)
+                .Entity<UserVote>(UserVoteMapping.Map);
         }
     }
 }

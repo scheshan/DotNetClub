@@ -15,10 +15,13 @@ namespace DotNetClub.Core.Service
 
         private CategoryService CategoryService { get; set; }
 
-        public TopicService(Data.ClubContext dbContext, CategoryService categoryService)
+        private ClientManager ClientManager { get; set; }
+
+        public TopicService(Data.ClubContext dbContext, CategoryService categoryService, ClientManager clientManager)
         {
             this.DbContext = dbContext;
             this.CategoryService = categoryService;
+            this.ClientManager = clientManager;
         }
 
         public async Task<OperationResult<int?>> Add(string category, string title, string content, int createUser)
@@ -53,30 +56,52 @@ namespace DotNetClub.Core.Service
             return result;
         }
 
-        public async Task<OperationResult> Edit(int id, string category, string title, string content)
+        public async Task<OperationResult<Topic>> Edit(int id, string category, string title, string content)
         {
             if (this.CategoryService.Get(category) == null)
             {
-                return OperationResult.Failure("版块不存在");
+                return OperationResult<Topic>.Failure("版块不存在");
             }
 
-            string sql = "UPDATE Topic SET Title=@Title, Content=@Content, Category=@Category, UpdateDate=GETDATE() WHERE ID=@ID";
+            var topic = await this.DbContext.Topics.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+            if (topic == null)
+            {
+                return OperationResult<Topic>.Failure("主题不存在");
+            }
 
-            var para = new object[4];
-            para[0] = new SqlParameter("@Title", title);
-            para[1] = new SqlParameter("@Content", content);
-            para[2] = new SqlParameter("@Category", category);
-            para[3] = new SqlParameter("@ID", id);
+            if (!this.ClientManager.CanOperateTopic(topic))
+            {
+                return OperationResult<Topic>.Failure("无权操作");
+            }
 
-            await this.DbContext.Database.ExecuteSqlCommandAsync(sql, parameters: para);
+            topic.Title = title;
+            topic.Category = category;
+            topic.Content = content;
+            topic.UpdateDate = DateTime.Now;
 
-            return new OperationResult();
+            await this.DbContext.SaveChangesAsync();
+
+            return new OperationResult<Topic>(topic);
         }
 
-        public async Task Delete(int id)
+        public async Task<OperationResult<Topic>> Delete(int id)
         {
-            string sql = $"UPDATE Topic SET IsDelete=1 WHERE ID={id}";
-            await this.DbContext.Database.ExecuteSqlCommandAsync(sql);
+            var topic = await this.DbContext.Topics.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+
+            if (topic == null)
+            {
+                return OperationResult<Topic>.Failure("主题不存在");
+            }
+
+            if (!this.ClientManager.CanOperateTopic(topic))
+            {
+                return OperationResult<Topic>.Failure("无权操作");
+            }
+
+            topic.IsDelete = true;
+            await this.DbContext.SaveChangesAsync();
+
+            return new OperationResult<Topic>(topic);
         }
 
         public async Task<List<Topic>> QueryRecentCreatedTopicList(int count, int userID, params int[] exclude)

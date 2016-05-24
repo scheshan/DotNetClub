@@ -37,12 +37,11 @@ namespace DotNetClub.Web.Controllers
                 return this.Notice(message);
             }
 
-            var result = await this.CommentService.Add(model.TopicID, model.Content, model.ReplyTo, this.ClientManager.CurrentUser.ID);
+            var result = await this.CommentService.Add(model.TopicID, model.Content, model.ReplyTo);
 
             if (result.Success)
             {
-                string url = this.Url.Action("Index", "Topic", new { id = model.TopicID });
-                return this.Redirect($"{url}#comment{result.Data.Value}");
+                return this.Redirect(this.GenerateCommentLink(model.TopicID, result.Data.ID));
             }
             else
             {
@@ -54,15 +53,15 @@ namespace DotNetClub.Web.Controllers
         [Filters.RequireLogin]
         public async Task<IActionResult> Delete(int id)
         {
-            var comment = await this.CommentService.Get(id);
-            if (comment == null || comment.CreateUserID != ClientManager.CurrentUser.ID)
+            var result = await this.CommentService.Delete(id);
+            if (result.Success)
             {
-                return this.Forbid();
+                return this.RedirectToAction("Index", "Topic", new { id = result.Data.TopicID });
             }
-
-            await this.CommentService.Delete(id);
-
-            return this.RedirectToAction("Index", "Topic", new { id = comment.TopicID });
+            else
+            {
+                return this.Notice(result.ErrorMessage);
+            }
         }
 
         [HttpGet("{id:int}/edit")]
@@ -70,7 +69,7 @@ namespace DotNetClub.Web.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var comment = await this.CommentService.Get(id);
-            if (comment == null || comment.CreateUserID != ClientManager.CurrentUser.ID)
+            if (comment == null || !this.ClientManager.CanOperateComment(comment))
             {
                 return this.Forbid();
             }
@@ -82,16 +81,22 @@ namespace DotNetClub.Web.Controllers
         [Filters.RequireLogin]
         public async Task<IActionResult> Edit(int id, EditCommentModel model)
         {
-            var comment = await this.CommentService.Get(id);
-            if (comment == null || comment.CreateUserID != ClientManager.CurrentUser.ID)
+            var result = await this.CommentService.Edit(id, model.Content);
+
+            if (result.Success)
             {
-                return this.Forbid();
+                return this.Redirect(this.GenerateCommentLink(result.Data.TopicID, result.Data.ID));
             }
+            else
+            {
+                return this.Notice(result.ErrorMessage);
+            }
+        }
 
-            await this.CommentService.Edit(id, model.Content);
-
-            string url = this.Url.Action("Index", "Topic", new { id = comment.TopicID });
-            return this.Redirect($"{url}#comment{id}");
+        private string GenerateCommentLink(int topicID, int commentID)
+        {
+            string url = this.Url.Action("Index", "Topic", new { id = topicID });
+            return $"{url}#{commentID}";
         }
     }
 }

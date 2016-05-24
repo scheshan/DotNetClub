@@ -103,7 +103,7 @@ namespace DotNetClub.Web.Controllers
         {
             var topic = await this.TopicService.Get(id);
 
-            if (topic == null || topic.CreateUserID != this.ClientManager.CurrentUser.ID)
+            if (topic == null || !this.ClientManager.CanOperateTopic(topic))
             {
                 return this.Forbid();
             }
@@ -128,12 +128,6 @@ namespace DotNetClub.Web.Controllers
             if (!ModelState.IsValid)
             {
                 return this.Notice(Core.Resource.Messages.ModelStateNotValid);
-            }
-
-            var topic = await this.TopicService.Get(id);
-            if (topic == null || topic.CreateUserID != this.ClientManager.CurrentUser.ID)
-            {
-                return this.Forbid();
             }
 
             var result = await this.TopicService.Edit(id, model.Category, model.Title, model.Content);
