@@ -169,5 +169,37 @@ namespace DotNetClub.Web.Controllers
 
             return this.RedirectToAction("Index", "Home");
         }
+
+        [HttpGet("{id:int}/recommand")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Recommand(int id)
+        {
+            var result = await this.TopicService.ToggleRecommand(id);
+
+            if (result.Success)
+            {
+                return this.RedirectToAction("Index", "Topic", new { id = id });
+            }
+            else
+            {
+                return this.Notice(result.ErrorMessage);
+            }
+        }
+
+        [HttpGet("{id:int}/top")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Top(int id)
+        {
+            var result = await this.TopicService.ToggleTop(id);
+
+            if (result.Success)
+            {
+                return this.RedirectToAction("Index", "Topic", new { id = id });
+            }
+            else
+            {
+                return this.Notice(result.ErrorMessage);
+            }
+        }
     }
 }

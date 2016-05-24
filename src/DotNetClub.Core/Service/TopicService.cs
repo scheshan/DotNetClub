@@ -104,6 +104,44 @@ namespace DotNetClub.Core.Service
             return new OperationResult<Topic>(topic);
         }
 
+        public async Task<OperationResult> ToggleRecommand(int id)
+        {
+            if (!this.ClientManager.IsAdmin)
+            {
+                return OperationResult.Failure("无权操作");
+            }
+
+            var topic = await this.DbContext.Topics.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+            if (topic == null)
+            {
+                return OperationResult.Failure("主题不存在");
+            }
+
+            topic.Recommand = !topic.Recommand;
+            await this.DbContext.SaveChangesAsync();
+
+            return new OperationResult();
+        }
+
+        public async Task<OperationResult> ToggleTop(int id)
+        {
+            if (!this.ClientManager.IsAdmin)
+            {
+                return OperationResult.Failure("无权操作");
+            }
+
+            var topic = await this.DbContext.Topics.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+            if (topic == null)
+            {
+                return OperationResult.Failure("主题不存在");
+            }
+
+            topic.Top = !topic.Top;
+            await this.DbContext.SaveChangesAsync();
+
+            return new OperationResult();
+        }
+
         public async Task<List<Topic>> QueryRecentCreatedTopicList(int count, int userID, params int[] exclude)
         {
             var query = this.CreateDefaultQuery()
@@ -206,7 +244,7 @@ namespace DotNetClub.Core.Service
 
             int total = query.Count();
 
-            query = query.OrderByDescending(t => t.ID)
+            query = query.OrderByDescending(t => t.Top).ThenByDescending(t => t.ID)
                 .Skip((pageIndex - 1) * pageSize)
                 .Take(pageSize);
 

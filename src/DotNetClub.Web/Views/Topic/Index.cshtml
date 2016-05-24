@@ -26,8 +26,42 @@
             @if(Model.CanOperate)
             {
             <div>
-                <a asp-action="Edit" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted"><i class="fa fa-lg fa-edit"></i></a>
-                <a asp-action="Delete" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" onclick="return confirm('确认删除此主题吗?')"><i class="fa fa-lg fa-trash-o"></i></a>
+                <ul class="list-inline">
+                    <li>
+                        <a asp-action="Edit" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" title="编辑主题"><i class="fa fa-lg fa-edit"></i></a>
+                    </li>
+                    <li>
+                        <a asp-action="Delete" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" title="删除主题" onclick="return confirm('确认删除此主题吗?')"><i class="fa fa-lg fa-trash-o"></i></a>
+                    </li>
+                    @if (clientManager.IsAdmin)
+                    {
+                        if (!Model.Topic.Top)
+                        {
+                            <li>
+                                <a asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" title="置顶"><i class="fa fa-lg fa-star-o"></i></a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-danger" title="取消置顶"><i class="fa fa-lg fa-star"></i></a>
+                            </li>
+                        }
+                        if (!Model.Topic.Recommand)
+                        {
+                            <li>
+                                <a asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" title="加精华"><i class="fa fa-lg fa-heart-o"></i></a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li>
+                                <a asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-danger" title="取消精华"><i class="fa fa-lg fa-heart"></i></a>
+                            </li>
+                        }
+                    }
+
+                </ul>
             </div>    
             }
 
