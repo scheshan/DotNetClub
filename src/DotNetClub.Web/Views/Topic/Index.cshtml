@@ -26,7 +26,7 @@
             {
             <div>
                 <a asp-action="Edit" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted"><i class="fa fa-lg fa-edit"></i></a>
-                <a href="#" class="text-muted"><i class="fa fa-lg fa-trash-o"></i></a>
+                <a asp-action="Delete" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" onclick="return confirm('确认删除此主题吗?')"><i class="fa fa-lg fa-trash-o"></i></a>
             </div>    
             }
 

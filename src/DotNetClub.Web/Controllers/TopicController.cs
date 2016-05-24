@@ -147,5 +147,20 @@ namespace DotNetClub.Web.Controllers
                 return this.View("_Notice", result.ErrorMessage);
             }
         }
+
+        [HttpGet("{id:int}/delete")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var topic = await this.TopicService.Get(id);
+            if (topic == null || topic.CreateUserID != this.ClientManager.CurrentUser.ID)
+            {
+                return this.Forbid();
+            }
+
+            await this.TopicService.Delete(id);
+
+            return this.RedirectToAction("Index", "Home");
+        }
     }
 }

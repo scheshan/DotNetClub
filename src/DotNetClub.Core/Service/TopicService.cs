@@ -73,6 +73,12 @@ namespace DotNetClub.Core.Service
             return new OperationResult();
         }
 
+        public async Task Delete(int id)
+        {
+            string sql = $"UPDATE Topic SET IsDelete=1 WHERE ID={id}";
+            await this.DbContext.Database.ExecuteSqlCommandAsync(sql);
+        }
+
         public async Task<List<Topic>> QueryRecentCreatedTopicList(int count, int userID, params int[] exclude)
         {
             var query = this.CreateDefaultQuery()
