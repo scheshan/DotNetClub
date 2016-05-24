@@ -16,7 +16,7 @@ using System.Threading.Tasks;
 namespace DotNetClub.Web.Controllers
 {
     [Route("account")]
-    public class AccountController : Controller
+    public class AccountController : Base.ControllerBase
     {
         private AccountService AccountService { get; set; }
 

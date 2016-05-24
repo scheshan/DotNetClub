@@ -62,6 +62,7 @@
                                 
                                 @if (comment.CanOperate)
                                 {
+                                <a asp-action="Edit" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="编辑"><i class="fa fa-pencil-square-o"></i></a>
                                 <a asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="删除" onclick="return confirm('确定要删除此回复吗?')"><i class="fa fa-trash-o"></i></a>
                                 <a href="#" class="text-muted"><i class="fa fa-reply"></i></a>
                                 }

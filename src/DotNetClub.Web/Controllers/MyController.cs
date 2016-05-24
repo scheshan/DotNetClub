@@ -14,7 +14,7 @@ namespace DotNetClub.Web.Controllers
 {
     [Route("my")]
     [Filters.RequireLogin]
-    public class MyController : Controller
+    public class MyController : Base.ControllerBase
     {
         private UserService UserService { get; set; }
 

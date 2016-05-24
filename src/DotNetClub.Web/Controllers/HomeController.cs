@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Web.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : Base.ControllerBase
     {
         private static readonly string TAB_RECOMMAND = "recommand";
 

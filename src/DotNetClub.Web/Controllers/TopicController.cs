@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace DotNetClub.Web.Controllers
 {
     [Route("topic")]
-    public class TopicController : Controller
+    public class TopicController : Base.ControllerBase
     {
         private CategoryService CategoryService { get; set; }
 
@@ -82,7 +82,7 @@ namespace DotNetClub.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                return this.View("_Notice", Core.Resource.Messages.ModelStateNotValid);
+                return this.Notice(Core.Resource.Messages.ModelStateNotValid);
             }
             
             var result = await this.TopicService.Add(model.Category, model.Title, model.Content, this.ClientManager.CurrentUser.ID);
@@ -93,7 +93,7 @@ namespace DotNetClub.Web.Controllers
             }
             else
             {
-                return this.View("_Notice", result.ErrorMessage);
+                return this.Notice(result.ErrorMessage);
             }
         }
 
@@ -127,7 +127,7 @@ namespace DotNetClub.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                return this.View("_Notice", Core.Resource.Messages.ModelStateNotValid);
+                return this.Notice(Core.Resource.Messages.ModelStateNotValid);
             }
 
             var topic = await this.TopicService.Get(id);
@@ -144,7 +144,7 @@ namespace DotNetClub.Web.Controllers
             }
             else
             {
-                return this.View("_Notice", result.ErrorMessage);
+                return this.Notice(result.ErrorMessage);
             }
         }
 

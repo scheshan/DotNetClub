@@ -7,6 +7,11 @@ footer{
     background:#ffffff;
     padding:20px 0;
 }
+img{
+    max-width:100%;
+    vertical-align:middle;
+    border:0;
+}
 
 
 @media (min-width:1200px){
@@ -49,6 +54,15 @@ div.cell span.comments{
 div.cell span.category{
     height:28px;
     line-height:28px;
+}
+
+div.cell span.category span{
+    background:#777;
+    color:#fff;
+    border-radius:2px;
+    font-weight:bold;
+    padding:3px 6px;
+    font-size:75%;
 }
 
 div.cell img.avatar{

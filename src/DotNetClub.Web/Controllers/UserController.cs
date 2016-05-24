@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 namespace DotNetClub.Web.Controllers
 {
     [Route("user")]
-    public class UserController : Controller
+    public class UserController : Base.ControllerBase
     {
         private UserService UserService { get; set; }
 

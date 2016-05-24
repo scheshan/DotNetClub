@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace DotNetClub.Web.Controllers
 {
     [Route("comment")]
-    public class CommentController : Controller
+    public class CommentController : Base.ControllerBase
     {
         private CommentService CommentService { get; set; }
 
@@ -33,8 +33,8 @@ namespace DotNetClub.Web.Controllers
                     .Select(t => t.Errors.FirstOrDefault())
                     .FirstOrDefault()
                     .ErrorMessage;
-                
-                return this.View((object)message);
+
+                return this.Notice(message);
             }
 
             var result = await this.CommentService.Add(model.TopicID, model.Content, model.ReplyTo, this.ClientManager.CurrentUser.ID);
@@ -46,7 +46,7 @@ namespace DotNetClub.Web.Controllers
             }
             else
             {
-                return this.View((object)result.ErrorMessage);
+                return this.Notice(result.ErrorMessage);
             }
         }
 
@@ -63,6 +63,19 @@ namespace DotNetClub.Web.Controllers
             await this.CommentService.Delete(id);
 
             return this.RedirectToAction("Index", "Topic", new { id = comment.TopicID });
+        }
+
+        [HttpGet("{id:int}/edit")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var comment = await this.CommentService.Get(id);
+            if (comment == null || comment.CreateUserID != ClientManager.CurrentUser.ID)
+            {
+                return this.Forbid();
+            }
+
+            return this.View("Edit", comment);
         }
     }
 }

@@ -31,13 +31,7 @@ namespace DotNetClub.Web.TagHelpers
 
             output.TagName = "";
 
-            var settings = CommonMarkSettings.Default.Clone();
-            settings.OutputFormat = OutputFormat.Html;
-            settings.RenderSoftLineBreaksAsLineBreaks = false;
-
-            Console.WriteLine(content);
-
-            string html = CommonMarkConverter.Convert(content, settings);
+            string html = CommonMarkConverter.Convert(content);
 
             output.Content.SetHtmlContent(html);
         }

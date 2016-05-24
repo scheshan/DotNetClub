@@ -222,7 +222,10 @@ namespace DotNetClub.Core.Service
 
                 foreach (var topic in topicList)
                 {
-                    topic.CategoryModel = categoryList.SingleOrDefault(t => t.Key == topic.Category);
+                    if (topic != null)
+                    {
+                        topic.CategoryModel = categoryList.SingleOrDefault(t => t.Key == topic.Category);
+                    }
                 }
             }
         }
