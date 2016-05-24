@@ -55,8 +55,8 @@
                             <small class="reply-date text-muted"><datetime date="@comment.Entity.CreateDate"></datetime></small>
                             
                             <span class="pull-right">
-                                <span>
-                                    <a href="#" class="text-muted"><i class="fa fa-thumbs-o-up"></i></a>
+                                <span class="vote">
+                                    <a href="javascript:void(0)" class="text-muted vote-btn" comment-id="@comment.Entity.ID"><i class="fa fa-thumbs-o-up"></i></a>
 
                                     <small>@comment.Entity.Ups</small>
                                 </span>
@@ -137,6 +137,25 @@
             $("#btnCancelReplyTo").hide();
             $("#hdnReplyTo").val("");
         }
+
+        $("a.vote-btn").click(function () {
+            var id = $(this).attr("comment-id");
+
+            $.ajax({
+                url: "/comment/" + id + "/vote",
+                type: "POST",
+                dataType: "text"                
+            }).done(function (text) {
+                if (text == "login") {
+                    alert("请先登录");
+                }
+                else if (text == "up") {
+                    
+                }
+            }).fail(function () {
+                alert("服务器发生错误");
+            })
+        })
     </script>
     }
 </div>
