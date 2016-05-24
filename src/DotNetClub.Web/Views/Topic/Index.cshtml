@@ -56,8 +56,9 @@
                             
                             <span class="pull-right">
                                 <span class="vote">
-                                    <a href="javascript:void(0)" class="text-muted vote-btn" comment-id="@comment.Entity.ID"><i class="fa fa-thumbs-o-up"></i></a>
-
+                                    <a href="javascript:void(0)" class="vote-btn @(comment.Voted ? "text-danger" : "text-muted")" comment-id="@comment.Entity.ID">
+                                        <i class="fa fa-thumbs-o-up"></i>
+                                    </a>
                                     <small>@comment.Entity.Ups</small>
                                 </span>
                                 
@@ -112,6 +113,7 @@
             width: "100%",
             height: 200,
             syncScrolling: "single",
+            autoFocus: false,
             path: "/lib/editor.md/lib/",
             toolbarIcons: function () {
                 return ["bold", "italic", "|", "quote", "list-ul", "list-ol", "|", "link", "image", "|", "preview"]
@@ -137,27 +139,40 @@
             $("#btnCancelReplyTo").hide();
             $("#hdnReplyTo").val("");
         }
+    </script>
+    }
 
+    <script type="text/javascript">
         $("a.vote-btn").click(function () {
+            var self = $(this);
             var id = $(this).attr("comment-id");
+
+            self.blur();
 
             $.ajax({
                 url: "/comment/" + id + "/vote",
                 type: "POST",
-                dataType: "text"                
+                dataType: "text"
             }).done(function (text) {
                 if (text == "login") {
                     alert("请先登录");
                 }
-                else if (text == "up") {
-                    
+                else if (text == "true") {
+                    self.addClass("text-danger");
+                    self.next("small").text(parseInt(self.next("small").text()) + 1)
+                }
+                else if (text == "false") {
+                    self.removeClass("text-danger");
+                    self.next("small").text(parseInt(self.next("small").text()) - 1)
+                }
+                else {
+                    alert(text);
                 }
             }).fail(function () {
                 alert("服务器发生错误");
             })
-        })
+        });
     </script>
-    }
 </div>
 
 <div class="col-md-3">

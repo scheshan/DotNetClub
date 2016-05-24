@@ -1,4 +1,5 @@
 ﻿using DotNetClub.Core;
+using DotNetClub.Core.Entity;
 using DotNetClub.Core.Service;
 using DotNetClub.Web.ViewModels.Topic;
 using Microsoft.AspNetCore.Mvc;
@@ -21,12 +22,15 @@ namespace DotNetClub.Web.Controllers
 
         private ClientManager ClientManager { get; set; }
 
-        public TopicController(CategoryService categoryService, TopicService topicService, CommentService commentService, ClientManager clientManager)
+        private UserVoteService UserVoteService { get; set; }
+
+        public TopicController(CategoryService categoryService, TopicService topicService, CommentService commentService, ClientManager clientManager, UserVoteService userVoteService)
         {
             this.CategoryService = categoryService;
             this.TopicService = topicService;
             this.ClientManager = clientManager;
             this.CommentService = commentService;
+            this.UserVoteService = userVoteService;
         }
 
         [HttpGet("{id:int}")]
@@ -48,10 +52,19 @@ namespace DotNetClub.Web.Controllers
 
             var commentEntityList = await this.CommentService.QueryByTopic(id);
 
+            List<UserVote> userVoteList = new List<UserVote>();
+
+            if (this.ClientManager.IsLogin)
+            {
+                var commentIDList = commentEntityList.Select(t => t.ID).ToArray();
+                userVoteList = await this.UserVoteService.QueryByCommentAndUser(commentIDList, this.ClientManager.CurrentUser.ID);
+            }
+
             foreach (var commentEntity in commentEntityList)
             {
                 var model = new CommentItemModel(commentEntity);
                 model.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && commentEntity.CreateUserID == this.ClientManager.CurrentUser.ID);
+                model.Voted = userVoteList.Any(t => t.CommentID == commentEntity.ID);
 
                 vm.CommentList.Add(model);
             }

@@ -17,10 +17,13 @@ namespace DotNetClub.Web.Controllers
 
         private ClientManager ClientManager { get; set; }
 
-        public CommentController(CommentService commentService, ClientManager clientManager)
+        private UserVoteService UserVoteService { get; set; }
+
+        public CommentController(CommentService commentService, ClientManager clientManager, UserVoteService userVoteService)
         {
             this.CommentService = commentService;
             this.ClientManager = clientManager;
+            this.UserVoteService = userVoteService;
         }
 
         [HttpPost("add")]
@@ -97,6 +100,26 @@ namespace DotNetClub.Web.Controllers
         {
             string url = this.Url.Action("Index", "Topic", new { id = topicID });
             return $"{url}#{commentID}";
+        }
+
+        [HttpPost("{id:int}/vote")]
+        public async Task<IActionResult> Vote(int id)
+        {
+            if (!this.ClientManager.IsLogin)
+            {
+                return this.Content("login");
+            }
+
+            var result = await this.UserVoteService.Vote(id);
+
+            if (result.Success)
+            {
+                return this.Content(result.Data.Value.ToString().ToLower());
+            }
+            else
+            {
+                return this.Content(result.ErrorMessage);
+            }
         }
     }
 }

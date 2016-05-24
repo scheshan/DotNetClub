@@ -118,10 +118,5 @@ namespace DotNetClub.Core.Service
 
             return new OperationResult<Comment>(comment);
         }
-
-        public async Task<OperationResult<bool?>> Vote(int commentID, int userID)
-        {
-            return null;
-        }
     }
 }
