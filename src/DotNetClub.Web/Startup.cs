@@ -62,7 +62,6 @@ namespace DotNetClub.Web
             {
                 app.UseDeveloperExceptionPage();
                 app.UseDatabaseErrorPage();
-                app.UseBrowserLink();
             }
             else
             {

@@ -3,9 +3,10 @@
 @inject ClientManager clientManager
 @model IndexViewModel
 
-@{
+@section Header{    
+    <link href="~/lib/editor.md/css/editormd.min.css" rel="stylesheet" />
+    <script src="~/lib/editor.md/editormd.min.js"></script>
 }
-
 
 <div class="col-md-9">
     <div class="panel panel-default">
@@ -69,7 +70,7 @@
                             </span>
                         </div>
                         <div class="reply-content">
-                            @comment.Entity.Content
+                            <markdown content="@comment.Entity.Content"></markdown>
                         </div>
                     </div>
                 }
@@ -85,7 +86,9 @@
             <form method="post" asp-action="Add" asp-controller="Comment" asp-antiforgery="true">
                 <input type="hidden" name="TopicID" value="@Model.Topic.ID"/>
                 <div class="form-group">
-                    <textarea name="Content" class="form-control" rows="10"></textarea>
+                    <div id="editor">
+                        <textarea class="form-control" rows="10"></textarea>
+                    </div>                    
                 </div>
                 <div class="form-group">
                     <button type="submit" class="btn btn-primary">提交</button>
@@ -93,6 +96,21 @@
             </form>
         </div>
     </div>
+
+    <script type="text/javascript">
+        var editor = editormd("editor", {
+            name: "Content",
+            width: "100%",
+            height: 200,
+            syncScrolling: "single",
+            path: "/lib/editor.md/lib/",
+            toolbarIcons: function () {
+                return ["bold", "italic", "|", "quote", "list-ul", "list-ol", "|", "link", "image", "|", "preview"]
+            },
+            placeholder: "",
+            watch: false
+        });
+    </script>
     }
 </div>
 
