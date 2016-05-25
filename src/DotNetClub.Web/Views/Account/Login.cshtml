@@ -12,10 +12,7 @@
         </ol>
     </div>
     <div class="panel-body">
-        @if (Model.ErrorMessage != null)
-        {
-            <div class="alert alert-danger">@Model.ErrorMessage</div>
-        }
+        <div condition="Model.ErrorMessage != null" class="alert alert-danger">@Model.ErrorMessage</div>        
 
         <form method="post" asp-action="Login" asp-controller="Account" asp-antiforgery="true" id="frmLogin" class="form-horizontal">
             <div class="form-group">
