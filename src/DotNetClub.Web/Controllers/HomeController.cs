@@ -33,6 +33,7 @@ namespace DotNetClub.Web.Controllers
 
             var vm = new IndexViewModel();
 
+            vm.Tab = tab;
             vm.TabList = new List<SelectListItem>();
             vm.TabList.Add(new SelectListItem { Text = "全部", Value = "", Selected = string.IsNullOrWhiteSpace(tab) });
             vm.TabList.Add(new SelectListItem { Text = "精华", Value = TAB_RECOMMAND, Selected = string.Equals(tab, TAB_RECOMMAND, StringComparison.OrdinalIgnoreCase) });

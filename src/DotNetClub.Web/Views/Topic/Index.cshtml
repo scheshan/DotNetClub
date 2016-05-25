@@ -25,43 +25,30 @@
 
             @if(Model.CanOperate)
             {
-            <div>
-                <ul class="list-inline">
-                    <li>
-                        <a asp-action="Edit" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" title="编辑主题"><i class="fa fa-lg fa-edit"></i></a>
-                    </li>
-                    <li>
-                        <a asp-action="Delete" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" title="删除主题" onclick="return confirm('确认删除此主题吗?')"><i class="fa fa-lg fa-trash-o"></i></a>
-                    </li>
-                    @if (clientManager.IsAdmin)
-                    {
-                        if (!Model.Topic.Top)
-                        {
-                            <li>
-                                <a asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" title="置顶"><i class="fa fa-lg fa-star-o"></i></a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <a asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-danger" title="取消置顶"><i class="fa fa-lg fa-star"></i></a>
-                            </li>
-                        }
-                        if (!Model.Topic.Recommand)
-                        {
-                            <li>
-                                <a asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-muted" title="加精华"><i class="fa fa-lg fa-heart-o"></i></a>
-                            </li>
-                        }
-                        else
-                        {
-                            <li>
-                                <a asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="text-danger" title="取消精华"><i class="fa fa-lg fa-heart"></i></a>
-                            </li>
-                        }
-                    }
+            <div>                
+                <a asp-action="Edit" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="编辑主题"><i class="fa fa-lg fa-edit"></i> 编辑</a>
 
-                </ul>
+                <a asp-action="Delete" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-danger btn-xs" title="删除主题" onclick="return confirm('确认删除此主题吗?')"><i class="fa fa-lg fa-edit"></i> 删除</a>
+
+                @if (clientManager.IsAdmin)
+                {
+                    if (!Model.Topic.Top)
+                    {
+                        <a asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="置顶"><i class="fa fa-lg fa-star-o"></i> 置顶</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success btn-xs" title="取消置顶"><i class="fa fa-lg fa-star"></i> 取消置顶</a>
+                    }
+                    if (!Model.Topic.Recommand)
+                    {
+                        <a asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="加精华"><i class="fa fa-lg fa-heart-o"></i> 添加精华</a>
+                    }
+                    else
+                    {
+                        <a asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success btn-xs" title="取消精华"><i class="fa fa-lg fa-heart"></i> 取消精华</a>
+                    }
+                }
             </div>    
             }
 

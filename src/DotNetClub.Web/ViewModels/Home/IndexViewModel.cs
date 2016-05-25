@@ -13,5 +13,7 @@ namespace DotNetClub.Web.ViewModels.Home
         public PagedResult<Core.Entity.Topic> TopicList { get; set; }
 
         public List<SelectListItem> TabList { get; set; }
+
+        public string Tab { get; set; }
     }
 }

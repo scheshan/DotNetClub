@@ -17,7 +17,18 @@
             </span>
 
             <span class="category pull-left">
+                @if (topic.Top)
+                {
+                <span class="recommand">置顶</span>
+                }
+                else if (topic.Recommand)
+                {
+                <span class="recommand">精华</span>
+                }
+                else
+                {
                 <span>@topic.CategoryModel.Name</span>
+                }
             </span>
 
             <span class="pull-right text-muted">

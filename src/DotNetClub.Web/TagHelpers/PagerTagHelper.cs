@@ -32,6 +32,25 @@ namespace DotNetClub.Web.TagHelpers
         [HtmlAttributeName("total")]
         public int Total { get; set; }
 
+        private IDictionary<string, string> _routeValues;
+
+        [HtmlAttributeName("all-route-data", DictionaryAttributePrefix = "route-")]
+        public IDictionary<string, string> RouteValues
+        {
+            get
+            {
+                if (_routeValues == null)
+                {
+                    _routeValues = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+                }
+                return _routeValues;
+            }
+            set
+            {
+                _routeValues = value;
+            }
+        }
+
         /// <summary>
         /// Gets or sets the <see cref="Rendering.ViewContext"/> for the current request.
         /// </summary>
@@ -121,14 +140,6 @@ namespace DotNetClub.Web.TagHelpers
         {
             var routes = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
-            if (this.ViewContext.HttpContext.Request.Query.Count > 0)
-            {
-                foreach (var key in this.ViewContext.HttpContext.Request.Query.Keys)
-                {
-                    routes[key] = this.ViewContext.HttpContext.Request.Query[key];
-                }
-            }
-
             if (this.ViewContext.RouteData.Values.Count > 0)
             {
                 foreach (var value in this.ViewContext.RouteData.Values)
@@ -136,6 +147,14 @@ namespace DotNetClub.Web.TagHelpers
                     routes[value.Key] = value.Value;
                 }
             }
+            if (this.RouteValues.Count > 0)
+            {
+                foreach (var value in this.RouteValues)
+                {
+                    routes[value.Key] = value.Value;
+                }
+            }
+
             routes["Page"] = page;
 
             string action = ViewContext.ActionDescriptor.Name;
@@ -153,7 +172,7 @@ namespace DotNetClub.Web.TagHelpers
             StringBuilder sb = new StringBuilder();
 
             using (var writer = new StringWriter(sb))
-            {                
+            {
                 this.HtmlGenerator.GenerateActionLink(this.ViewContext, text, action, controller, null, null, null, routes, null).WriteTo(writer, HtmlEncoder.Default);
                 return sb.ToString();
             }

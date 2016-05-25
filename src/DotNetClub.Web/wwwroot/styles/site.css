@@ -65,6 +65,10 @@ div.cell span.category span{
     font-size:75%;
 }
 
+div.cell span.category span.recommand{
+    background:#5cb85c;
+}
+
 div.cell img.avatar{
     height:28px;
 }
