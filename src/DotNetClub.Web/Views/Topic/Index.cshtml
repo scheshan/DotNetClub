@@ -29,6 +29,16 @@
                 <a asp-action="Delete" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-danger btn-xs" title="删除主题" onclick="return confirm('确认删除此主题吗?')"><i class="fa fa-lg fa-edit"></i> 删除</a>
 
                 <visible condition="@clientManager.IsAdmin">
+                    <a condition="!Model.Topic.Lock" asp-action="Lock" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="锁定">
+                        <i class="fa fa-lock"></i>
+                        锁定
+                    </a>
+
+                    <a condition="Model.Topic.Lock" asp-action="Lock" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-warning btn-xs" title="解除锁定">
+                        <i class="fa fa-unlock-alt"></i>
+                        解除锁定
+                    </a>
+
                     <a condition="!Model.Topic.Top" asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="置顶"><i class="fa fa-lg fa-star-o"></i> 置顶</a>
 
                     <a condition="Model.Topic.Top" asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success btn-xs" title="取消置顶"><i class="fa fa-lg fa-star"></i> 取消置顶</a>
@@ -74,7 +84,7 @@
                                     <a asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="删除" onclick="return confirm('确定要删除此回复吗?')"><i class="fa fa-trash-o"></i></a>
                                 </visible>
 
-                                <visible condition="clientManager.IsLogin">
+                                <visible condition="clientManager.IsLogin && !Model.Topic.Lock">
                                     <a href="javascript:void(0)" class="text-muted" onclick="replyTo('@comment.Entity.ID')"><i class="fa fa-reply"></i></a>
                                 </visible>
                             </span>
@@ -104,7 +114,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">提交</button>
+                        <button type="submit" class="btn btn-primary" condition="!Model.Topic.Lock">提交</button>
+                        <button type="button" class="btn btn-warning" disabled condition="Model.Topic.Lock">
+                            <i class="fa fa-lock"></i>
+                            该主题已被锁定
+                        </button>
                         <button type="button" class="btn btn-default" id="btnCancelReplyTo" onclick="cancelReplyTo()" style="display:none;">取消</button>
                     </div>
                 </form>

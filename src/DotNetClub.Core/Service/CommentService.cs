@@ -28,6 +28,10 @@ namespace DotNetClub.Core.Service
             {
                 return OperationResult<Comment>.Failure("该主题不存在");
             }
+            else if (topic.Lock)
+            {
+                return OperationResult<Comment>.Failure("该主题已被锁定");
+            }
 
             if (replyTo.HasValue)
             {

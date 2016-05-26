@@ -142,6 +142,25 @@ namespace DotNetClub.Core.Service
             return new OperationResult();
         }
 
+        public async Task<OperationResult> ToggleLock(int id)
+        {
+            if (!this.ClientManager.IsAdmin)
+            {
+                return OperationResult.Failure("无权操作");
+            }
+
+            var topic = await this.DbContext.Topics.SingleOrDefaultAsync(t => t.ID == id && !t.IsDelete);
+            if (topic == null)
+            {
+                return OperationResult.Failure("主题不存在");
+            }
+
+            topic.Lock = !topic.Lock;
+            await this.DbContext.SaveChangesAsync();
+
+            return new OperationResult();
+        }
+
         public async Task<List<Topic>> QueryRecentCreatedTopicList(int count, int userID, params int[] exclude)
         {
             var query = this.CreateDefaultQuery()

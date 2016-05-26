@@ -78,7 +78,7 @@ namespace DotNetClub.Web.Controllers
         {
             var vm = new PostViewModel();
             vm.IsNew = true;
-            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");        
+            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");
             vm.Model = new PostModel();
 
             return this.View("Post", vm);
@@ -97,7 +97,7 @@ namespace DotNetClub.Web.Controllers
             {
                 return this.Notice(Core.Resource.Messages.ModelStateNotValid);
             }
-            
+
             var result = await this.TopicService.Add(model.Category, model.Title, model.Content, this.ClientManager.CurrentUser.ID);
 
             if (result.Success)
@@ -191,6 +191,22 @@ namespace DotNetClub.Web.Controllers
         public async Task<IActionResult> Top(int id)
         {
             var result = await this.TopicService.ToggleTop(id);
+
+            if (result.Success)
+            {
+                return this.RedirectToAction("Index", "Topic", new { id = id });
+            }
+            else
+            {
+                return this.Notice(result.ErrorMessage);
+            }
+        }
+
+        [HttpGet("{id:int}/lock")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Lock(int id)
+        {
+            var result = await this.TopicService.ToggleLock(id);
 
             if (result.Success)
             {
