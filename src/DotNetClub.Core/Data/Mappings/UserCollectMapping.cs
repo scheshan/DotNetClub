@@ -15,6 +15,8 @@ namespace DotNetClub.Core.Data.Mappings
             builder.ForSqlServerToTable("UserCollect");
 
             builder.HasKey(t => new { t.UserID, t.TopicID });
+
+            builder.HasOne(t => t.Topic).WithMany().HasForeignKey(t => t.TopicID);
         }
     }
 }

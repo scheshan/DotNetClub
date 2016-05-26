@@ -13,5 +13,7 @@ namespace DotNetClub.Web.ViewModels.Topic
         public List<CommentItemModel> CommentList { get; set; }
 
         public bool CanOperate { get; set; }
+
+        public bool IsCollected { get; set; }
     }
 }

@@ -24,13 +24,16 @@ namespace DotNetClub.Web.Controllers
 
         private UserVoteService UserVoteService { get; set; }
 
-        public TopicController(CategoryService categoryService, TopicService topicService, CommentService commentService, ClientManager clientManager, UserVoteService userVoteService)
+        private UserCollectService UserCollectService { get; set; }
+
+        public TopicController(CategoryService categoryService, TopicService topicService, CommentService commentService, ClientManager clientManager, UserVoteService userVoteService, UserCollectService userCollectService)
         {
             this.CategoryService = categoryService;
             this.TopicService = topicService;
             this.ClientManager = clientManager;
             this.CommentService = commentService;
             this.UserVoteService = userVoteService;
+            this.UserCollectService = userCollectService;
         }
 
         [HttpGet("{id:int}")]
@@ -56,6 +59,8 @@ namespace DotNetClub.Web.Controllers
 
             if (this.ClientManager.IsLogin)
             {
+                vm.IsCollected = await this.UserCollectService.IsCollected(topic.ID, this.ClientManager.CurrentUser.ID);
+
                 var commentIDList = commentEntityList.Select(t => t.ID).ToArray();
                 userVoteList = await this.UserVoteService.QueryByCommentAndUser(commentIDList, this.ClientManager.CurrentUser.ID);
             }
@@ -207,6 +212,22 @@ namespace DotNetClub.Web.Controllers
         public async Task<IActionResult> Lock(int id)
         {
             var result = await this.TopicService.ToggleLock(id);
+
+            if (result.Success)
+            {
+                return this.RedirectToAction("Index", "Topic", new { id = id });
+            }
+            else
+            {
+                return this.Notice(result.ErrorMessage);
+            }
+        }
+
+        [HttpGet("{id:int}/collect")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Collect(int id)
+        {
+            var result = await this.UserCollectService.Collect(id);
 
             if (result.Success)
             {

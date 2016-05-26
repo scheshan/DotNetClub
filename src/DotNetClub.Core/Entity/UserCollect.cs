@@ -12,5 +12,7 @@ namespace DotNetClub.Core.Entity
         public int TopicID { get; set; }
 
         public DateTime CreateDate { get; set; }
+
+        public virtual Topic Topic { get; set; }
     }
 }

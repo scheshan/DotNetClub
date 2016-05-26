@@ -15,10 +15,13 @@ namespace DotNetClub.Web.Controllers
 
         private TopicService TopicService { get; set; }
 
-        public UserController(UserService userService, TopicService topicService)
+        private UserCollectService UserCollectService { get; set; }
+
+        public UserController(UserService userService, TopicService topicService, UserCollectService userCollectService)
         {
             this.UserService = userService;
             this.TopicService = topicService;
+            this.UserCollectService = userCollectService;
         }
 
         [HttpGet("{userName}")]
@@ -35,6 +38,7 @@ namespace DotNetClub.Web.Controllers
 
             var vm = new IndexViewModel();
             vm.User = user;
+            vm.CollectCount = await this.UserCollectService.GetCollectCount(user.ID);
             vm.RecentCreatedTopicList = await this.TopicService.QueryRecentCreatedTopicList(10, user.ID);
             vm.RecentCommentedTopicList = await this.TopicService.QueryRecentCommentedTopicList(10, user.ID);
 
@@ -54,7 +58,7 @@ namespace DotNetClub.Web.Controllers
             if (page < 1)
             {
                 page = 1;
-            }        
+            }
 
             var topicResult = await this.TopicService.QueryCreatedTopicList(user.ID, page, 20);
 
@@ -77,6 +81,26 @@ namespace DotNetClub.Web.Controllers
             }
 
             var topicResult = await this.TopicService.QueryCommentedTopicList(user.ID, page, 20);
+
+            return this.View(topicResult);
+        }
+
+        [HttpGet("{userName}/collects")]
+        public async Task<IActionResult> Collects(string userName, int page = 1)
+        {
+            var user = await this.UserService.Get(userName);
+            if (user == null)
+            {
+                return this.NotFound();
+            }
+            ViewBag.User = user;
+
+            if (page < 1)
+            {
+                page = 1;
+            }
+
+            var topicResult = await this.TopicService.QueryCollectedTopicList(user.ID, page, 20);
 
             return this.View(topicResult);
         }

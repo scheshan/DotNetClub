@@ -280,6 +280,27 @@ namespace DotNetClub.Core.Service
             await this.DbContext.Database.ExecuteSqlCommandAsync(sql);
         }
 
+        public async Task<PagedResult<Topic>> QueryCollectedTopicList(int userID, int pageIndex, int pageSize)
+        {
+            var topicIDQuery = this.DbContext.UserCollects.Include(t => t.Topic)
+                .Where(t => !t.Topic.IsDelete)
+                .Where(t=>t.UserID == userID)
+                .OrderByDescending(t => t.CreateDate)
+                .Select(t => t.TopicID);
+
+            int total = await topicIDQuery.CountAsync();
+
+            var topicIDList = await topicIDQuery.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+
+            var topicList = await this.CreateDefaultQuery()
+                .Where(t => topicIDList.Contains(t.ID))
+                .ToListAsync();
+
+            topicList = topicList.OrderBy(t => topicIDList.IndexOf(t.ID)).ToList();
+
+            return new PagedResult<Topic>(topicList, pageIndex, pageSize, total);
+        }
+
         /// <summary>
         /// 创建默认的查询对象
         /// </summary>

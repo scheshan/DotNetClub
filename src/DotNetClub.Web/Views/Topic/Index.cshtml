@@ -13,6 +13,11 @@
         <div class="panel-body">
             <h4>
                 <strong>@Model.Topic.Title</strong>
+
+                <span class="pull-right" condition="clientManager.IsLogin">
+                    <a condition="!Model.IsCollected" asp-action="Collect" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success">收藏主题</a>
+                    <a condition="Model.IsCollected" asp-action="Collect" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-warning">取消收藏主题</a>
+                </span>
             </h4>
             <div class="text-muted">
                 <ul class="list-inline text-muted" style="font-size:12px;">
