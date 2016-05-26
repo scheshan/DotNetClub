@@ -14,10 +14,13 @@ namespace DotNetClub.Core.Service
 
         private ClientManager ClientManager { get; set; }
 
-        public CommentService(Data.ClubContext dbContext, ClientManager clientManager)
+        private MessageService MessageService { get; set; }
+
+        public CommentService(Data.ClubContext dbContext, ClientManager clientManager, MessageService messageService)
         {
             this.DbContext = dbContext;
             this.ClientManager = clientManager;
+            this.MessageService = messageService;
         }
 
         public async Task<OperationResult<Comment>> Add(int topicID, string content, int? replyTo)
@@ -58,8 +61,54 @@ namespace DotNetClub.Core.Service
             topic.ReplyCount++;
             topic.LastReplyDate = DateTime.Now;
             topic.LastReplyUserID = this.ClientManager.CurrentUser.ID;
-
             this.DbContext.Add(entity);
+
+            #region 发送回复主题的消息
+            {
+                if (this.ClientManager.CurrentUser.ID != topic.CreateUserID)
+                {
+                    var message = new Message
+                    {
+                        Comment = entity,
+                        CreateDate = DateTime.Now,
+                        FromUserID = this.ClientManager.CurrentUser.ID,
+                        IsRead = false,
+                        TopicID = topic.ID,
+                        ToUserID = topic.CreateUserID,
+                        Type = Enums.MessageType.Comment
+                    };
+                    this.DbContext.Messages.Add(message);
+                }
+            }
+            #endregion
+
+            #region 发送@的评论
+            {
+                var atUserList = Utility.AtHelper.FetchUsers(content);
+                if (atUserList.Count > 0)
+                {
+                    var userList = await this.DbContext.Users.Where(t => atUserList.Contains(t.UserName)).ToListAsync();
+                    foreach (var user in userList)
+                    {
+                        if (user.ID == this.ClientManager.CurrentUser.ID || user.ID == topic.CreateUserID) //过滤@自己，过滤重复@作者
+                        {
+                            continue;
+                        }
+                        var message = new Message
+                        {
+                            Comment = entity,
+                            CreateDate = DateTime.Now,
+                            FromUserID = this.ClientManager.CurrentUser.ID,
+                            IsRead = false,
+                            TopicID = topic.ID,
+                            ToUserID = user.ID,
+                            Type = Enums.MessageType.At
+                        };
+                        this.DbContext.Messages.Add(message);
+                    }
+                }
+            }
+            #endregion
 
             await this.DbContext.SaveChangesAsync();
 

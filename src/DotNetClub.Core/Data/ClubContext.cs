@@ -20,6 +20,8 @@ namespace DotNetClub.Core.Data
 
         public DbSet<UserCollect> UserCollects { get; set; }
 
+        public DbSet<Message> Messages { get; set; }
+
         public ClubContext(DbContextOptions<ClubContext> options)
             : base(options)
         {
@@ -34,7 +36,8 @@ namespace DotNetClub.Core.Data
                 .Entity<Topic>(TopicMapping.Map)
                 .Entity<Comment>(CommentMapping.Map)
                 .Entity<UserCollect>(UserCollectMapping.Map)
-                .Entity<UserVote>(UserVoteMapping.Map);
+                .Entity<UserVote>(UserVoteMapping.Map)
+                .Entity<Message>(MessageMapping.Map);
         }
     }
 }

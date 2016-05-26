@@ -8,9 +8,10 @@ using DotNetClub.Core.Data;
 namespace DotNetClub.Web.Migrations
 {
     [DbContext(typeof(ClubContext))]
-    partial class ClubContextModelSnapshot : ModelSnapshot
+    [Migration("20160526143634_AddMessage")]
+    partial class AddMessage
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
             modelBuilder
                 .HasAnnotation("ProductVersion", "1.0.0-rc2-20896")

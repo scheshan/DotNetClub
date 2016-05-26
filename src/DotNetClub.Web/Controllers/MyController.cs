@@ -20,10 +20,13 @@ namespace DotNetClub.Web.Controllers
 
         private ClientManager ClientManager { get; set; }
 
-        public MyController(UserService userService, ClientManager clientManager)
+        private MessageService MessageService { get; set; }
+
+        public MyController(UserService userService, ClientManager clientManager, MessageService messageService)
         {
             this.UserService = userService;
             this.ClientManager = clientManager;
+            this.MessageService = messageService;
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -74,6 +77,16 @@ namespace DotNetClub.Web.Controllers
             }
 
             return this.View("Index");
+        }
+
+        [HttpGet("messages")]
+        public async Task<IActionResult> Messages(int page)
+        {
+            var vm = new MessagesViewModel();
+            vm.UnreadMessageList = await this.MessageService.QueryUnreadMessageList(this.ClientManager.CurrentUser.ID);
+            vm.HistoryMessageList = await this.MessageService.QueryHistoryMessgaeList(this.ClientManager.CurrentUser.ID, 20);
+
+            return this.View(vm);
         }
     }
 }

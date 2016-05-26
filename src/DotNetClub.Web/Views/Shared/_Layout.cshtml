@@ -44,7 +44,12 @@
                     <li><a asp-action="Index" asp-controller="Home">首页</a></li>
                     @if (clientManager.IsLogin)
                     {
-                    <li><a asp-action="Messages" asp-controller="My">未读消息</a></li>
+                    <li>
+                        <a asp-action="Messages" asp-controller="My">
+                            未读消息
+                            <span class="badge" condition="clientManager.UnreadMessages > 0">@clientManager.UnreadMessages</span>
+                        </a>
+                    </li>
                     }
                     <li><a asp-action="GetStart" asp-controller="Home">新手入门</a></li>
                     <li><a asp-action="Api" asp-controller="Home">API</a></li>

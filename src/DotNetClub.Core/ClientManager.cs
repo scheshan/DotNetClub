@@ -45,6 +45,25 @@ namespace DotNetClub.Core
             }
         }
 
+        private int? _unreadMessages;
+
+        public int UnreadMessages
+        {
+            get
+            {
+                if (!this.IsLogin)
+                {
+                    return 0;
+                }
+
+                if (!_unreadMessages.HasValue)
+                {
+                    _unreadMessages = this.DbContext.Messages.Where(t => !t.IsRead && t.ToUserID == this.CurrentUser.ID).Count();
+                }
+                return _unreadMessages.Value;
+            }
+        }
+
         public ClientManager(IConfiguration configuration, ClubContext dbContext)
         {
             this.Configuration = configuration;

@@ -12,16 +12,24 @@ namespace DotNetClub.Core.Entity
 
         public MessageType Type { get; set; }
 
-        public int TopicID { get; set; }
+        public int? TopicID { get; set; }
 
         public int? CommentID { get; set; }
 
-        public int FromUserID { get; set; }
+        public int? FromUserID { get; set; }
 
         public int ToUserID { get; set; }
 
         public DateTime CreateDate { get; set; }
 
         public bool IsRead { get; set; }
+
+        public virtual Topic Topic { get; set; }
+
+        public virtual Comment Comment { get; set; }
+
+        public virtual User FromUser { get; set; }
+
+        public virtual User ToUser { get; set; }
     }
 }
