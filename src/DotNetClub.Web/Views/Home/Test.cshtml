@@ -1,5 +1,14 @@
 ﻿@{ 
     Layout = null;
+
+
+    string text = @"
+@scheshan@yanhuihui
+@scheshan
+@dad
+";
+
+    text = DotNetClub.Core.Utility.AtHelper.LinkUsers(text);
 }
 
 <!DOCTYPE html>
@@ -10,8 +19,6 @@
     <title>@ViewBag.Title</title>
 </head>
 <body>
-    <visible condition="false">
-        <label condition="true">12</label>
-    </visible>
+    @text
 </body>
 </html>
