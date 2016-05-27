@@ -8,12 +8,14 @@
             <li>新消息</li>
         </ol>
     </div>
-    <div class="panel-body">
-        <span condition="Model.UnreadMessageList.Count == 0">无消息</span>
+    <div class="panel-body noPadding">
+        @Html.Partial("_MessageList", Model.UnreadMessageList)
+    </div>
+</div>
 
-        @foreach (var message in Model.UnreadMessageList)
-        { 
-
-        }
+<div class="panel panel-default">
+    <div class="panel-heading">历史消息</div>
+    <div class="panel-body noPadding">
+        @Html.Partial("_MessageList", Model.HistoryMessageList)
     </div>
 </div>

@@ -46,7 +46,7 @@ namespace DotNetClub.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.SettingsResult = OperationResult.Failure(Messages.ModelStateNotValid);
+                ViewBag.SettingsResult = OperationResult.Failure(Core.Resource.Messages.ModelStateNotValid);
                 return this.View("Index");
             }
 
@@ -62,7 +62,7 @@ namespace DotNetClub.Web.Controllers
         {
             if (!ModelState.IsValid)
             {
-                ViewBag.PasswordResult = OperationResult.Failure(Messages.ModelStateNotValid);
+                ViewBag.PasswordResult = OperationResult.Failure(Core.Resource.Messages.ModelStateNotValid);
             }
 
             bool success = await this.UserService.EditPassword(ClientManager.CurrentUser.ID, model.OldPassword, model.NewPassword);

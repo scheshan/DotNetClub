@@ -1,0 +1,30 @@
+﻿@using DotNetClub.Core.Entity
+@using DotNetClub.Core.Enums
+
+@model List<Message>
+
+<visible condition="Model.Count > 0">
+    @foreach(var message in Model)
+    {
+        <div class="cell">
+            <visible condition="message.Type == MessageType.At">
+                <a asp-action="Index" asp-controller="User" asp-route-userName="@message.FromUser.UserName" target="_blank">@message.FromUser.UserName</a>
+                在主题
+                <a asp-action="Index" asp-controller="Topic" asp-route-id="@message.Topic.ID" target="_blank">@message.Topic.Title</a>
+                中@@了你
+            </visible>
+            <visible condition="message.Type == MessageType.Comment">
+                <a asp-action="Index" asp-controller="User" asp-route-userName="@message.FromUser.UserName" target="_blank">@message.FromUser.UserName</a>
+                在主题
+                <a asp-action="Index" asp-controller="Topic" asp-route-id="@message.Topic.ID" target="_blank">@message.Topic.Title</a>
+                中回复了你
+            </visible>
+        </div>
+    }
+</visible>
+
+<visible condition="Model.Count == 0">
+    <div class="cell">
+        无消息
+    </div>
+</visible>
