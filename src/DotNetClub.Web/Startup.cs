@@ -21,7 +21,8 @@ namespace DotNetClub.Web
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddUserSecrets();
 
             Configuration = builder.Build();
         }
@@ -36,7 +37,7 @@ namespace DotNetClub.Web
             services.AddDataProtection();
             // Add framework services.
             services.AddDbContext<ClubContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"), 
+                options.UseSqlServer(Configuration["ConnectionString"], 
                 b => 
                 {
                     b.MigrationsAssembly("DotNetClub.Web");
