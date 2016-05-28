@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using DotNetClub.Core.Data;
 using DotNetClub.Core;
 using Newtonsoft.Json.Serialization;
+using DotNetClub.Web.Middlewares;
 
 namespace DotNetClub.Web
 {
@@ -70,6 +71,7 @@ namespace DotNetClub.Web
 
             app.UseStaticFiles();
 
+            app.UseExecuteTime();
             app.UseClientManagerInitializer();
 
             // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715

@@ -1,17 +1,20 @@
-﻿using Microsoft.AspNetCore.Http;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
+using DotNetClub.Core;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace DotNetClub.Core
+namespace DotNetClub.Web.Middlewares
 {
-    public class InitClientManagerMiddleware
+    // You may need to install the Microsoft.AspNetCore.Http.Abstractions package into your project
+    public class ClientManagerInitializerMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public InitClientManagerMiddleware(RequestDelegate next)
+        public ClientManagerInitializerMiddleware(RequestDelegate next)
         {
             _next = next;
         }

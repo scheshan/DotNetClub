@@ -86,6 +86,9 @@ namespace DotNetClub.Web.Controllers
             vm.UnreadMessageList = await this.MessageService.QueryUnreadMessageList(this.ClientManager.CurrentUser.ID);
             vm.HistoryMessageList = await this.MessageService.QueryHistoryMessgaeList(this.ClientManager.CurrentUser.ID, 20);
 
+            var unreadMessageIDList = vm.UnreadMessageList.Select(t => t.ID).ToArray();
+            await this.MessageService.MarkAsRead(unreadMessageIDList);
+
             return this.View(vm);
         }
     }

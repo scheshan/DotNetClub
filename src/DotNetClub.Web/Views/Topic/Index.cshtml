@@ -149,6 +149,18 @@
             var container = $("#comment" + id).find("div.reply-to");
             $("#frmComment").appendTo(container);
 
+            editor.focus();
+
+            var userName = $("#comment" + id).find("a.user-info").text();
+            var markdown = editor.getValue();
+            if (markdown == "") {
+                markdown = "@@" + userName + " ";
+            }
+            else {
+                markdown = "@@" + userName + "\r\n" + markdown;
+            }
+            editor.setValue(markdown);
+
             $("#replyPanel").hide();
             $("#btnCancelReplyTo").show();
             $("#hdnReplyTo").val(id);

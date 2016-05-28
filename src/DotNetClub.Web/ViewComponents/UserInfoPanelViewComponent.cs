@@ -9,7 +9,7 @@ namespace DotNetClub.Web.ViewComponents
 {
     public class UserInfoPanelViewComponent : ViewComponent
     {
-        public async Task<IViewComponentResult> InvokeAsync(User user)
+        public IViewComponentResult Invoke(User user)
         {
             return this.View(user);
         }

@@ -12,9 +12,12 @@ namespace DotNetClub.Core.Service
     {
         private Data.ClubContext DbContext { get; set; }
 
-        public MessageService(Data.ClubContext dbContext)
+        private ClientManager ClientManager { get; set; }
+
+        public MessageService(Data.ClubContext dbContext, ClientManager clientManager)
         {
             this.DbContext = dbContext;
+            this.ClientManager = clientManager;
         }
 
         public async Task<List<Message>> QueryUnreadMessageList(int userID)
@@ -40,7 +43,7 @@ namespace DotNetClub.Core.Service
                 return;
             }
 
-            var entityList = this.DbContext.Messages.Where(t => idList.Contains(t.ID)).ToList();
+            var entityList = this.DbContext.Messages.Where(t => idList.Contains(t.ID) && t.ToUserID == this.ClientManager.CurrentUser.ID).ToList();
             foreach (var entity in entityList)
             {
                 entity.IsRead = true;
