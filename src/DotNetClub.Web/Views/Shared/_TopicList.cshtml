@@ -1,49 +1,44 @@
 ﻿@using DotNetClub.Core.Entity
 @model List<Topic>
 
-@if (Model.Count > 0)
-{
-    foreach (var topic in Model)
+<visible condition="Model.Count > 0">
+    @foreach (var topic in Model)
     {
-        <div class="cell">
-            <a class="pull-left" asp-action="Index" asp-controller="User" asp-route-userName="@topic.CreateUser.UserName">
-                <useravatar email="@topic.CreateUser.Email" title="@topic.CreateUser.UserName" size="28"></useravatar>
-            </a>
+    <div class="cell">
+        <a class="pull-left" asp-action="Index" asp-controller="User" asp-route-userName="@topic.CreateUser.UserName">
+            <useravatar email="@topic.CreateUser.Email" title="@topic.CreateUser.UserName" size="28"></useravatar>
+        </a>
 
-            <span class="text-muted pull-left reply-count">
-                <span class="text-info">@topic.ReplyCount</span>
-                <span class="text-muted reply-seperator">/</span>
-                <small class="text-muted">@topic.VisitCount</small>
-            </span>
+        <span class="text-muted pull-left reply-count">
+            <span class="text-info">@topic.ReplyCount</span>
+            <span class="text-muted reply-seperator">/</span>
+            <small class="text-muted">@topic.VisitCount</small>
+        </span>
 
-            <span class="category pull-left">
-                @if (topic.Top)
-                {
-                <span class="recommand">置顶</span>
-                }
-                else if (topic.Recommand)
-                {
-                <span class="recommand">精华</span>
-                }
-                else
-                {
-                <span>@topic.CategoryModel.Name</span>
-                }
-            </span>
+        <span class="category pull-left">
+            <span class="recommand" condition="topic.Top">置顶</span>
 
-            <span class="pull-right text-muted">
-                <small>
-                    <datetime date="@topic.CreateDate"></datetime>
-                </small>
-            </span>
-            
-            <div class="text-nowrap topic-title-wrapper">
-                <a asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" class="topic-title">@topic.Title</a>
-            </div>
+            <span class="recommand" condition="topic.Recommand">精华</span>
+
+            <span condition="!topic.Top && !topic.Recommand">@topic.CategoryModel.Name</span>            
+        </span>
+
+        <a class="pull-right last-reply text-muted" asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" asp-fragment="@(topic.LastReplyUserID.HasValue ? "latest" : "")">
+            <visible condition="topic.LastReplyUserID.HasValue">
+                <useravatar title="@topic.LastReplyUser.UserName" size="18" email="@topic.LastReplyUser.Email"></useravatar>
+            </visible>
+
+            <small>
+                <datetime date="@topic.CreateDate"></datetime>
+            </small>
+        </a>
+
+        <div class="text-nowrap topic-title-wrapper">
+            <a asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" class="topic-title">@topic.Title</a>
         </div>
+    </div>
     }
-}
-else
-{
+</visible>
+<visible condition="Model.Count == 0">
     <div class="cell">无主题</div>
-}
+</visible>

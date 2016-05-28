@@ -32,6 +32,7 @@ div.cell{
     border-bottom: 1px solid #e1e1e1;
     padding:10px 15px;
     overflow:hidden;
+    line-height:28px;
 }
 
 div.cell span.reply-count{
@@ -93,6 +94,10 @@ div.cell .topic-title-wrapper .topic-title{
 
 div.cell .user-info{
     margin-left:5px;
+}
+
+div.cell .last-reply{
+    text-decoration:none;
 }
 
 div.cell:last-child{

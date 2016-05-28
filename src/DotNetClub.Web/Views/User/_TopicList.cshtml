@@ -16,11 +16,15 @@
                 <small class="text-muted">@topic.VisitCount</small>
             </span>
 
-            <span class="pull-right text-muted">
+            <a class="pull-right last-reply text-muted" asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" asp-fragment="@(topic.LastReplyUserID.HasValue ? "latest" : "")">
+                <visible condition="topic.LastReplyUserID.HasValue">
+                    <useravatar title="@topic.LastReplyUser.UserName" size="18" email="@topic.LastReplyUser.Email"></useravatar>
+                </visible>
+
                 <small>
                     <datetime date="@topic.CreateDate"></datetime>
                 </small>
-            </span>
+            </a>
 
             <div class="text-nowrap topic-title-wrapper">
                 <a asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" class="topic-title">@topic.Title</a>

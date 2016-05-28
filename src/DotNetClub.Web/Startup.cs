@@ -12,6 +12,7 @@ using DotNetClub.Core.Data;
 using DotNetClub.Core;
 using Newtonsoft.Json.Serialization;
 using DotNetClub.Web.Middlewares;
+using NLog.Extensions.Logging;
 
 namespace DotNetClub.Web
 {
@@ -33,6 +34,8 @@ namespace DotNetClub.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<IConfiguration>(this.Configuration);
+
+            services.AddLogging();
 
             services.AddDataProtection();
             // Add framework services.
@@ -59,6 +62,7 @@ namespace DotNetClub.Web
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+            loggerFactory.AddNLog();
 
             if (env.IsDevelopment())
             {
