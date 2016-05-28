@@ -4,10 +4,13 @@ A Tiny Club Written in Asp.Net Core
 How to Build and Run:
 
 1. Clone the repository
-2. Go to DotNetClub.Web directory
-3. Restore the dependencies
+2. Restore the dependencies
 ```
 dotnet restore
+```
+3. Go to DotNetClub.Web directory
+```
+cd src\DotNetClub.Web
 ```
 4. Edit database connection string by SecretManagerTools
 ```
