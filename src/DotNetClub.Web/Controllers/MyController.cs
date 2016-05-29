@@ -38,12 +38,16 @@ namespace DotNetClub.Web.Controllers
         [HttpGet("settings")]
         public IActionResult Settings()
         {
+            ViewBag.Title = "设置";
+
             return this.View("Index");
         }
 
         [HttpPost("editsettings")]
         public async Task<IActionResult> EditSettings(EditSettingsModel model)
         {
+            ViewBag.Title = "设置";
+
             if (!ModelState.IsValid)
             {
                 ViewBag.SettingsResult = OperationResult.Failure(Core.Resource.Messages.ModelStateNotValid);
@@ -60,6 +64,8 @@ namespace DotNetClub.Web.Controllers
         [HttpPost("editpassword")]
         public async Task<IActionResult> EditPassword(EditPasswordModel model)
         {
+            ViewBag.Title = "设置";
+
             if (!ModelState.IsValid)
             {
                 ViewBag.PasswordResult = OperationResult.Failure(Core.Resource.Messages.ModelStateNotValid);
@@ -82,6 +88,8 @@ namespace DotNetClub.Web.Controllers
         [HttpGet("messages")]
         public async Task<IActionResult> Messages(int page)
         {
+            ViewBag.Title = "消息";
+
             var vm = new MessagesViewModel();
             vm.UnreadMessageList = await this.MessageService.QueryUnreadMessageList(this.ClientManager.CurrentUser.ID);
             vm.HistoryMessageList = await this.MessageService.QueryHistoryMessgaeList(this.ClientManager.CurrentUser.ID, 20);

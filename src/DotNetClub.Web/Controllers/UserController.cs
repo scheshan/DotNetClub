@@ -34,6 +34,8 @@ namespace DotNetClub.Web.Controllers
                 return this.NotFound();
             }
 
+            ViewBag.Title = $"@{user.UserName} 的个人主页";
+
             ViewBag.User = user;
 
             var vm = new IndexViewModel();

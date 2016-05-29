@@ -46,6 +46,8 @@ namespace DotNetClub.Web.Controllers
                 return this.NotFound();
             }
 
+            ViewBag.Title = topic.Title;
+
             await this.TopicService.IncreaseVisitCount(id);
 
             var vm = new IndexViewModel();
@@ -86,6 +88,8 @@ namespace DotNetClub.Web.Controllers
             vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");
             vm.Model = new PostModel();
 
+            ViewBag.Title = "新主题";
+
             return this.View("Post", vm);
         }
 
@@ -125,6 +129,8 @@ namespace DotNetClub.Web.Controllers
             {
                 return this.Forbid();
             }
+
+            ViewBag.Title = "编辑主题";
 
             var vm = new PostViewModel();
             vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name", topic.Category);
