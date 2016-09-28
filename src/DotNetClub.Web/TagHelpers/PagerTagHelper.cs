@@ -157,7 +157,7 @@ namespace DotNetClub.Web.TagHelpers
 
             routes["Page"] = page;
 
-            string action = ViewContext.ActionDescriptor.Name;
+            string action = ViewContext.ActionDescriptor.AttributeRouteInfo.Name;
             if (routes["Action"] != null)
             {
                 action = routes["Action"].ToString();
