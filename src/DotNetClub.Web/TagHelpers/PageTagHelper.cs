@@ -1,36 +1,29 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.Routing;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
+using Microsoft.AspNetCore.Razor.TagHelpers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using Microsoft.AspNetCore.Mvc;
 using System.Text;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using System.IO;
-using System.Text.Encodings.Web;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DotNetClub.Web.TagHelpers
 {
-    // You may need to install the Microsoft.AspNetCore.Razor.Runtime package into your project
     [HtmlTargetElement("pager")]
     public class PagerTagHelper : TagHelper
     {
-        [HtmlAttributeName("url")]
-        public IUrlHelper Url { get; set; }
-
-        private IHtmlGenerator HtmlGenerator { get; set; }
+        private IUrlHelperFactory UrlHelperFactory { get; set; }
 
         [HtmlAttributeName("page-index")]
-        public int PageIndex { get; set; }
+        public long PageIndex { get; set; }
 
         [HtmlAttributeName("page-size")]
-        public int PageSize { get; set; }
+        public long PageSize { get; set; }
 
         [HtmlAttributeName("total")]
-        public int Total { get; set; }
+        public long Total { get; set; }
 
         private IDictionary<string, string> _routeValues;
 
@@ -58,9 +51,9 @@ namespace DotNetClub.Web.TagHelpers
         [ViewContext]
         public ViewContext ViewContext { get; set; }
 
-        public PagerTagHelper(IHtmlGenerator htmlGenerator)
+        public PagerTagHelper(IUrlHelperFactory urlHelperFactory)
         {
-            this.HtmlGenerator = htmlGenerator;
+            this.UrlHelperFactory = urlHelperFactory;
         }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
@@ -100,31 +93,37 @@ namespace DotNetClub.Web.TagHelpers
             }
 
             output.TagName = "ul";
+            output.Attributes.Add("class", "pagination");
             output.TagMode = TagMode.StartTagAndEndTag;
-            output.Attributes.Add("class", "pagination pagination-sm");
 
             StringBuilder sb = new StringBuilder();
 
             if (this.PageIndex > 1)
             {
-                sb.Append($"<li>{this.GetPageLink(1, "首页")}</li>");
-                sb.Append($"<li>{this.GetPageLink(this.PageIndex - 1, "上一页")}</li>");
+                sb.Append($"<li>{this.GetPageLink(this.PageIndex - 1, "&laquo;")}</li>");
+            }
+            else
+            {
+                sb.Append($"<li class='disabled'>{this.GetEmptyPageLink("&laquo;")}</li>");
             }
             for (var i = start; i <= end; i++)
             {
                 if (this.PageIndex == i)
                 {
-                    sb.Append($"<li class='active'><a href='javascript:void(0)'>{i}</a></li>");
+                    sb.Append($"<li class='active'>{this.GetEmptyPageLink(i.ToString())}</li>");
                 }
                 else
                 {
-                    sb.Append($"<li>{this.GetPageLink(i, i.ToString())}</li>");
+                    sb.Append($"<li class='PagerLink'>{this.GetPageLink(i, i.ToString())}</li>");
                 }
             }
             if (this.PageIndex < totalPage)
             {
-                sb.Append($"<li>{this.GetPageLink(this.PageIndex + 1, "下一页")}</li>");
-                sb.Append($"<li>{this.GetPageLink(totalPage, "末页")}</li>");
+                sb.Append($"<li>{this.GetPageLink(this.PageIndex + 1, "&raquo;")}</li>");
+            }
+            else
+            {
+                sb.Append($"<li class='disabled'>{this.GetEmptyPageLink("&raquo;")}</li>");
             }
 
             output.Content.SetHtmlContent(sb.ToString());
@@ -136,7 +135,12 @@ namespace DotNetClub.Web.TagHelpers
             output.Content.SetContent(message);
         }
 
-        private string GetPageLink(int page, string text)
+        private string GetEmptyPageLink(string text)
+        {
+            return $"<a href='javascript:void(0)'>{text}</a>";
+        }
+
+        private string GetPageLink(long page, string text)
         {
             var routes = new Dictionary<string, object>(StringComparer.OrdinalIgnoreCase);
 
@@ -157,25 +161,22 @@ namespace DotNetClub.Web.TagHelpers
 
             routes["Page"] = page;
 
-            string action = ViewContext.ActionDescriptor.AttributeRouteInfo.Name;
+            string action = ViewContext.ActionDescriptor.RouteValues["action"];
             if (routes["Action"] != null)
             {
                 action = routes["Action"].ToString();
             }
 
-            string controller = null;
+            string controller = ViewContext.ActionDescriptor.RouteValues["controller"];
             if (routes["Controller"] != null)
             {
                 controller = routes["Controller"].ToString();
             }
 
-            StringBuilder sb = new StringBuilder();
+            var urlHelper = this.UrlHelperFactory.GetUrlHelper(this.ViewContext);
+            string url = urlHelper.Action(action, controller, routes);
 
-            using (var writer = new StringWriter(sb))
-            {
-                this.HtmlGenerator.GenerateActionLink(this.ViewContext, text, action, controller, null, null, null, routes, null).WriteTo(writer, HtmlEncoder.Default);
-                return sb.ToString();
-            }
+            return $"<a href=\"{url}\">{text}</a>";
         }
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
-using DotNetClub.Core.Entity;
+using DotNetClub.Domain.Entity;
 using DotNetClub.Core.Model.User;
 using DotNetClub.Core.Model.Topic;
 

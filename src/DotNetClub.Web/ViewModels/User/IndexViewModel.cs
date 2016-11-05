@@ -1,4 +1,5 @@
 ﻿using DotNetClub.Core.Model.Topic;
+using DotNetClub.Core.Model.User;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,9 +9,9 @@ namespace DotNetClub.Web.ViewModels.User
 {
     public class IndexViewModel
     {
-        public Core.Model.User.UserModel User { get; set; }
+        public UserModel User { get; set; }
 
-        public int CollectCount { get; set; }
+        public long CollectCount { get; set; }
 
         public List<TopicModel> RecentCreatedTopicList { get; set; }
 

@@ -1,5 +1,5 @@
-﻿@using DotNetClub.Core.Entity
-@model List<Topic>
+﻿@using DotNetClub.Core.Model.Topic
+@model List<TopicModel>
 
 <visible condition="Model.Count > 0">
     @foreach (var topic in Model)
@@ -10,21 +10,21 @@
         </a>
 
         <span class="text-muted pull-left reply-count">
-            <span class="text-info">@topic.ReplyCount</span>
+            <small class="text-info">@topic.Comments</small>
             <span class="text-muted reply-seperator">/</span>
-            <small class="text-muted">@topic.VisitCount</small>
+            <small class="text-muted">@topic.Visits</small>
         </span>
 
         <span class="category pull-left">
-            <span class="recommand" condition="topic.Top">置顶</span>
+            <span class="recommand" condition="topic.IsTop">置顶</span>
 
-            <span class="recommand" condition="topic.Recommand">精华</span>
+            <span class="recommand" condition="topic.IsRecommand">精华</span>
 
-            <span condition="!topic.Top && !topic.Recommand">@topic.CategoryModel.Name</span>            
+            <span condition="!topic.IsTop && !topic.IsRecommand">@topic.Category.Name</span>            
         </span>
 
-        <a class="pull-right last-reply text-muted" asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" asp-fragment="@(topic.LastReplyUserID.HasValue ? "latest" : "")">
-            <visible condition="topic.LastReplyUserID.HasValue">
+        <a class="pull-right last-reply text-muted" asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" asp-fragment="@(topic.LastReplyUser != null ? "latest" : "")">
+            <visible condition="topic.LastReplyUser != null">
                 <useravatar title="@topic.LastReplyUser.UserName" size="18" email="@topic.LastReplyUser.Email"></useravatar>
             </visible>
 

@@ -17,7 +17,7 @@ namespace DotNetClub.Core
                 .AddScoped<TopicService>()
                 .AddScoped<CommentService>()
                 .AddScoped<UserVoteService>()
-                .AddScoped<UserCollectService>()
+                .AddScoped<TopicCollectService>()
                 .AddScoped<MessageService>();
 
             services.AddScoped<ClientManager>();

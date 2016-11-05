@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 namespace DotNetClub.Web.Controllers
 {
     [Route("user")]
-    public class UserController : Base.ControllerBase
+    public class UserController : ControllerBase
     {
         private UserService UserService { get; set; }
 
         private TopicService TopicService { get; set; }
 
-        private UserCollectService UserCollectService { get; set; }
+        private TopicCollectService TopicCollectService { get; set; }
 
-        public UserController(UserService userService, TopicService topicService, UserCollectService userCollectService)
+        public UserController(UserService userService, TopicService topicService, TopicCollectService topicCollectService)
         {
             this.UserService = userService;
             this.TopicService = topicService;
-            this.UserCollectService = userCollectService;
+            this.TopicCollectService = topicCollectService;
         }
 
         [HttpGet("{userName}")]
@@ -40,7 +40,7 @@ namespace DotNetClub.Web.Controllers
 
             var vm = new IndexViewModel();
             vm.User = user;
-            vm.CollectCount = await this.UserCollectService.GetCollectCount(user.ID);
+            vm.CollectCount = await this.TopicCollectService.GetCollectCount(user.ID);
             vm.RecentCreatedTopicList = await this.TopicService.QueryByUser(user.ID, 10, null);
             vm.RecentCommentedTopicList = await this.TopicService.QueryByUserComment(user.ID, 10);
 

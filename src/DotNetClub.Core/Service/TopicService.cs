@@ -389,7 +389,7 @@ namespace DotNetClub.Core.Service
                 return model;
             });
 
-            return new List<TopicModel>();
+            return result.ToList();
         }
     }
 }
