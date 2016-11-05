@@ -8,11 +8,6 @@ namespace DotNetClub.Web.Middlewares
 {
     public static class IApplicationBuilderExtensions
     {
-        public static IApplicationBuilder UseClientManagerInitializer(this IApplicationBuilder app)
-        {
-            return app.UseMiddleware<ClientManagerInitializerMiddleware>();
-        }
-
         public static IApplicationBuilder UseExecuteTime(this IApplicationBuilder app)
         {
             return app.UseMiddleware<ExecuteTimeMiddleware>();

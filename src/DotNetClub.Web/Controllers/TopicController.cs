@@ -98,67 +98,67 @@ namespace DotNetClub.Web.Controllers
             }
         }
 
-        //        [HttpGet("{id:int}/edit")]
-        //        [Filters.RequireLogin]
-        //        public async Task<IActionResult> Edit(int id)
-        //        {
-        //            var topic = await this.TopicService.Get(id);
+        [HttpGet("{id:int}/edit")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var topic = await this.TopicService.Get(id);
 
-        //            if (topic == null || !this.ClientManager.CanOperateTopic(topic))
-        //            {
-        //                return this.Forbid();
-        //            }
+            if (topic == null || !this.SecurityManager.CanOperateTopic(topic))
+            {
+                return this.Forbid();
+            }
 
-        //            ViewBag.Title = "编辑主题";
+            ViewBag.Title = "编辑主题";
 
-        //            var vm = new PostViewModel();
-        //            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name", topic.Category);
-        //            vm.Model = new PostModel
-        //            {
-        //                Category = topic.Category,
-        //                Content = topic.Content,
-        //                Title = topic.Title
-        //            };
+            var vm = new PostViewModel();
+            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name", topic.Category);
+            vm.Model = new SaveTopicModel
+            {
+                Category = topic.Category.Key,
+                Content = topic.Content,
+                Title = topic.Title
+            };
 
-        //            return this.View("Post", vm);
-        //        }
+            return this.View("Post", vm);
+        }
 
-        //        [HttpPost("{id:int}/edit")]
-        //        [Filters.RequireLogin]
-        //        [ValidateAntiForgeryToken]
-        //        public async Task<IActionResult> Edit(int id, SaveTopicModel model)
-        //        {
-        //            if (!ModelState.IsValid)
-        //            {
-        //                return this.Notice(Core.Resource.Messages.ModelStateNotValid);
-        //            }
+        [HttpPost("{id:int}/edit")]
+        [Filters.RequireLogin]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, SaveTopicModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return this.Notice(Core.Resource.Messages.ModelStateNotValid);
+            }
 
-        //            var result = await this.TopicService.Edit(id, model);
+            var result = await this.TopicService.Edit(id, model);
 
-        //            if (result.Success)
-        //            {
-        //                return this.RedirectToAction("Index", "Topic", new { id = id });
-        //            }
-        //            else
-        //            {
-        //                return this.Notice(result.ErrorMessage);
-        //            }
-        //        }
+            if (result.Success)
+            {
+                return this.RedirectToAction("Index", "Topic", new { id = id });
+            }
+            else
+            {
+                return this.Notice(result.ErrorMessage);
+            }
+        }
 
-        //        [HttpGet("{id:int}/delete")]
-        //        [Filters.RequireLogin]
-        //        public async Task<IActionResult> Delete(int id)
-        //        {
-        //            var topic = await this.TopicService.Get(id);
-        //            if (topic == null || topic.CreateUserID != this.ClientManager.CurrentUser.ID)
-        //            {
-        //                return this.Forbid();
-        //            }
-
-        //            await this.TopicService.Delete(id);
-
-        //            return this.RedirectToAction("Index", "Home");
-        //        }
+        [HttpGet("{id:int}/delete")]
+        [Filters.RequireLogin]
+        public async Task<IActionResult> Delete(long id)
+        {
+            var result = await this.TopicService.Delete(id);
+            if (result.Success)
+            {
+                return this.RedirectToAction("Index", "Home");
+            }
+            else
+            {
+                return this.Forbid();
+            }
+        }
 
         //        [HttpGet("{id:int}/recommand")]
         //        [Filters.RequireLogin]

@@ -37,9 +37,30 @@
 </div>
 
 <div class="col-md-3">
-    @Html.Partial("_Grammer")
+    <div class="panel panel-default">
+        <div class="panel-heading">Markdown 语法参考</div>
+        <div class="panel-body">
+            <ol class="list-unstyled">
+                <li><tt>### 单行的标题</tt></li>
+                <li><tt>**粗体**</tt></li>
+                <li><tt>`console.log('行内代码')`</tt></li>
+                <li><tt>```js\n code \n```</tt> 标记代码块</li>
+                <li><tt>[内容](链接)</tt></li>
+                <li><tt>![文字说明](图片链接)</tt></li>
+            </ol>
+        </div>
+    </div>
 
-    @Html.Partial("_Guide")
+    <div class="panel panel-default">
+        <div class="panel-heading">话题发布指南</div>
+        <div class="panel-body">
+            <ol class="list-unstyled">
+                <li>尽量把话题要点浓缩到标题里</li>
+                <li>不得发布反动,暴力,色情,诈骗信息</li>
+                <li>转载请注明出处</li>
+            </ol>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
