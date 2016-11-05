@@ -2,12 +2,10 @@
 # 此 .gitignore 文件已由 Microsoft(R) Visual Studio 自动创建。
 ################################################################################
 
-/src/DotNetClub.Web/node_modules
+node_modules
 *.user
-/src/DotNetClub.Core/bin/
-/src/DotNetClub.Core/obj/
-/src/DotNetClub.Web/bin/
-/src/DotNetClub.Web/obj/
+bin/
+obj/
 /src/DotNetClub.Web/wwwroot/lib
 .vs/
 *.lock.json
