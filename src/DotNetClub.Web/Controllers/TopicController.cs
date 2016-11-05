@@ -19,54 +19,44 @@ namespace DotNetClub.Web.Controllers
 
         private TopicService TopicService { get; set; }
 
-        public TopicController(CategoryService categoryService, TopicService topicService)
+        private CommentService CommentService { get; set; }
+
+        private TopicCollectService TopicCollectService { get; set; }
+
+        public TopicController(CategoryService categoryService, TopicService topicService, CommentService commentService, TopicCollectService topicCollectService)
         {
             this.CategoryService = categoryService;
             this.TopicService = topicService;
+            this.CommentService = commentService;
+            this.TopicCollectService = topicCollectService;
         }
 
-        //[HttpGet("{id:long}")]
-        //public async Task<IActionResult> Index(long id)
-        //{
-        //    var topic = await this.TopicService.Get(id);
+        [HttpGet("{id:long}")]
+        public async Task<IActionResult> Index(long id)
+        {
+            var topic = await this.TopicService.Get(id);
 
-        //    if (topic == null)
-        //    {
-        //        return this.NotFound();
-        //    }
+            if (topic == null)
+            {
+                return this.NotFound();
+            }
 
-        //    ViewBag.Title = topic.Title;
+            ViewBag.Title = topic.Title;
 
-        //    this.TopicService.IncreaseVisit(id);
+            this.TopicService.IncreaseVisit(id);
 
-        //    var vm = new IndexViewModel();
-        //    vm.Topic = topic;
-        //    vm.CommentList = new List<CommentItemModel>();
-        //    vm.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && topic.CreateUserID == this.ClientManager.CurrentUser.ID);
+            var vm = new IndexViewModel();
+            vm.Topic = topic;
+            vm.CommentList = await this.CommentService.QueryByTopic(id);
+            vm.CanOperate = this.SecurityManager.CanOperateTopic(topic);
 
-        //    var commentEntityList = await this.CommentService.QueryByTopic(id);
+            if (this.SecurityManager.IsLogin)
+            {
+                vm.IsCollected = await this.TopicCollectService.IsCollected(topic.ID, this.SecurityManager.CurrentUser.ID);
+            }
 
-        //    List<UserVote> userVoteList = new List<UserVote>();
-
-        //    if (this.ClientManager.IsLogin)
-        //    {
-        //        vm.IsCollected = await this.UserCollectService.IsCollected(topic.ID, this.ClientManager.CurrentUser.ID);
-
-        //        var commentIDList = commentEntityList.Select(t => t.ID).ToArray();
-        //        userVoteList = await this.UserVoteService.QueryByCommentAndUser(commentIDList, this.ClientManager.CurrentUser.ID);
-        //    }
-
-        //    foreach (var commentEntity in commentEntityList)
-        //    {
-        //        var model = new CommentItemModel(commentEntity);
-        //        model.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && commentEntity.CreateUserID == this.ClientManager.CurrentUser.ID);
-        //        model.Voted = userVoteList.Any(t => t.CommentID == commentEntity.ID);
-
-        //        vm.CommentList.Add(model);
-        //    }
-
-        //    return this.View(vm);
-        //}
+            return this.View(vm);
+        }
 
         [HttpGet("new")]
         [Filters.RequireLogin]

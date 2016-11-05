@@ -137,7 +137,6 @@ namespace DotNetClub.Core.Service
             using (var uw = this.CreateUnitOfWork())
             {
                 var entityList = await uw.QueryAsync<Comment>(t => !t.IsDelete && t.TopicID == topicID);
-                entityList = entityList.OrderByDescending(t => t.ID).ToList();
                 return await this.Transform(entityList.ToArray());
             }
         }
@@ -200,7 +199,7 @@ namespace DotNetClub.Core.Service
                 };
 
                 var user = userList.SingleOrDefault(u => u.ID == entity.CreateUser);
-                model.User = Mapper.Map<UserBasicModel>(user);
+                model.CreateUser = Mapper.Map<UserBasicModel>(user);
 
                 var commentVotes = commentVotesList.SingleOrDefault(t => t.CommentID == entity.ID);
                 if (commentVotes != null)

@@ -12,7 +12,7 @@ namespace DotNetClub.Core.Model.Comment
 
         public string Content { get; set; }
 
-        public UserBasicModel User { get; set; }
+        public UserBasicModel CreateUser { get; set; }
 
         public DateTime CreateDate { get; set; }
 

@@ -1,4 +1,6 @@
-﻿using DotNetClub.Core.Model.Configuration;
+﻿using DotNetClub.Core.Model.Comment;
+using DotNetClub.Core.Model.Configuration;
+using DotNetClub.Core.Model.Topic;
 using DotNetClub.Core.Model.User;
 using DotNetClub.Core.Service;
 using DotNetClub.Domain.Consts;
@@ -83,7 +85,7 @@ namespace DotNetClub.Core.Security
         {
             get
             {
-                return this.IsLogin && this.SiteConfiguration.AdminUserList.Contains(this.CurrentUser.UserName);
+                return this.IsLogin && this.SiteConfiguration.AdminUserList?.Contains(this.CurrentUser.UserName) == true;
             }
         }
 
@@ -102,14 +104,29 @@ namespace DotNetClub.Core.Security
             }
         }
 
-        public bool CanOperateTopic(Topic entity)
+        public bool CanOperateTopic(Topic topic)
         {
             if (!this.IsLogin)
             {
                 return false;
             }
 
-            if (entity.CreateUser == this.CurrentUser.ID || this.IsAdmin)
+            if (topic.CreateUser == this.CurrentUser.ID || this.IsAdmin)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool CanOperateTopic(TopicModel topic)
+        {
+            if (!this.IsLogin)
+            {
+                return false;
+            }
+
+            if (topic.CreateUser.ID == this.CurrentUser.ID || this.IsAdmin)
             {
                 return true;
             }
@@ -125,6 +142,21 @@ namespace DotNetClub.Core.Security
             }
 
             if (entity.CreateUser == this.CurrentUser.ID || this.IsAdmin)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        public bool CanOperateComment(CommentModel comment)
+        {
+            if (!this.IsLogin)
+            {
+                return false;
+            }
+
+            if (comment.CreateUser.ID == this.CurrentUser.ID || this.IsAdmin)
             {
                 return true;
             }

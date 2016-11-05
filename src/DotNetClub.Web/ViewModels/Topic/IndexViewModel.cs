@@ -1,4 +1,5 @@
 ﻿using DotNetClub.Core.Model.Category;
+using DotNetClub.Core.Model.Comment;
 using DotNetClub.Core.Model.Topic;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace DotNetClub.Web.ViewModels.Topic
     {
         public TopicModel Topic { get; set; }
 
-        public List<CommentItemModel> CommentList { get; set; }
+        public List<CommentModel> CommentList { get; set; }
 
         public bool CanOperate { get; set; }
 

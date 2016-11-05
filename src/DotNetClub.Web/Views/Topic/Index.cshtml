@@ -1,6 +1,4 @@
 ﻿@using DotNetClub.Web.ViewModels.Topic
-@using DotNetClub.Core
-@inject ClientManager clientManager
 @model IndexViewModel
 
 @section Header{    
@@ -14,7 +12,7 @@
             <h4>
                 <strong>@Model.Topic.Title</strong>
 
-                <span class="pull-right" condition="clientManager.IsLogin">
+                <span class="pull-right" condition="SecurityManager.IsLogin">
                     <a condition="!Model.IsCollected" asp-action="Collect" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success">收藏主题</a>
                     <a condition="Model.IsCollected" asp-action="Collect" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-warning">取消收藏主题</a>
                 </span>
@@ -23,8 +21,8 @@
                 <ul class="list-inline text-muted" style="font-size:12px;">
                     <li>发布于: <datetime date="@Model.Topic.CreateDate"></datetime></li>
                     <li>作者: <a asp-action="Index" asp-controller="User" asp-route-userName="@Model.Topic.CreateUser.UserName">@Model.Topic.CreateUser.UserName</a></li>
-                    <li>@Model.Topic.VisitCount 次浏览</li>
-                    <li>来自: @Model.Topic.CategoryModel.Name</li>
+                    <li>@Model.Topic.Visits 次浏览</li>
+                    <li>来自: @Model.Topic.Category.Name</li>
                 </ul>
             </div>
 
@@ -33,24 +31,24 @@
 
                 <a asp-action="Delete" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-danger btn-xs" title="删除主题" onclick="return confirm('确认删除此主题吗?')"><i class="fa fa-lg fa-edit"></i> 删除</a>
 
-                <visible condition="@clientManager.IsAdmin">
-                    <a condition="!Model.Topic.Lock" asp-action="Lock" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="锁定">
+                <visible condition="@SecurityManager.IsAdmin">
+                    <a condition="!Model.Topic.IsLock" asp-action="Lock" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="锁定">
                         <i class="fa fa-lock"></i>
                         锁定
                     </a>
 
-                    <a condition="Model.Topic.Lock" asp-action="Lock" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-warning btn-xs" title="解除锁定">
+                    <a condition="Model.Topic.IsLock" asp-action="Lock" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-warning btn-xs" title="解除锁定">
                         <i class="fa fa-unlock-alt"></i>
                         解除锁定
                     </a>
 
-                    <a condition="!Model.Topic.Top" asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="置顶"><i class="fa fa-lg fa-star-o"></i> 置顶</a>
+                    <a condition="!Model.Topic.IsTop" asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="置顶"><i class="fa fa-lg fa-star-o"></i> 置顶</a>
 
-                    <a condition="Model.Topic.Top" asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success btn-xs" title="取消置顶"><i class="fa fa-lg fa-star"></i> 取消置顶</a>
+                    <a condition="Model.Topic.IsTop" asp-action="Top" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success btn-xs" title="取消置顶"><i class="fa fa-lg fa-star"></i> 取消置顶</a>
 
-                    <a condition="!Model.Topic.Recommand" asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="加精华"><i class="fa fa-lg fa-heart-o"></i> 添加精华</a>
+                    <a condition="!Model.Topic.IsRecommand" asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-default btn-xs" title="加精华"><i class="fa fa-lg fa-heart-o"></i> 添加精华</a>
 
-                    <a condition="Model.Topic.Recommand" asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success btn-xs" title="取消精华"><i class="fa fa-lg fa-heart"></i> 取消精华</a>
+                    <a condition="Model.Topic.IsRecommand" asp-action="Recommand" asp-controller="Topic" asp-route-id="@Model.Topic.ID" class="btn btn-success btn-xs" title="取消精华"><i class="fa fa-lg fa-heart"></i> 取消精华</a>
                 </visible>
             </div>
 
@@ -70,32 +68,32 @@
             <div class="panel-body noPadding">
                 @foreach (var comment in Model.CommentList)
                 {
-                    <div class="cell" id="@($"comment{comment.Entity.ID}")">
+                    <div class="cell" id="@($"comment{comment.ID}")">
                         <div>
-                            <useravatar email="@comment.Entity.CreateUser.Email" size="28" class="pull-left"></useravatar>
-                            <a class="user-info" asp-action="Index" asp-controller="User" asp-route-userName="@comment.Entity.CreateUser.UserName">@comment.Entity.CreateUser.UserName</a>
-                            <small class="reply-date text-muted"><datetime date="@comment.Entity.CreateDate"></datetime></small>
+                            <useravatar email="@comment.CreateUser.Email" size="28" class="pull-left"></useravatar>
+                            <a class="user-info" asp-action="Index" asp-controller="User" asp-route-userName="@comment.CreateUser.UserName">@comment.CreateUser.UserName</a>
+                            <small class="reply-date text-muted">@(comment.CreateDate.Humanize(utcDate: false))</small>
 
                             <span class="pull-right">
                                 <span class="vote">
-                                    <a href="javascript:void(0)" class="vote-btn @(comment.Voted ? "text-danger" : "text-muted")" comment-id="@comment.Entity.ID">
+                                    <a href="javascript:void(0)" class="vote-btn @(comment.Voted ? "text-danger" : "text-muted")" comment-id="@comment.ID">
                                         <i class="fa fa-thumbs-o-up"></i>
                                     </a>
-                                    <small>@comment.Entity.Ups</small>
+                                    <small>@comment.Votes</small>
                                 </span>
 
-                                <visible condition="comment.CanOperate">
-                                    <a asp-action="Edit" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="编辑"><i class="fa fa-pencil-square-o"></i></a>
-                                    <a asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.Entity.ID" class="text-muted" title="删除" onclick="return confirm('确定要删除此回复吗?')"><i class="fa fa-trash-o"></i></a>
+                                <visible condition="SecurityManager.CanOperateComment(comment)">
+                                    <a asp-action="Edit" asp-controller="Comment" asp-route-id="@comment.ID" class="text-muted" title="编辑"><i class="fa fa-pencil-square-o"></i></a>
+                                    <a asp-action="Delete" asp-controller="Comment" asp-route-id="@comment.ID" class="text-muted" title="删除" onclick="return confirm('确定要删除此回复吗?')"><i class="fa fa-trash-o"></i></a>
                                 </visible>
 
-                                <visible condition="clientManager.IsLogin && !Model.Topic.Lock">
-                                    <a href="javascript:void(0)" class="text-muted" onclick="replyTo('@comment.Entity.ID')"><i class="fa fa-reply"></i></a>
+                                <visible condition="SecurityManager.IsLogin && !Model.Topic.IsLock">
+                                    <a href="javascript:void(0)" class="text-muted" onclick="replyTo('@comment.ID')"><i class="fa fa-reply"></i></a>
                                 </visible>
                             </span>
                         </div>
                         <div class="reply-content">
-                            <markdown content="@comment.Entity.Content"></markdown>
+                            <markdown content="@comment.Content"></markdown>
                         </div>
                         <div class="reply-to">
 
@@ -108,7 +106,7 @@
         </div>
     </visible>
 
-    <visible condition="clientManager.IsLogin">
+    <visible condition="SecurityManager.IsLogin">
         <div class="panel panel-default" id="replyPanel">
             <div class="panel-heading">添加回复</div>
             <div class="panel-body">
@@ -121,8 +119,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary" condition="!Model.Topic.Lock">提交</button>
-                        <button type="button" class="btn btn-warning" disabled condition="Model.Topic.Lock">
+                        <button type="submit" class="btn btn-primary" condition="!Model.Topic.IsLock">提交</button>
+                        <button type="button" class="btn btn-warning" disabled condition="Model.Topic.IsLock">
                             <i class="fa fa-lock"></i>
                             该主题已被锁定
                         </button>
@@ -213,9 +211,9 @@
 </div>
 
 <div class="col-md-3">
-    @await Component.InvokeAsync("UserInfoPanel", new { user = Model.Topic.CreateUser })
+    @*@await Component.InvokeAsync("UserInfoPanel", new { user = Model.Topic.CreateUser })*@
 
-    @await Component.InvokeAsync("UserOtherTopicsPanel", new { userID = Model.Topic.CreateUserID, count = 10, exclude = new int[] { Model.Topic.ID } })
+    @*@await Component.InvokeAsync("UserOtherTopicsPanel", new { userID = Model.Topic.CreateUser.ID, count = 10, exclude = new long[] { Model.Topic.ID } })*@
 
-    @await Component.InvokeAsync("NoCommentsTopicPanel", new { count = 10 })
+    @*@await Component.InvokeAsync("NoCommentsTopicPanel", new { count = 10 })*@
 </div>
