@@ -4,15 +4,15 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DotNetClub.Web.ViewModels.Comment
+namespace DotNetClub.Core.Model.Comment
 {
     public class AddCommentModel
     {
-        public int TopicID { get; set; }
+        public long TopicID { get; set; }
 
-        [Required(ErrorMessage = "内容不能为空")]
+        [Required]
         public string Content { get; set; }
 
-        public int? ReplyTo { get; set; }
+        public long? ReplyTo { get; set; }
     }
 }

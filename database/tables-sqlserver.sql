@@ -54,3 +54,15 @@ create table CommentVote
 	CreateDate datetime not null
 	primary key(UserID, CommentID)
 )
+
+create table Message
+(
+	ID bigint identity primary key,
+	Type tinyint not null,
+	TopicID bigint,
+	CommentID bigint,
+	FromUserID bigint,
+	ToUserID bigint not null,
+	CreateDate datetime not null,
+	IsRead bit not null
+)

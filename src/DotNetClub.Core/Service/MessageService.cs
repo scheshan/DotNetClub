@@ -12,6 +12,9 @@ using AutoMapper;
 using DotNetClub.Core.Model.User;
 using DotNetClub.Core.Model.Topic;
 using DotNetClub.Domain.Repository;
+using Share.Infrastructure.Redis;
+using StackExchange.Redis;
+using DotNetClub.Domain.Consts;
 
 namespace DotNetClub.Core.Service
 {
@@ -69,15 +72,18 @@ namespace DotNetClub.Core.Service
             List<User> userList = new List<User>();
             List<Topic> topicList = new List<Topic>();
 
+            var redis = this.RedisProvider.GetDatabase();
+
             using (var uw = this.CreateUnitOfWork())
             {
                 if (userIDList.Any())
                 {
-                    userList = await uw.QueryAsync<User>(t => userIDList.Contains(t.ID));
+                    var fields = userIDList.Select(t => (RedisValue)t).ToArray();
+                    userList = redis.JsonHashGet<User>(RedisKeys.User, fields);
                 }
                 if (topicIDList.Any())
                 {
-                    topicList = await uw.QueryAsync<Topic>(t => topicIDList.Contains(t.ID);
+                    topicList = await uw.QueryAsync<Topic>(t => topicIDList.Contains(t.ID));
                 }
             }
 

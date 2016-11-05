@@ -117,6 +117,21 @@ namespace DotNetClub.Core.Security
             return false;
         }
 
+        public bool CanOperateComment(Comment entity)
+        {
+            if (!this.IsLogin)
+            {
+                return false;
+            }
+
+            if (entity.CreateUser == this.CurrentUser.ID || this.IsAdmin)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private void LoadUser()
         {
             this.InitToken();
