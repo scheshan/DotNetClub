@@ -3,58 +3,109 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using DotNetClub.Core.Enums;
-using DotNetClub.Core.Entity;
+using DotNetClub.Domain.Enums;
+using DotNetClub.Domain.Entity;
+using DotNetClub.Core.Model.Message;
+using Share.Infrastructure.Extensions;
+using Share.Infrastructure.UnitOfWork;
+using AutoMapper;
+using DotNetClub.Core.Model.User;
+using DotNetClub.Core.Model.Topic;
+using DotNetClub.Domain.Repository;
 
 namespace DotNetClub.Core.Service
 {
-    public class MessageService
+    public class MessageService : ServiceBase
     {
-        private Data.ClubContext DbContext { get; set; }
-
-        private ClientManager ClientManager { get; set; }
-
-        public MessageService(Data.ClubContext dbContext, ClientManager clientManager)
+        public MessageService(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
-            this.DbContext = dbContext;
-            this.ClientManager = clientManager;
+
         }
 
-        public async Task<List<Message>> QueryUnreadMessageList(int userID)
+        public async Task<List<MessageModel>> QueryUnreadMessageList(long userID)
         {
-            return await this.CreateDefaultQuery()
-                .Where(t => !t.IsRead && t.ToUserID == userID)
-                .OrderByDescending(t => t.ID)
-                .ToListAsync();
+            using (var uw = this.CreateUnitOfWork())
+            {
+                var entityList = await uw.QueryAsync<Message>(t => t.ToUserID == userID && t.IsRead == false);
+
+                return await this.Transform(entityList.ToArray());
+            }
         }
 
-        public async Task<List<Message>> QueryHistoryMessgaeList(int userID, int count)
+        public async Task<List<MessageModel>> QueryHistory(long userID, int count)
         {
-            return await this.CreateDefaultQuery()
-                .Where(t => t.IsRead && t.ToUserID == userID)
-                .OrderByDescending(t => t.ID)
-                .ToListAsync();
+            using (var uw = this.CreateUnitOfWork())
+            {
+                var entityList = await uw.CreateRepository<IMessageRepository>().QueryHistory(userID, count);
+
+                return await this.Transform(entityList.ToArray());
+            }
         }
 
-        public async Task MarkAsRead(int[] idList)
+        public async Task MarkAsRead(long[] idList)
         {
             if (idList.Length == 0)
             {
                 return;
             }
 
-            var entityList = this.DbContext.Messages.Where(t => idList.Contains(t.ID) && t.ToUserID == this.ClientManager.CurrentUser.ID).ToList();
-            foreach (var entity in entityList)
+            using (var uw = this.CreateUnitOfWork())
             {
-                entity.IsRead = true;
+                await uw.CreateRepository<IMessageRepository>().MarkAsRead(SecurityManager.CurrentUser.ID, idList);
             }
-
-            await this.DbContext.SaveChangesAsync();
         }
 
-        private IQueryable<Message> CreateDefaultQuery()
+        private async Task<List<MessageModel>> Transform(params Message[] entityList)
         {
-            return this.DbContext.Messages.Include(t => t.Topic).Include(t => t.FromUser);
+            if (entityList.IsEmptyCollection())
+            {
+                return new List<MessageModel>();
+            }
+
+            var userIDList = entityList.Where(t => t.FromUserID.HasValue).Select(t => t.FromUserID.Value).ToList();
+            var topicIDList = entityList.Where(t => t.TopicID.HasValue).Select(t => t.TopicID.Value).ToList();
+
+            List<User> userList = new List<User>();
+            List<Topic> topicList = new List<Topic>();
+
+            using (var uw = this.CreateUnitOfWork())
+            {
+                if (userIDList.Any())
+                {
+                    userList = await uw.QueryAsync<User>(t => userIDList.Contains(t.ID));
+                }
+                if (topicIDList.Any())
+                {
+                    topicList = await uw.QueryAsync<Topic>(t => topicIDList.Contains(t.ID);
+                }
+            }
+
+            var result = entityList.Select(entity =>
+            {
+                var model = new MessageModel
+                {
+                    CreateDate = entity.CreateDate,
+                    ID = entity.ID,
+                    IsRead = entity.IsRead,
+                    Type = entity.Type
+                };
+
+                if (entity.FromUserID.HasValue)
+                {
+                    var user = userList.SingleOrDefault(u => u.ID == entity.FromUserID.Value);
+                    model.FromUser = Mapper.Map<UserBasicModel>(user);
+                }
+                if (entity.TopicID.HasValue)
+                {
+                    var topic = topicList.SingleOrDefault(t => t.ID == entity.TopicID.Value);
+                    model.Topic = Mapper.Map<TopicBasicModel>(topic);
+                }
+
+                return model;
+            });
+
+            return result.ToList();
         }
     }
 }

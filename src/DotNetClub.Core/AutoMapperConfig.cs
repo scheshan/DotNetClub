@@ -18,6 +18,7 @@ namespace DotNetClub.Core
                 configuration.CreateMap<User, UserBasicModel>();
                 configuration.CreateMap<User, UserModel>();
                 configuration.CreateMap<Topic, TopicModel>();
+                configuration.CreateMap<Topic, TopicBasicModel>();
             });
         }
     }

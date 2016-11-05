@@ -9,17 +9,17 @@ namespace DotNetClub.Domain.Entity
 {
     public class Message : IEntity
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         public MessageType Type { get; set; }
 
-        public int? TopicID { get; set; }
+        public long? TopicID { get; set; }
 
-        public int? CommentID { get; set; }
+        public long? CommentID { get; set; }
 
-        public int? FromUserID { get; set; }
+        public long? FromUserID { get; set; }
 
-        public int ToUserID { get; set; }
+        public long ToUserID { get; set; }
 
         public DateTime CreateDate { get; set; }
 

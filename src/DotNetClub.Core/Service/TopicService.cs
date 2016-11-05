@@ -16,6 +16,7 @@ using StackExchange.Redis;
 using DotNetClub.Core.Model.Category;
 using AutoMapper;
 using DotNetClub.Core.Model.User;
+using DotNetClub.Domain.Model;
 
 namespace DotNetClub.Core.Service
 {
@@ -352,31 +353,37 @@ namespace DotNetClub.Core.Service
             List<CategoryModel> categoryList = this.CategoryService.All();
             List<User> userList = redis.JsonHashGet<User>(RedisKeys.User, userIDList.Select(t => (RedisValue)t).ToArray());
             RedisValue[] topicVisitCount = redis.HashGet(RedisKeys.TopicVisit, topicIDList.Select(t => (RedisValue)t).ToArray());
+            List<TopicComments> topicCommentsList;
 
-            var result = entityList.Select(t =>
+            using (var uw = this.CreateUnitOfWork())
             {
-                int index = topicIDList.IndexOf(t.ID);
+                topicCommentsList = await uw.CreateRepository<ICommentRepository>().QueryTopicComments(topicIDList.ToArray());
+            }
+
+            var result = entityList.Select(entity =>
+            {
+                int index = topicIDList.IndexOf(entity.ID);
 
                 var model = new TopicModel
                 {
-                    Category = categoryList.SingleOrDefault(c => c.Key == t.Category),
-                    Content = t.Content,
-                    CreateDate = t.CreateDate,
-                    ID = t.ID,
-                    IsLock = t.IsLock,
-                    IsRecommand = t.IsRecommand,
-                    IsTop = t.IsTop,
-                    LastReplyDate = t.LastReplyDate,
-                    Title = t.Title,
-                    UpdateDate = t.UpdateDate
+                    Category = categoryList.SingleOrDefault(c => c.Key == entity.Category),
+                    Content = entity.Content,
+                    CreateDate = entity.CreateDate,
+                    ID = entity.ID,
+                    IsLock = entity.IsLock,
+                    IsRecommand = entity.IsRecommand,
+                    IsTop = entity.IsTop,
+                    LastReplyDate = entity.LastReplyDate,
+                    Title = entity.Title,
+                    UpdateDate = entity.UpdateDate
                 };
 
-                var createUser = userList.SingleOrDefault(u => u.ID == t.CreateUser);
+                var createUser = userList.SingleOrDefault(u => u.ID == entity.CreateUser);
                 model.CreateUser = Mapper.Map<UserBasicModel>(createUser);
 
-                if (t.LastReplyUserID.HasValue)
+                if (entity.LastReplyUserID.HasValue)
                 {
-                    var updateUser = userList.SingleOrDefault(u => u.ID == t.LastReplyUserID.Value);
+                    var updateUser = userList.SingleOrDefault(u => u.ID == entity.LastReplyUserID.Value);
                     model.LastReplyUser = Mapper.Map<UserBasicModel>(updateUser);
                 }
 
@@ -384,6 +391,12 @@ namespace DotNetClub.Core.Service
                 if (topicVisit.HasValue)
                 {
                     model.Visits = Convert.ToInt64(topicVisit);
+                }
+
+                var topicComments = topicCommentsList.SingleOrDefault(tc => tc.TopicID == entity.ID);
+                if (topicComments != null)
+                {
+                    model.Comments = topicComments.Comments;
                 }
 
                 return model;
