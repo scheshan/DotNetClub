@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
-using Microsoft.AspNetCore.Razor.TagHelpers;
-using DotNetClub.Core.Utility;
+﻿using Microsoft.AspNetCore.Razor.TagHelpers;
+using Share.Infrastructure.Utilities;
+using System;
 
 namespace DotNetClub.Web.TagHelpers
 {
@@ -44,7 +40,7 @@ namespace DotNetClub.Web.TagHelpers
             output.TagName = "img";
             output.TagMode = TagMode.SelfClosing;
 
-            string src = $"http://gravatar.com/avatar/{EncryptHelper.Md5(this.Email)}?size={this.Size}";
+            string src = $"http://gravatar.com/avatar/{EncryptHelper.EncryptMD5(this.Email)}?size={this.Size}";
 
             output.Attributes.Add("src", src);
             output.Attributes.Add("title", this.Title);

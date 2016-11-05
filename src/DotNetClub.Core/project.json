@@ -3,11 +3,17 @@
 
   "dependencies": {
     "NETStandard.Library": "1.6.1-*",
-    "Microsoft.Extensions.Configuration": "1.0.0",
-    "Microsoft.EntityFrameworkCore": "1.0.0",
-    "Microsoft.EntityFrameworkCore.SqlServer": "1.0.0",
-    "Microsoft.AspNetCore.Cryptography.KeyDerivation": "1.0.0",
-    "Microsoft.AspNetCore.Http": "1.0.0"
+    "Microsoft.Extensions.Configuration": "1.1.0-*",
+    "Microsoft.EntityFrameworkCore": "1.1.0-*",
+    "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0-*",
+    "Microsoft.AspNetCore.Http": "1.1.0-*",
+
+    "DotNetClub.Domain": {
+      "target": "project"
+    },
+    "Share.Infrastructure": {
+      "target": "project"
+    }
   },
 
   "frameworks": {

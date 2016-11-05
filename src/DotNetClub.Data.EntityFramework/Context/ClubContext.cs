@@ -30,6 +30,7 @@ namespace DotNetClub.Data.EntityFramework.Context
             optionsBuilder.UseSqlServer(this.Configuration["ConnectionString"], builder =>
             {
                 builder.UseRowNumberForPaging();
+                builder.MigrationsAssembly("DotNetBluc.Web");
             });
         }
     }

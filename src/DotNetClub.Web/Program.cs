@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Share.Infrastructure;
 
 namespace DotNetClub.Web
 {
@@ -14,6 +15,7 @@ namespace DotNetClub.Web
             var host = new WebHostBuilder()
                 .UseKestrel()
                 .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseInfrastructureFactory()
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();

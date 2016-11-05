@@ -1,5 +1,6 @@
 ﻿using Autofac;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Share.Infrastructure.UnitOfWork;
 using System;
 using System.Collections.Generic;
@@ -28,6 +29,17 @@ namespace Share.Infrastructure
             builder.RegisterInstance(redisProvider).As<Redis.IRedisProvider>();
 
             return builder;
+        }
+
+        public static TConfiguration AddConfiguration<TConfiguration>(this ContainerBuilder builder, IConfiguration configuration)
+            where TConfiguration : class, new()
+        {
+            var model = new TConfiguration();
+            configuration.Bind(model);
+
+            builder.RegisterInstance(model);
+
+            return model;
         }
     }
 }

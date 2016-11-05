@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DotNetClub.Data.EntityFramework.Mappings
 {
-    public sealed class UserVoteMapping
+    public sealed class CommentVoteMapping
     {
-        public static void Map(EntityTypeBuilder<UserVote> builder)
+        public static void Map(EntityTypeBuilder<CommentVote> builder)
         {
-            builder.ToTable("UserVote");
+            builder.ToTable("CommentVote");
 
             builder.HasKey(t => new { t.UserID, t.CommentID });
         }

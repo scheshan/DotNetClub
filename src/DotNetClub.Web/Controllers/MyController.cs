@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
+using DotNetClub.Core.Model.User;
 
 namespace DotNetClub.Web.Controllers
 {
@@ -44,7 +45,7 @@ namespace DotNetClub.Web.Controllers
         }
 
         [HttpPost("editsettings")]
-        public async Task<IActionResult> EditSettings(EditSettingsModel model)
+        public async Task<IActionResult> EditSettings(EditUserInfoModel model)
         {
             ViewBag.Title = "设置";
 
@@ -54,7 +55,7 @@ namespace DotNetClub.Web.Controllers
                 return this.View("Index");
             }
 
-            await this.UserService.EditUserInfo(ClientManager.CurrentUser.ID, model.WebSite, model.Location, model.Signature);
+            await this.UserService.EditUserInfo(SecurityManager.CurrentUser.ID, model);
 
             ViewBag.SettingsResult = new OperationResult();
 
@@ -71,16 +72,9 @@ namespace DotNetClub.Web.Controllers
                 ViewBag.PasswordResult = OperationResult.Failure(Core.Resource.Messages.ModelStateNotValid);
             }
 
-            bool success = await this.UserService.EditPassword(ClientManager.CurrentUser.ID, model.OldPassword, model.NewPassword);
+            var result = await this.UserService.EditPassword(SecurityManager.CurrentUser.ID, model.OldPassword, model.NewPassword);
 
-            if (success)
-            {
-                ViewBag.PasswordResult = new OperationResult();
-            }
-            else
-            {
-                ViewBag.PasswordResult = OperationResult.Failure("密码错误,请确认后再试");
-            }
+            ViewBag.PasswordResult = result;
 
             return this.View("Index");
         }

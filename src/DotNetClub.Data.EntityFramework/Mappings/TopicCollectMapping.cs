@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace DotNetClub.Data.EntityFramework.Mappings
 {
-    public sealed class UserCollectMapping
+    public sealed class TopicCollectMapping
     {
-        public static void Map(EntityTypeBuilder<UserCollect> builder)
+        public static void Map(EntityTypeBuilder<TopicCollect> builder)
         {
-            builder.ToTable("UserCollect");
+            builder.ToTable("TopicCollect");
 
             builder.HasKey(t => new { t.UserID, t.TopicID });
         }

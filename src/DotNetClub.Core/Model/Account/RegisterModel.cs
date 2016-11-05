@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DotNetClub.Web.ViewModels.Account
+namespace DotNetClub.Core.Model.Account
 {
     public class RegisterModel
     {

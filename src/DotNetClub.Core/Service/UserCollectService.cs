@@ -58,14 +58,14 @@ namespace DotNetClub.Core.Service
             return new OperationResult<bool?>(isCollect);
         }
 
-        public async Task<int> GetCollectCount(int userID)
+        public async Task<int> GetCollectCount(long userID)
         {
             var query = this.DbContext.UserCollects.Include(t => t.Topic).Where(t => t.UserID == userID && !t.Topic.IsDelete);
 
             return await query.CountAsync();
         }
 
-        public async Task<bool> IsCollected(int topicID, int userID)
+        public async Task<bool> IsCollected(long topicID, long userID)
         {
             return await this.DbContext.UserCollects.AnyAsync(t => t.TopicID == topicID && t.UserID == userID);
         }

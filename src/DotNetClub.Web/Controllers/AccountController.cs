@@ -1,9 +1,8 @@
 ﻿using DotNetClub.Core;
-using DotNetClub.Core.Model.Account;
+using DotNetClub.Core.Model.Auth;
 using DotNetClub.Core.Resource;
 using DotNetClub.Core.Service;
 using DotNetClub.Web.ViewModels.Account;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -18,11 +17,11 @@ namespace DotNetClub.Web.Controllers
     [Route("account")]
     public class AccountController : Base.ControllerBase
     {
-        private AccountService AccountService { get; set; }
+        private AuthService AccountService { get; set; }
 
         private ClientManager ClientManager { get; set; }
 
-        public AccountController(AccountService accountService, ClientManager clientManager)
+        public AccountController(AuthService accountService, ClientManager clientManager)
         {
             this.AccountService = accountService;
             this.ClientManager = clientManager;
@@ -51,7 +50,7 @@ namespace DotNetClub.Web.Controllers
                 return this.View(vm);
             }
 
-            var result = await this.AccountService.Register(model.UserName, model.Password, model.Email);
+            var result = await this.AccountService.Register(model);
 
             if (result.Success)
             {
@@ -59,16 +58,7 @@ namespace DotNetClub.Web.Controllers
             }
             else
             {
-                switch(result.ErrorCode)
-                {
-                    case RegisterResult.RegisterErrorCode.EmailExist:
-                        vm.ErrorMessage = "该Email已被注册";
-                        break;
-                    case RegisterResult.RegisterErrorCode.UserNameExist:
-                        vm.ErrorMessage = "该用户名已被注册";
-                        break;
-                }
-                
+                vm.ErrorMessage = result.ErrorMessage;
                 return this.View(vm);
             }
         }
@@ -100,31 +90,17 @@ namespace DotNetClub.Web.Controllers
                 return this.View(vm);
             }
 
-            var result = await this.AccountService.Login(model.UserName, model.Password);
+            var result = await this.AccountService.Login(model);
 
             if (result.Success)
             {
-                this.Response.Cookies.Append(this.ClientManager.CookieName, result.Token, new CookieOptions { Expires = DateTime.Now.AddDays(30) });
+                //this.Response.Cookies.Append(this.ClientManager.CookieName, result.Token, new CookieOptions { Expires = DateTime.Now.AddDays(30) });
 
                 return this.RedirectToAction("Index", "Home");
             }
             else
             {
-                switch (result.ErrorCode)
-                {
-                    case LoginResult.LoginErrorCode.InvalidPassword:
-                        vm.ErrorMessage = "密码错误";
-                        break;
-                    case LoginResult.LoginErrorCode.UserIsBlocked:
-                        vm.ErrorMessage = "用户已被禁用";
-                        break;
-                    case LoginResult.LoginErrorCode.UserNotActive:
-                        vm.ErrorMessage = "用户未激活";
-                        break;
-                    case LoginResult.LoginErrorCode.UserNotExist:
-                        vm.ErrorMessage = "用户不存在";
-                        break;
-                }
+                vm.ErrorMessage = result.ErrorMessage;
 
                 return this.View(vm);
             }

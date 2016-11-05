@@ -13,11 +13,17 @@ using DotNetClub.Core;
 using Newtonsoft.Json.Serialization;
 using DotNetClub.Web.Middlewares;
 using NLog.Extensions.Logging;
+using Autofac;
+using Share.Infrastructure;
+using DotNetClub.Domain.Consts;
+using DotNetClub.Data.EntityFramework;
 
 namespace DotNetClub.Web
 {
     public class Startup
     {
+        public IConfigurationRoot Configuration { get; private set; }
+
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
@@ -28,33 +34,28 @@ namespace DotNetClub.Web
             Configuration = builder.Build();
         }
 
-        public IConfigurationRoot Configuration { get; }
-
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<IConfiguration>(this.Configuration);
+            services.AddMvc();
+            services.AddScoped<Core.Security.SecurityManager>();
+        }
 
-            services.AddLogging();
+        public void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterInstance(this.Configuration).AsImplementedInterfaces();
 
-            services.AddDataProtection();
-            // Add framework services.
-            services.AddDbContext<ClubContext>(options =>
-                options.UseSqlServer(Configuration["ConnectionString"], 
-                b => 
-                {
-                    b.MigrationsAssembly("DotNetClub.Web");
-                    b.UseRowNumberForPaging();
-                })
-            );
-
-            services.AddMvc().AddJsonOptions(option=>
+            builder.AddUnitOfWork(uowBuilder =>
             {
-                option.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
-                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH;mm:ss";
+                uowBuilder.AddEntityFramework<Data.EntityFramework.Context.ClubContext>(UnitOfWorkNames.EntityFramework, null);
             });
 
-            services.AddCoreServices();
+            builder.AddEntityFrameworkRepository();
+            builder.AddCoreServices();
+
+            var redisConfiguration = builder.AddConfiguration<Core.Model.Configuration.RedisConfiguration>(this.Configuration.GetSection("Redis"));
+            var siteConfiguration = builder.AddConfiguration<Core.Model.Configuration.SiteConfiguration>(this.Configuration.GetSection("Site"));
+            builder.AddRedis(redisConfiguration.Host, redisConfiguration.Port, redisConfiguration.Password, redisConfiguration.Db);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -76,9 +77,6 @@ namespace DotNetClub.Web
             app.UseStaticFiles();
 
             app.UseExecuteTime();
-            app.UseClientManagerInitializer();
-
-            // Add external authentication middleware below. To configure them please see http://go.microsoft.com/fwlink/?LinkID=532715
 
             app.UseMvc();
         }

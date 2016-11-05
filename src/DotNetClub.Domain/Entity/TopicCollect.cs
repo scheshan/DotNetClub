@@ -1,15 +1,16 @@
-﻿using System;
+﻿using Share.Infrastructure.UnitOfWork;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace DotNetClub.Domain.Entity
 {
-    public class UserCollect
+    public class TopicCollect : IEntity
     {
-        public int UserID { get; set; }
+        public long UserID { get; set; }
 
-        public int TopicID { get; set; }
+        public long TopicID { get; set; }
 
         public DateTime CreateDate { get; set; }
     }

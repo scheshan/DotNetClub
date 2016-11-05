@@ -1,67 +1,81 @@
-﻿using DotNetClub.Core.Entity;
-using DotNetClub.Core.Utility;
+﻿using DotNetClub.Domain.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Share.Infrastructure.UnitOfWork;
+using DotNetClub.Core.Model.User;
+using Share.Infrastructure.Model;
+using Share.Infrastructure.Utilities;
 
 namespace DotNetClub.Core.Service
 {
-    public class UserService
+    public class UserService : ServiceBase
     {
-        private Data.ClubContext DbContext { get; set; }
-
-        public UserService(Data.ClubContext dbContext)
+        public UserService(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
-            this.DbContext = dbContext;
+
         }
 
-        public async Task EditUserInfo(int id, string webSite, string location, string signature)
+        public async Task<Result> EditUserInfo(long id, EditUserInfoModel model)
         {
-            var user = this.DbContext.Users.SingleOrDefault(t => t.ID == id);
-            if (user != null)
+            using (var uw = this.CreateUnitOfWork())
             {
-                user.WebSite = webSite;
-                user.Location = location;
-                user.Signature = signature;
+                var user = await uw.GetAsync<User>(t => t.ID == id);
 
-                await this.DbContext.SaveChangesAsync();
+                if (user == null)
+                {
+                    return Result.ErrorResult("该用户不存在");
+                }
+
+                user.WebSite = model.WebSite;
+                user.Location = model.Location;
+                user.Signature = model.Signature;
+
+                await uw.UpdateAsync(user);
+
+                return Result.SuccessResult();
             }
         }
 
-        public async Task<bool> EditPassword(int id, string oldPassword, string newPassword)
+        public async Task<Result> EditPassword(long id, string oldPassword, string newPassword)
         {
-            var user = this.DbContext.Users.SingleOrDefault(t => t.ID == id);
-            if (user == null)
+            oldPassword = EncryptHelper.EncryptMD5(oldPassword);
+            newPassword = EncryptHelper.EncryptMD5(newPassword);
+
+            using (var uw = this.CreateUnitOfWork())
             {
-                return false;
+                var user = await uw.GetAsync<User>(t => t.ID == id && t.Password == oldPassword);
+                if (user == null)
+                {
+                    return Result.ErrorResult("密码错误");
+                }
+
+                user.Password = newPassword;
+                await uw.UpdateAsync(user);
+
+                return Result.SuccessResult();
             }
-
-            byte[] salt = Convert.FromBase64String(user.Salt);
-
-            oldPassword = EncryptHelper.Encrypt(salt, oldPassword);
-
-            if (oldPassword != user.Password)
-            {
-                return false;
-            }
-
-            newPassword = EncryptHelper.Encrypt(salt, newPassword);
-            user.Password = newPassword;
-            await this.DbContext.SaveChangesAsync();
-
-            return true;
         }
 
         public async Task<User> Get(string userName)
         {
-            return await this.DbContext.Users.SingleOrDefaultAsync(t => t.UserName == userName);
+            using (var uw = this.CreateUnitOfWork())
+            {
+                var user = await uw.GetAsync<User>(t => t.UserName == userName);
+                return user;
+            }
         }
 
         public async Task<User> Get(int id)
         {
-            return await this.DbContext.Users.SingleOrDefaultAsync(t => t.ID == id);
+            using (var uw = this.CreateUnitOfWork())
+            {
+                var user = await uw.GetAsync<User>(t => t.ID == id);
+                return user;
+            }
         }
     }
 }

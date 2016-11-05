@@ -161,7 +161,7 @@ namespace DotNetClub.Core.Service
             return new OperationResult();
         }
 
-        public async Task<List<Topic>> QueryRecentCreatedTopicList(int count, int userID, params int[] exclude)
+        public async Task<List<Topic>> QueryRecentCreatedTopicList(int count, long userID, params int[] exclude)
         {
             var query = this.CreateDefaultQuery()
                 .Where(t => t.CreateUserID == userID)
@@ -180,7 +180,7 @@ namespace DotNetClub.Core.Service
             return result;
         }
 
-        public async Task<List<Topic>> QueryRecentCommentedTopicList(int count, int userID)
+        public async Task<List<Topic>> QueryRecentCommentedTopicList(int count, long userID)
         {
             var commentedTopicIDList = await this.DbContext.Comments.Where(t => t.CreateUserID == userID && !t.IsDelete)
                 .OrderByDescending(t => t.ID)
@@ -198,7 +198,7 @@ namespace DotNetClub.Core.Service
             return topicList;
         }
 
-        public async Task<PagedResult<Topic>> QueryCreatedTopicList(int userID, int pageIndex, int pageSize)
+        public async Task<PagedResult<Topic>> QueryCreatedTopicList(long userID, int pageIndex, int pageSize)
         {
             var query = this.CreateDefaultQuery()
                 .Where(t => t.CreateUserID == userID)
@@ -213,7 +213,7 @@ namespace DotNetClub.Core.Service
             return new PagedResult<Topic>(topicList, pageIndex, pageSize, total);
         }
 
-        public async Task<PagedResult<Topic>> QueryCommentedTopicList(int userID, int pageIndex, int pageSize)
+        public async Task<PagedResult<Topic>> QueryCommentedTopicList(long userID, int pageIndex, int pageSize)
         {
             var topicIDQuery = this.DbContext.Comments.Where(t => t.CreateUserID == userID && !t.IsDelete)
                 .OrderByDescending(t => t.ID)
@@ -280,7 +280,7 @@ namespace DotNetClub.Core.Service
             await this.DbContext.Database.ExecuteSqlCommandAsync(sql);
         }
 
-        public async Task<PagedResult<Topic>> QueryCollectedTopicList(int userID, int pageIndex, int pageSize)
+        public async Task<PagedResult<Topic>> QueryCollectedTopicList(long userID, int pageIndex, int pageSize)
         {
             var topicIDQuery = this.DbContext.UserCollects.Include(t => t.Topic)
                 .Where(t => !t.Topic.IsDelete)

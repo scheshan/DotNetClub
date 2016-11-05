@@ -8,7 +8,7 @@ namespace DotNetClub.Domain.Entity
 {
     public class Topic : IEntity
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         public string Category { get; set; }
 
@@ -16,28 +16,22 @@ namespace DotNetClub.Domain.Entity
 
         public string Content { get; set; }
 
-        public int CreateUserID { get; set; }
+        public long CreateUser { get; set; }
 
         public DateTime CreateDate { get; set; }
 
-        public DateTime UpdateDate { get; set; }
+        public DateTime? UpdateDate { get; set; }
 
-        public DateTime? LastReplyDate { get; set; }
+        public bool IsLock { get; set; }
 
-        public bool Lock { get; set; }
+        public bool IsRecommand { get; set; }
 
-        public bool Recommand { get; set; }
-
-        public bool Top { get; set; }
+        public bool IsTop { get; set; }
 
         public bool IsDelete { get; set; }
 
-        public int VisitCount { get; set; }
+        public DateTime? LastReplyDate { get; set; }
 
-        public int ReplyCount { get; set; }
-
-        public int CollectCount { get; set; }
-
-        public int? LastReplyUserID { get; set; }
+        public long? LastReplyUserID { get; set; }
     }
 }
