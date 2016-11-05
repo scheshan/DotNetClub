@@ -2,7 +2,6 @@
 using DotNetClub.Core.Model;
 using DotNetClub.Core.Resource;
 using DotNetClub.Core.Service;
-using DotNetClub.Web.ViewModels.My;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;

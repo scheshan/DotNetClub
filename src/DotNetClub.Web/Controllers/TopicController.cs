@@ -1,13 +1,8 @@
-﻿using DotNetClub.Core;
-using DotNetClub.Core.Entity;
-using DotNetClub.Core.Model.Topic;
+﻿using DotNetClub.Core.Model.Topic;
 using DotNetClub.Core.Service;
 using DotNetClub.Web.ViewModels.Topic;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace DotNetClub.Web.Controllers
