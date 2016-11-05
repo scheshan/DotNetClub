@@ -29,7 +29,7 @@
             </visible>
 
             <small>
-                <datetime date="@topic.CreateDate"></datetime>
+                @(topic.CreateDate.Humanize(utcDate: false))
             </small>
         </a>
 

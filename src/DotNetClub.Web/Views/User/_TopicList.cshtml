@@ -1,5 +1,5 @@
-﻿@using DotNetClub.Core.Entity
-@model List<Topic>
+﻿@using DotNetClub.Core.Model.Topic
+@model List<TopicModel>
 
 @if (Model.Count > 0)
 {
@@ -11,18 +11,18 @@
             </a>
 
             <span class="text-muted pull-left reply-count">
-                <span class="text-info">@topic.ReplyCount</span>
-                <span class="text-muted reply-seperator">/</span>
-                <small class="text-muted">@topic.VisitCount</small>
+                <small class="text-info">@topic.Comments</small>
+                <small class="text-muted reply-seperator">/</small>
+                <small class="text-muted">@topic.Visits</small>
             </span>
 
-            <a class="pull-right last-reply text-muted" asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" asp-fragment="@(topic.LastReplyUserID.HasValue ? "latest" : "")">
-                <visible condition="topic.LastReplyUserID.HasValue">
+            <a class="pull-right last-reply text-muted" asp-action="Index" asp-controller="Topic" asp-route-id="@topic.ID" asp-fragment="@(topic.LastReplyUser != null ? "latest" : "")">
+                <visible condition="topic.LastReplyUser != null">
                     <useravatar title="@topic.LastReplyUser.UserName" size="18" email="@topic.LastReplyUser.Email"></useravatar>
                 </visible>
 
                 <small>
-                    <datetime date="@topic.CreateDate"></datetime>
+                    @(topic.CreateDate.Humanize(utcDate: false))
                 </small>
             </a>
 

@@ -16,7 +16,7 @@
         <p condition="Model.CollectCount > 0">
             <a asp-action="Collects" asp-controller="User" asp-route-userName="@Model.User.UserName" class="text-muted">
                 @Model.CollectCount 个主题收藏
-            </a>            
+            </a>
         </p>
 
         <p>
@@ -28,7 +28,7 @@
                 <li condition="!string.IsNullOrWhiteSpace(Model.User.Location)">
                     <i class="fa fa-lg fa-fw fa-map-marker"></i>
                     @Model.User.Location
-                </li>                
+                </li>
             </ul>
         </p>
 
@@ -45,7 +45,7 @@
     </div>
     <div class="panel-footer" condition="Model.RecentCreatedTopicList.Count > 0">
         <a asp-action="Topics" asp-controller="User" asp-route-userName="@Model.User.UserName" class="text-muted">查看更多»</a>
-    </div>    
+    </div>
 </div>
 
 <div class="panel panel-default">
@@ -55,5 +55,5 @@
     </div>
     <div class="panel-footer" condition="Model.RecentCommentedTopicList.Count > 0">
         <a asp-action="Comments" asp-controller="User" asp-route-userName="@Model.User.UserName" class="text-muted">查看更多»</a>
-    </div>    
+    </div>
 </div>

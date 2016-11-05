@@ -24,8 +24,8 @@
     "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0-*",
 
     "NLog.Extensions.Logging": "1.0.0-*",
-
     "CommonMark.Net": "0.12.0",
+    "Humanizer.xproj": "2.1.0",
 
     "Share.Infrastructure": {
       "target": "project"
