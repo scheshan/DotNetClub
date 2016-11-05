@@ -7,6 +7,8 @@
     "Microsoft.EntityFrameworkCore": "1.1.0-*",
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0-*",
     "Microsoft.AspNetCore.Http": "1.1.0-*",
+    
+    "AutoMapper": "4.2.1",
 
     "DotNetClub.Domain": {
       "target": "project"

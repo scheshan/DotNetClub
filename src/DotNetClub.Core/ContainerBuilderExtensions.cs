@@ -24,6 +24,8 @@ namespace DotNetClub.Core
                 }
             }
 
+            AutoMapperConfig.Configure();
+
             return builder;
         }
     }

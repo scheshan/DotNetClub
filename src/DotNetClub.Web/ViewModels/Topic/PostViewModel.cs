@@ -1,4 +1,5 @@
 ﻿using DotNetClub.Core.Model.Category;
+using DotNetClub.Core.Model.Topic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace DotNetClub.Web.ViewModels.Topic
     {
         public SelectList CategoryList { get; set; }
         
-        public PostModel Model { get; set; }
+        public SaveTopicModel Model { get; set; }
 
         public bool IsNew { get; set; }
     }

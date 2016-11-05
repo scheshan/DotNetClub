@@ -49,5 +49,12 @@ namespace Share.Infrastructure.Redis
                 return default(T);
             }
         }
+
+        public static List<T> JsonHashGet<T>(this IDatabase redis, RedisKey key, RedisValue[] fields)
+        {
+            RedisValue[] values = redis.HashGet(key, fields);
+
+            return values.Where(t => t.HasValue).Select(t => JsonConvert.DeserializeObject<T>(t)).ToList();
+        }
     }
 }

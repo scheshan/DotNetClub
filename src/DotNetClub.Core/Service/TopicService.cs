@@ -11,6 +11,11 @@ using Share.Infrastructure.Model;
 using Share.Infrastructure.Extensions;
 using DotNetClub.Domain.Repository;
 using DotNetClub.Domain.Consts;
+using Share.Infrastructure.Redis;
+using StackExchange.Redis;
+using DotNetClub.Core.Model.Category;
+using AutoMapper;
+using DotNetClub.Core.Model.User;
 
 namespace DotNetClub.Core.Service
 {
@@ -338,6 +343,51 @@ namespace DotNetClub.Core.Service
             {
                 return new List<TopicModel>();
             }
+
+            var redis = this.RedisProvider.GetDatabase();
+
+            var topicIDList = entityList.Select(t => t.ID).ToList();
+            var userIDList = entityList.Select(t => t.CreateUser).Concat(entityList.Where(t => t.LastReplyUserID.HasValue).Select(t => t.LastReplyUserID.Value)).ToList();
+
+            List<CategoryModel> categoryList = this.CategoryService.All();
+            List<User> userList = redis.JsonHashGet<User>(RedisKeys.User, userIDList.Select(t => (RedisValue)t).ToArray());
+            RedisValue[] topicVisitCount = redis.HashGet(RedisKeys.TopicVisit, topicIDList.Select(t => (RedisValue)t).ToArray());
+
+            var result = entityList.Select(t =>
+            {
+                int index = topicIDList.IndexOf(t.ID);
+
+                var model = new TopicModel
+                {
+                    Category = categoryList.SingleOrDefault(c => c.Key == t.Category),
+                    Content = t.Content,
+                    CreateDate = t.CreateDate,
+                    ID = t.ID,
+                    IsLock = t.IsLock,
+                    IsRecommand = t.IsRecommand,
+                    IsTop = t.IsTop,
+                    LastReplyDate = t.LastReplyDate,
+                    Title = t.Title,
+                    UpdateDate = t.UpdateDate
+                };
+
+                var createUser = userList.SingleOrDefault(u => u.ID == t.CreateUser);
+                model.CreateUser = Mapper.Map<UserBasicModel>(createUser);
+
+                if (t.LastReplyUserID.HasValue)
+                {
+                    var updateUser = userList.SingleOrDefault(u => u.ID == t.LastReplyUserID.Value);
+                    model.LastReplyUser = Mapper.Map<UserBasicModel>(updateUser);
+                }
+
+                RedisValue topicVisit = topicVisitCount[index];
+                if (topicVisit.HasValue)
+                {
+                    model.Visits = Convert.ToInt64(topicVisit);
+                }
+
+                return model;
+            });
 
             return new List<TopicModel>();
         }

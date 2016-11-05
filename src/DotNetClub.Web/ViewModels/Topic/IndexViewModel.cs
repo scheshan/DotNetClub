@@ -1,4 +1,5 @@
 ﻿using DotNetClub.Core.Model.Category;
+using DotNetClub.Core.Model.Topic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ namespace DotNetClub.Web.ViewModels.Topic
 {
     public class IndexViewModel
     {
-        public Core.Entity.Topic Topic { get; set; }
+        public TopicModel Topic { get; set; }
 
         public List<CommentItemModel> CommentList { get; set; }
 

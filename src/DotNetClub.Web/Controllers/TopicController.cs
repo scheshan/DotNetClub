@@ -1,246 +1,237 @@
-﻿//using DotNetClub.Core;
-//using DotNetClub.Core.Entity;
-//using DotNetClub.Core.Model.Topic;
-//using DotNetClub.Core.Service;
-//using DotNetClub.Web.ViewModels.Topic;
-//using Microsoft.AspNetCore.Mvc;
-//using Microsoft.AspNetCore.Mvc.Rendering;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
+﻿using DotNetClub.Core;
+using DotNetClub.Core.Entity;
+using DotNetClub.Core.Model.Topic;
+using DotNetClub.Core.Service;
+using DotNetClub.Web.ViewModels.Topic;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-//namespace DotNetClub.Web.Controllers
-//{
-//    [Route("topic")]
-//    public class TopicController : ControllerBase
-//    {
-//        private CategoryService CategoryService { get; set; }
+namespace DotNetClub.Web.Controllers
+{
+    [Route("topic")]
+    public class TopicController : ControllerBase
+    {
+        private CategoryService CategoryService { get; set; }
 
-//        private TopicService TopicService { get; set; }
+        private TopicService TopicService { get; set; }
 
-//        private CommentService CommentService { get; set; }
+        public TopicController(CategoryService categoryService, TopicService topicService)
+        {
+            this.CategoryService = categoryService;
+            this.TopicService = topicService;
+        }
 
-//        private UserVoteService UserVoteService { get; set; }
+        //[HttpGet("{id:long}")]
+        //public async Task<IActionResult> Index(long id)
+        //{
+        //    var topic = await this.TopicService.Get(id);
 
-//        private UserCollectService UserCollectService { get; set; }
+        //    if (topic == null)
+        //    {
+        //        return this.NotFound();
+        //    }
 
-//        public TopicController(CategoryService categoryService, TopicService topicService, CommentService commentService, UserVoteService userVoteService, UserCollectService userCollectService)
-//        {
-//            this.CategoryService = categoryService;
-//            this.TopicService = topicService;
-//            this.CommentService = commentService;
-//            this.UserVoteService = userVoteService;
-//            this.UserCollectService = userCollectService;
-//        }
+        //    ViewBag.Title = topic.Title;
 
-//        [HttpGet("{id:long}")]
-//        public async Task<IActionResult> Index(long id)
-//        {
-//            var topic = await this.TopicService.Get(id);
+        //    this.TopicService.IncreaseVisit(id);
 
-//            if (topic == null)
-//            {
-//                return this.NotFound();
-//            }
+        //    var vm = new IndexViewModel();
+        //    vm.Topic = topic;
+        //    vm.CommentList = new List<CommentItemModel>();
+        //    vm.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && topic.CreateUserID == this.ClientManager.CurrentUser.ID);
 
-//            ViewBag.Title = topic.Title;
+        //    var commentEntityList = await this.CommentService.QueryByTopic(id);
 
-//            await this.TopicService.IncreaseVisit(id);
+        //    List<UserVote> userVoteList = new List<UserVote>();
 
-//            var vm = new IndexViewModel();
-//            vm.Topic = topic;
-//            vm.CommentList = new List<CommentItemModel>();
-//            vm.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && topic.CreateUserID == this.ClientManager.CurrentUser.ID);
+        //    if (this.ClientManager.IsLogin)
+        //    {
+        //        vm.IsCollected = await this.UserCollectService.IsCollected(topic.ID, this.ClientManager.CurrentUser.ID);
 
-//            var commentEntityList = await this.CommentService.QueryByTopic(id);
+        //        var commentIDList = commentEntityList.Select(t => t.ID).ToArray();
+        //        userVoteList = await this.UserVoteService.QueryByCommentAndUser(commentIDList, this.ClientManager.CurrentUser.ID);
+        //    }
 
-//            List<UserVote> userVoteList = new List<UserVote>();
+        //    foreach (var commentEntity in commentEntityList)
+        //    {
+        //        var model = new CommentItemModel(commentEntity);
+        //        model.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && commentEntity.CreateUserID == this.ClientManager.CurrentUser.ID);
+        //        model.Voted = userVoteList.Any(t => t.CommentID == commentEntity.ID);
 
-//            if (this.ClientManager.IsLogin)
-//            {
-//                vm.IsCollected = await this.UserCollectService.IsCollected(topic.ID, this.ClientManager.CurrentUser.ID);
+        //        vm.CommentList.Add(model);
+        //    }
 
-//                var commentIDList = commentEntityList.Select(t => t.ID).ToArray();
-//                userVoteList = await this.UserVoteService.QueryByCommentAndUser(commentIDList, this.ClientManager.CurrentUser.ID);
-//            }
+        //    return this.View(vm);
+        //}
 
-//            foreach (var commentEntity in commentEntityList)
-//            {
-//                var model = new CommentItemModel(commentEntity);
-//                model.CanOperate = this.ClientManager.IsAdmin || (this.ClientManager.IsLogin && commentEntity.CreateUserID == this.ClientManager.CurrentUser.ID);
-//                model.Voted = userVoteList.Any(t => t.CommentID == commentEntity.ID);
+        [HttpGet("new")]
+        [Filters.RequireLogin]
+        public IActionResult New()
+        {
+            var vm = new PostViewModel();
+            vm.IsNew = true;
+            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");
+            vm.Model = new SaveTopicModel();
 
-//                vm.CommentList.Add(model);
-//            }
+            ViewBag.Title = "新主题";
 
-//            return this.View(vm);
-//        }
+            return this.View("Post", vm);
+        }
 
-//        [HttpGet("new")]
-//        [Filters.RequireLogin]
-//        public IActionResult New()
-//        {
-//            var vm = new PostViewModel();
-//            vm.IsNew = true;
-//            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");
-//            vm.Model = new PostModel();
+        [HttpPost("new")]
+        [Filters.RequireLogin]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> New(SaveTopicModel model)
+        {
+            var vm = new PostViewModel();
+            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");
+            vm.Model = model;
 
-//            ViewBag.Title = "新主题";
+            if (!ModelState.IsValid)
+            {
+                return this.Notice(Core.Resource.Messages.ModelStateNotValid);
+            }
 
-//            return this.View("Post", vm);
-//        }
+            var result = await this.TopicService.Add(model);
 
-//        [HttpPost("new")]
-//        [Filters.RequireLogin]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> New(PostModel model)
-//        {
-//            var vm = new PostViewModel();
-//            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name");
-//            vm.Model = model;
+            if (result.Success)
+            {
+                return this.RedirectToAction("Index", "Topic", new { id = result.Data });
+            }
+            else
+            {
+                return this.Notice(result.ErrorMessage);
+            }
+        }
 
-//            if (!ModelState.IsValid)
-//            {
-//                return this.Notice(Core.Resource.Messages.ModelStateNotValid);
-//            }
+        //        [HttpGet("{id:int}/edit")]
+        //        [Filters.RequireLogin]
+        //        public async Task<IActionResult> Edit(int id)
+        //        {
+        //            var topic = await this.TopicService.Get(id);
 
-//            var result = await this.TopicService.Add(model.Category, model.Title, model.Content, this.ClientManager.CurrentUser.ID);
+        //            if (topic == null || !this.ClientManager.CanOperateTopic(topic))
+        //            {
+        //                return this.Forbid();
+        //            }
 
-//            if (result.Success)
-//            {
-//                return this.RedirectToAction("Index", "Topic", new { id = result.Data.Value });
-//            }
-//            else
-//            {
-//                return this.Notice(result.ErrorMessage);
-//            }
-//        }
+        //            ViewBag.Title = "编辑主题";
 
-//        [HttpGet("{id:int}/edit")]
-//        [Filters.RequireLogin]
-//        public async Task<IActionResult> Edit(int id)
-//        {
-//            var topic = await this.TopicService.Get(id);
+        //            var vm = new PostViewModel();
+        //            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name", topic.Category);
+        //            vm.Model = new PostModel
+        //            {
+        //                Category = topic.Category,
+        //                Content = topic.Content,
+        //                Title = topic.Title
+        //            };
 
-//            if (topic == null || !this.ClientManager.CanOperateTopic(topic))
-//            {
-//                return this.Forbid();
-//            }
+        //            return this.View("Post", vm);
+        //        }
 
-//            ViewBag.Title = "编辑主题";
+        //        [HttpPost("{id:int}/edit")]
+        //        [Filters.RequireLogin]
+        //        [ValidateAntiForgeryToken]
+        //        public async Task<IActionResult> Edit(int id, SaveTopicModel model)
+        //        {
+        //            if (!ModelState.IsValid)
+        //            {
+        //                return this.Notice(Core.Resource.Messages.ModelStateNotValid);
+        //            }
 
-//            var vm = new PostViewModel();
-//            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name", topic.Category);
-//            vm.Model = new PostModel
-//            {
-//                Category = topic.Category,
-//                Content = topic.Content,
-//                Title = topic.Title
-//            };
+        //            var result = await this.TopicService.Edit(id, model);
 
-//            return this.View("Post", vm);
-//        }
+        //            if (result.Success)
+        //            {
+        //                return this.RedirectToAction("Index", "Topic", new { id = id });
+        //            }
+        //            else
+        //            {
+        //                return this.Notice(result.ErrorMessage);
+        //            }
+        //        }
 
-//        [HttpPost("{id:int}/edit")]
-//        [Filters.RequireLogin]
-//        [ValidateAntiForgeryToken]
-//        public async Task<IActionResult> Edit(int id, SaveTopicModel model)
-//        {
-//            if (!ModelState.IsValid)
-//            {
-//                return this.Notice(Core.Resource.Messages.ModelStateNotValid);
-//            }
+        //        [HttpGet("{id:int}/delete")]
+        //        [Filters.RequireLogin]
+        //        public async Task<IActionResult> Delete(int id)
+        //        {
+        //            var topic = await this.TopicService.Get(id);
+        //            if (topic == null || topic.CreateUserID != this.ClientManager.CurrentUser.ID)
+        //            {
+        //                return this.Forbid();
+        //            }
 
-//            var result = await this.TopicService.Edit(id, model);
+        //            await this.TopicService.Delete(id);
 
-//            if (result.Success)
-//            {
-//                return this.RedirectToAction("Index", "Topic", new { id = id });
-//            }
-//            else
-//            {
-//                return this.Notice(result.ErrorMessage);
-//            }
-//        }
+        //            return this.RedirectToAction("Index", "Home");
+        //        }
 
-//        [HttpGet("{id:int}/delete")]
-//        [Filters.RequireLogin]
-//        public async Task<IActionResult> Delete(int id)
-//        {
-//            var topic = await this.TopicService.Get(id);
-//            if (topic == null || topic.CreateUserID != this.ClientManager.CurrentUser.ID)
-//            {
-//                return this.Forbid();
-//            }
+        //        [HttpGet("{id:int}/recommand")]
+        //        [Filters.RequireLogin]
+        //        public async Task<IActionResult> Recommand(int id)
+        //        {
+        //            var result = await this.TopicService.ToggleRecommand(id);
 
-//            await this.TopicService.Delete(id);
+        //            if (result.Success)
+        //            {
+        //                return this.RedirectToAction("Index", "Topic", new { id = id });
+        //            }
+        //            else
+        //            {
+        //                return this.Notice(result.ErrorMessage);
+        //            }
+        //        }
 
-//            return this.RedirectToAction("Index", "Home");
-//        }
+        //        [HttpGet("{id:int}/top")]
+        //        [Filters.RequireLogin]
+        //        public async Task<IActionResult> Top(int id)
+        //        {
+        //            var result = await this.TopicService.ToggleTop(id);
 
-//        [HttpGet("{id:int}/recommand")]
-//        [Filters.RequireLogin]
-//        public async Task<IActionResult> Recommand(int id)
-//        {
-//            var result = await this.TopicService.ToggleRecommand(id);
+        //            if (result.Success)
+        //            {
+        //                return this.RedirectToAction("Index", "Topic", new { id = id });
+        //            }
+        //            else
+        //            {
+        //                return this.Notice(result.ErrorMessage);
+        //            }
+        //        }
 
-//            if (result.Success)
-//            {
-//                return this.RedirectToAction("Index", "Topic", new { id = id });
-//            }
-//            else
-//            {
-//                return this.Notice(result.ErrorMessage);
-//            }
-//        }
+        //        [HttpGet("{id:int}/lock")]
+        //        [Filters.RequireLogin]
+        //        public async Task<IActionResult> Lock(int id)
+        //        {
+        //            var result = await this.TopicService.ToggleLock(id);
 
-//        [HttpGet("{id:int}/top")]
-//        [Filters.RequireLogin]
-//        public async Task<IActionResult> Top(int id)
-//        {
-//            var result = await this.TopicService.ToggleTop(id);
+        //            if (result.Success)
+        //            {
+        //                return this.RedirectToAction("Index", "Topic", new { id = id });
+        //            }
+        //            else
+        //            {
+        //                return this.Notice(result.ErrorMessage);
+        //            }
+        //        }
 
-//            if (result.Success)
-//            {
-//                return this.RedirectToAction("Index", "Topic", new { id = id });
-//            }
-//            else
-//            {
-//                return this.Notice(result.ErrorMessage);
-//            }
-//        }
+        //        [HttpGet("{id:int}/collect")]
+        //        [Filters.RequireLogin]
+        //        public async Task<IActionResult> Collect(int id)
+        //        {
+        //            var result = await this.UserCollectService.Collect(id);
 
-//        [HttpGet("{id:int}/lock")]
-//        [Filters.RequireLogin]
-//        public async Task<IActionResult> Lock(int id)
-//        {
-//            var result = await this.TopicService.ToggleLock(id);
-
-//            if (result.Success)
-//            {
-//                return this.RedirectToAction("Index", "Topic", new { id = id });
-//            }
-//            else
-//            {
-//                return this.Notice(result.ErrorMessage);
-//            }
-//        }
-
-//        [HttpGet("{id:int}/collect")]
-//        [Filters.RequireLogin]
-//        public async Task<IActionResult> Collect(int id)
-//        {
-//            var result = await this.UserCollectService.Collect(id);
-
-//            if (result.Success)
-//            {
-//                return this.RedirectToAction("Index", "Topic", new { id = id });
-//            }
-//            else
-//            {
-//                return this.Notice(result.ErrorMessage);
-//            }
-//        }
-//    }
-//}
+        //            if (result.Success)
+        //            {
+        //                return this.RedirectToAction("Index", "Topic", new { id = id });
+        //            }
+        //            else
+        //            {
+        //                return this.Notice(result.ErrorMessage);
+        //            }
+        //        }
+    }
+}

@@ -7,7 +7,7 @@ namespace DotNetClub.Core.Model.User
 {
     public class UserBasicModel
     {
-        public int ID { get; set; }
+        public long ID { get; set; }
 
         public string UserName { get; set; }
 
