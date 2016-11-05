@@ -39,24 +39,10 @@
 </div>
 
 <script type="text/javascript">
-    $("#frmLogin").validate({
+    validateForm("#frmLogin", {
         messages: {
-            UserName: {
-                required: "请输入用户名"
-            },
+            UserName: "请输入用户名",
             Password: "请输入密码"
         },
-        highlight: function (element) {
-            $(element).parent().parent().addClass('has-error');
-        },
-        success: function (element) {
-            $(element).parent().parent().removeClass('has-error');
-            $(element).remove();
-        },
-        errorPlacement: function (err, element) {
-            err.addClass("help-block text-danger");
-            element.parent().next().append(err);
-        },
-        errorElement: "span"
-    })
+    });
 </script>

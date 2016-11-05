@@ -1,5 +1,4 @@
 ﻿@using DotNetClub.Core
-@inject ClientManager clientManager
 
 @{
     Layout = @"~/Views/Shared/_Layout.cshtml";
@@ -9,7 +8,7 @@
     @RenderBody()
 </div>
 <div class="col-md-3">
-    @await Component.InvokeAsync("UserInfoPanel", new { user = clientManager.CurrentUser })
+    @Html.Partial("_UserInfo", SecurityManager.CurrentUser)
 
     @await Component.InvokeAsync("NewTopicPanel")
 

@@ -8,6 +8,9 @@ using Share.Infrastructure.UnitOfWork;
 using DotNetClub.Core.Model.User;
 using Share.Infrastructure.Model;
 using Share.Infrastructure.Utilities;
+using Share.Infrastructure.Redis;
+using DotNetClub.Domain.Consts;
+using Share.Infrastructure.Extensions;
 
 namespace DotNetClub.Core.Service
 {
@@ -36,14 +39,19 @@ namespace DotNetClub.Core.Service
 
                 await uw.UpdateAsync(user);
 
+                var redis = this.RedisProvider.GetDatabase();
+                redis.JsonHashSet(RedisKeys.User, user.ID, user);
+
+                this.SecurityManager.ReloadUser();
+
                 return Result.SuccessResult();
             }
         }
 
-        public async Task<Result> EditPassword(long id, string oldPassword, string newPassword)
+        public async Task<Result> EditPassword(long id, EditPasswordModel model)
         {
-            oldPassword = EncryptHelper.EncryptMD5(oldPassword);
-            newPassword = EncryptHelper.EncryptMD5(newPassword);
+            string oldPassword = EncryptHelper.EncryptMD5(model.OldPassword);
+            string newPassword = EncryptHelper.EncryptMD5(model.NewPassword);
 
             using (var uw = this.CreateUnitOfWork())
             {
@@ -56,26 +64,60 @@ namespace DotNetClub.Core.Service
                 user.Password = newPassword;
                 await uw.UpdateAsync(user);
 
+                var redis = this.RedisProvider.GetDatabase();
+                redis.JsonHashSet(RedisKeys.User, user.ID, user);
+
                 return Result.SuccessResult();
             }
         }
 
-        public async Task<User> Get(string userName)
+        public async Task<UserModel> Get(string userName)
         {
             using (var uw = this.CreateUnitOfWork())
             {
                 var user = await uw.GetAsync<User>(t => t.UserName == userName);
-                return user;
+
+                if (user == null)
+                {
+                    return null;
+                }
+
+                return this.Transform(user).First();
             }
         }
 
-        public async Task<User> Get(int id)
+        public UserModel Get(long id)
         {
-            using (var uw = this.CreateUnitOfWork())
+            var redis = this.RedisProvider.GetDatabase();
+
+            var user = redis.JsonHashGet<User>(RedisKeys.User, id);
+
+            if (user == null)
             {
-                var user = await uw.GetAsync<User>(t => t.ID == id);
-                return user;
+                return null;
             }
+
+            return this.Transform(user).First();
+        }
+
+        private List<UserModel> Transform(params User[] entityList)
+        {
+            if (entityList.IsEmptyCollection())
+            {
+                return new List<UserModel>();
+            }
+
+            return entityList.Select(t => new UserModel
+            {
+                CreateDate = t.CreateDate,
+                Email = t.Email,
+                ID = t.ID,
+                Location = t.Location,
+                Signature = t.Signature,
+                Status = t.Status,
+                UserName = t.UserName,
+                WebSite = t.WebSite
+            }).ToList();
         }
     }
 }

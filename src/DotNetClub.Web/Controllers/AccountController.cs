@@ -15,16 +15,13 @@ using System.Threading.Tasks;
 namespace DotNetClub.Web.Controllers
 {
     [Route("account")]
-    public class AccountController : Base.ControllerBase
+    public class AccountController : ControllerBase
     {
-        private AuthService AccountService { get; set; }
+        private AuthService AuthService { get; set; }
 
-        private ClientManager ClientManager { get; set; }
-
-        public AccountController(AuthService accountService, ClientManager clientManager)
+        public AccountController(AuthService authService)
         {
-            this.AccountService = accountService;
-            this.ClientManager = clientManager;
+            this.AuthService = authService;
         }
 
         [HttpGet("register")]
@@ -50,11 +47,13 @@ namespace DotNetClub.Web.Controllers
                 return this.View(vm);
             }
 
-            var result = await this.AccountService.Register(model);
+            var result = await this.AuthService.Register(model);
 
             if (result.Success)
             {
-                return this.RedirectToAction("RegisterSuccess", "Account");
+                Core.Security.SecurityManager.WriteToken(this.HttpContext, result.Data, false);
+
+                return this.RedirectToAction("Index", "Home");
             }
             else
             {
@@ -90,11 +89,11 @@ namespace DotNetClub.Web.Controllers
                 return this.View(vm);
             }
 
-            var result = await this.AccountService.Login(model);
+            var result = await this.AuthService.Login(model);
 
             if (result.Success)
             {
-                //this.Response.Cookies.Append(this.ClientManager.CookieName, result.Token, new CookieOptions { Expires = DateTime.Now.AddDays(30) });
+                Core.Security.SecurityManager.WriteToken(this.HttpContext, result.Data, model.RememberPassword);
 
                 return this.RedirectToAction("Index", "Home");
             }
@@ -109,8 +108,24 @@ namespace DotNetClub.Web.Controllers
         [HttpGet("logout")]
         public IActionResult LogOut()
         {
-            this.Response.Cookies.Delete(this.ClientManager.CookieName);
+            Core.Security.SecurityManager.ClearToken(this.HttpContext);
             return this.RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet("checkusername")]
+        public async Task<IActionResult> CheckUserName(string userName)
+        {
+            bool result = await this.AuthService.IsUserNameRegistered(userName);
+
+            return this.Content((!result).ToString().ToLower());
+        }
+
+        [HttpGet("checkemail")]
+        public async Task<IActionResult> CheckEmail(string email)
+        {
+            bool isEmailRegistered = await this.AuthService.IsEmailRegistered(email);
+
+            return this.Content((!isEmailRegistered).ToString().ToLower());
         }
     }
 }

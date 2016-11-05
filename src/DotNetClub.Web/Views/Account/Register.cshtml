@@ -14,7 +14,7 @@
     <div class="panel-body">
         <div condition="Model.ErrorMessage != null" class="alert alert-danger">@Model.ErrorMessage</div>        
 
-        <form method="post" asp-action="Register" asp-controller="Account" asp-antiforgery="true" id="frmRegister" class="form-horizontal">
+        <form method="post" asp-action="Register" asp-controller="Account" asp-antiforgery="true" id="frmRegister" class="form-horizontal" novalidate>
             <div class="form-group">
                 <label class="col-md-2 control-label">用户名</label>
                 <div class="col-md-4">
@@ -25,7 +25,7 @@
             <div class="form-group">
                 <label class="col-md-2 control-label">密码</label>
                 <div class="col-md-4">
-                    <input name="Password" id="txtPassword" type="password" class="form-control" required maxlength="20" />
+                    <input name="Password" id="txtPassword" type="password" class="form-control" required maxlength="32" />
                 </div>
                 <div class="col-md-6"></div>
             </div>
@@ -53,40 +53,34 @@
 </div>
 
 <script type="text/javascript">
-    $("#frmRegister").validate({
+    validateForm("#frmRegister", {
         rules: {
-            UserName: "alphanumeric",
+            UserName: {
+                pattern: /^[A-Za-z0-9\u4e00-\u9fa5]+$/,
+                remote: "/account/checkusername"
+            },
             ConfirmPassword: {
                 equalTo: "#txtPassword"
+            },
+            Email: {
+                remote: "/account/checkemail"
             }
         },
         messages: {
             UserName: {
                 required: "请输入用户名",
-                minlength: "用户名长度必须为6-16位",
-                maxlength: "用户名长度必须为6-16位",
-                alphanumeric: "用户名只能是字母和数字的组合",
+                minlength: "用户名长度必须为6-20位",
+                maxlength: "用户名长度必须为6-20位",
+                pattern: "用户名只能是汉字,字母和数字的组合",
                 remote: "账号已被注册"
             },
-            Password: "请输入6-16位的密码",
+            Password: "请输入6-32位的密码",
             Email: {
                 required: "请输入正确格式的Email账号",
                 email: "请输入正确格式的Email账号",
                 remote: "邮箱已被注册"
             },
             ConfirmPassword: "确认密码不一致"
-        },
-        highlight: function (element) {
-            $(element).parent().parent().addClass('has-error');
-        },
-        success: function (element) {
-            $(element).parent().parent().removeClass('has-error');
-            $(element).remove();
-        },
-        errorPlacement: function (err, element) {
-            err.addClass("help-block text-danger");
-            element.parent().next().append(err);
-        },
-        errorElement: "span"
-    })
+        }
+    });
 </script>

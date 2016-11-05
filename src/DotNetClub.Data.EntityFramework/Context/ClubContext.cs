@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DotNetClub.Domain.Entity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Share.Infrastructure.UnitOfWork.EntityFramework;
 using System;
@@ -21,6 +22,13 @@ namespace DotNetClub.Data.EntityFramework.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            Mappings.CommentMapping.Map(modelBuilder.Entity<Comment>());
+            Mappings.CommentVoteMapping.Map(modelBuilder.Entity<CommentVote>());
+            Mappings.MessageMapping.Map(modelBuilder.Entity<Message>());
+            Mappings.TopicCollectMapping.Map(modelBuilder.Entity<TopicCollect>());
+            Mappings.TopicMapping.Map(modelBuilder.Entity<Topic>());
+            Mappings.UserMapping.Map(modelBuilder.Entity<User>());
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

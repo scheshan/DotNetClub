@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using Share.Infrastructure.Model;
 using Share.Infrastructure.UnitOfWork;
 using DotNetClub.Core.Model.Auth;
+using Share.Infrastructure.Redis;
+using DotNetClub.Domain.Consts;
 
 namespace DotNetClub.Core.Service
 {
@@ -64,6 +66,9 @@ namespace DotNetClub.Core.Service
 
                 await uw.InsertAsync(entity);
 
+                var redis = this.RedisProvider.GetDatabase();
+                redis.JsonHashSet(RedisKeys.User, entity.ID, entity);
+
                 string token = this.GenerateAndStoreToken(entity.ID, false);
 
                 return Result.SuccessResult(token);
@@ -76,11 +81,11 @@ namespace DotNetClub.Core.Service
 
             using (var uw = this.CreateUnitOfWork())
             {
-                var user = await uw.GetAsync<User>(t => t.Email == model.Email && t.Password == password);
+                var user = await uw.GetAsync<User>(t => t.UserName == model.UserName && t.Password == password);
 
                 if (user == null)
                 {
-                    return Result<string>.ErrorResult("邮箱或密码不匹配");
+                    return Result<string>.ErrorResult("用户名或密码不匹配");
                 }
                 if (user.Status == Domain.Enums.UserStatus.Verifying)
                 {

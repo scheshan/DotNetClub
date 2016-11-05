@@ -2,17 +2,27 @@
     background:#e1e1e1;
     font-family: "Helvetica Neue", "Luxi Sans", "DejaVu Sans", Tahoma, "Hiragino Sans GB", STHeiti !important;
 }
+
+html{height:100%;}
+body {background-color:#eeeeee;height:100%; }
+#main-content {
+    min-height:100%;
+    margin-bottom:-130px;
+}
+#main-content #content{
+    padding-bottom:130px;
+}
+
 footer{
-    margin-top:20px;
     background:#ffffff;
     padding:20px 0;
 }
-img{
-    max-width:100%;
-    vertical-align:middle;
-    border:0;
-}
 
+img.avatar{
+    height:48px;
+    width:48px;
+    display:inline-block;
+}
 
 @media (min-width:1200px){
     .container{

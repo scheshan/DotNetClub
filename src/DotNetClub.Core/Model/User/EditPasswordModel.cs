@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DotNetClub.Web.ViewModels.My
+namespace DotNetClub.Core.Model.User
 {
     public class EditPasswordModel
     {
@@ -12,6 +12,7 @@ namespace DotNetClub.Web.ViewModels.My
         public string OldPassword { get; set; }
 
         [Required]
+        [StringLength(32, MinimumLength = 6)]
         public string NewPassword { get; set; }
     }
 }

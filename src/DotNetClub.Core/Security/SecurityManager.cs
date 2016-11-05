@@ -1,4 +1,5 @@
-﻿using DotNetClub.Core.Service;
+﻿using DotNetClub.Core.Model.User;
+using DotNetClub.Core.Service;
 using DotNetClub.Domain.Consts;
 using DotNetClub.Domain.Entity;
 using Microsoft.AspNetCore.Http;
@@ -23,9 +24,11 @@ namespace DotNetClub.Core.Security
 
         private IServiceProvider ServiceProvider { get; set; }
 
-        private User _user;
+        private long _userID;
 
-        public User CurrentUser
+        private UserModel _user;
+
+        public UserModel CurrentUser
         {
             get
             {
@@ -62,6 +65,16 @@ namespace DotNetClub.Core.Security
             this.ServiceProvider = serviceProvider;
         }
 
+        public void ReloadUser()
+        {
+            if (_userID > 0)
+            {
+                var userService = this.ServiceProvider.GetService<UserService>();
+
+                _user = userService.Get(Convert.ToInt64(_userID));
+            }
+        }
+
         private void LoadUser()
         {
             this.InitToken();
@@ -76,7 +89,11 @@ namespace DotNetClub.Core.Security
 
             if (id.HasValue)
             {
-                _user = redis.JsonHashGet<User>(RedisKeys.User, id);
+                _userID = Convert.ToInt64(id);
+
+                var userService = this.ServiceProvider.GetService<UserService>();
+
+                _user = userService.Get(Convert.ToInt64(id));
             }
         }
 
@@ -112,6 +129,11 @@ namespace DotNetClub.Core.Security
             }
 
             context.Response.Cookies.Append(TOKEN_KEY, token, cookieOptions);
+        }
+
+        public static void ClearToken(HttpContext context)
+        {
+            context.Response.Cookies.Append(TOKEN_KEY, string.Empty, new CookieOptions { Expires = DateTime.Now.AddDays(-1) });
         }
     }
 }

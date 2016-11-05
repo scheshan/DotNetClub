@@ -4,6 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
+using DotNetClub.Core.Security;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Http;
 
 namespace DotNetClub.Web.Filters
 {
@@ -11,16 +14,29 @@ namespace DotNetClub.Web.Filters
     {
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            var clientManager = context.HttpContext.RequestServices.GetService<Core.ClientManager>();
+            var securityManager = context.HttpContext.RequestServices.GetService<SecurityManager>();
 
-            if (clientManager.IsLogin)
+            if (securityManager.IsLogin)
             {
                 base.OnActionExecuting(context);
             }
             else
             {
-                context.Result = new Microsoft.AspNetCore.Mvc.RedirectToActionResult("Login", "Account", null);
+                string url = this.GetRedirectUrl(context.HttpContext.Request);
+
+                context.Result = new RedirectToActionResult("Login", "Account", new { redirect = url });
             }
+        }
+
+        private string GetRedirectUrl(HttpRequest request)
+        {
+            var builder = new UriBuilder()
+            {
+                Path = request.Path,
+                Query = request.QueryString.ToUriComponent()
+            };
+
+            return builder.Uri.PathAndQuery;
         }
     }
 }

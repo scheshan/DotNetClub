@@ -7,7 +7,7 @@ namespace DotNetClub.Web.ViewModels.User
 {
     public class IndexViewModel
     {
-        public Domain.Entity.User User { get; set; }
+        public Core.Model.User.UserModel User { get; set; }
 
         public int CollectCount { get; set; }
 

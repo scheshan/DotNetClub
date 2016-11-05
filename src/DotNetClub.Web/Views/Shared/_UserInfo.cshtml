@@ -1,0 +1,28 @@
+﻿@model DotNetClub.Core.Model.User.UserModel
+
+<div class="panel panel-default">
+    <div class="panel-heading">个人信息</div>
+    <div class="panel-body">
+        <div class="media">
+            <a class="media-left" asp-action="Index" asp-controller="User" asp-route-userName="@Model.UserName">
+                <useravatar class="avatar" email="@Model.Email" size="48" title="@Model.UserName"></useravatar>
+            </a>
+            <div class="media-body">
+                <h5 class="media-heading">
+                    <a asp-action="Index" asp-controller="User" asp-route-userName="@Model.UserName">
+                        @Model.UserName
+                    </a>
+                </h5>
+                <p>
+                    <small>积分: <span>0</span></small>
+                </p>
+            </div>
+        </div>
+
+        <i class="text-muted">
+            <small>
+                @(Model.Signature ?? "这家伙很懒，什么个性签名都没有留下")
+            </small>
+        </i>
+    </div>
+</div>
