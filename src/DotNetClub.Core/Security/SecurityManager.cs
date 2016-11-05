@@ -1,4 +1,5 @@
-﻿using DotNetClub.Core.Model.User;
+﻿using DotNetClub.Core.Model.Configuration;
+using DotNetClub.Core.Model.User;
 using DotNetClub.Core.Service;
 using DotNetClub.Domain.Consts;
 using DotNetClub.Domain.Entity;
@@ -18,11 +19,31 @@ namespace DotNetClub.Core.Security
 
         private bool _loaded = false;
 
-        private IHttpContextAccessor HttpContextAccessor { get; set; }
-
-        private IRedisProvider RedisProvider { get; set; }
-
         private IServiceProvider ServiceProvider { get; set; }
+
+        private IHttpContextAccessor HttpContextAccessor
+        {
+            get
+            {
+                return this.ServiceProvider.GetService<IHttpContextAccessor>();
+            }
+        }
+
+        private IRedisProvider RedisProvider
+        {
+            get
+            {
+                return this.ServiceProvider.GetService<IRedisProvider>();
+            }
+        }
+
+        private SiteConfiguration SiteConfiguration
+        {
+            get
+            {
+                return this.ServiceProvider.GetService<SiteConfiguration>();
+            }
+        }
 
         private long _userID;
 
@@ -58,10 +79,16 @@ namespace DotNetClub.Core.Security
             }
         }
 
-        public SecurityManager(IHttpContextAccessor httpContextAccessor, IRedisProvider redisProvider, IServiceProvider serviceProvider)
+        public bool IsAdmin
         {
-            this.HttpContextAccessor = httpContextAccessor;
-            this.RedisProvider = redisProvider;
+            get
+            {
+                return this.IsLogin && this.SiteConfiguration.AdminUserList.Contains(this.CurrentUser.UserName);
+            }
+        }
+
+        public SecurityManager(IServiceProvider serviceProvider)
+        {
             this.ServiceProvider = serviceProvider;
         }
 
@@ -73,6 +100,21 @@ namespace DotNetClub.Core.Security
 
                 _user = userService.Get(Convert.ToInt64(_userID));
             }
+        }
+
+        public bool CanOperateTopic(Topic entity)
+        {
+            if (!this.IsLogin)
+            {
+                return false;
+            }
+
+            if (entity.CreateUser == this.CurrentUser.ID || this.IsAdmin)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void LoadUser()
@@ -102,7 +144,7 @@ namespace DotNetClub.Core.Security
             if (this.HttpContextAccessor.HttpContext == null)
             {
                 return;
-            }            
+            }
 
             string token = this.HttpContextAccessor.HttpContext.Request.Query[TOKEN_KEY];
             if (string.IsNullOrWhiteSpace(token))

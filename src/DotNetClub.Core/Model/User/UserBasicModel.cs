@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Core.Model.User
 {
-    public class UserBaseModel
+    public class UserBasicModel
     {
         public int ID { get; set; }
 

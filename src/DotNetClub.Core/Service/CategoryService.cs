@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Core.Service
 {
-    public class CategoryService
+    public class CategoryService : ServiceBase
     {
         private IConfiguration Configuration { get; set; }
 
-        public CategoryService(IConfiguration configuration)
+        public CategoryService(IServiceProvider serviceProvider, IConfiguration configuration)
+            : base(serviceProvider)
         {
             this.Configuration = configuration;
         }

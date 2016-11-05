@@ -41,8 +41,8 @@ namespace DotNetClub.Web.Controllers
             var vm = new IndexViewModel();
             vm.User = user;
             vm.CollectCount = await this.UserCollectService.GetCollectCount(user.ID);
-            vm.RecentCreatedTopicList = await this.TopicService.QueryRecentCreatedTopicList(10, user.ID);
-            vm.RecentCommentedTopicList = await this.TopicService.QueryRecentCommentedTopicList(10, user.ID);
+            vm.RecentCreatedTopicList = await this.TopicService.QueryByUser(user.ID, 10, null);
+            vm.RecentCommentedTopicList = await this.TopicService.QueryByUserComment(user.ID, 10);
 
             return this.View(vm);
         }
@@ -62,7 +62,7 @@ namespace DotNetClub.Web.Controllers
                 page = 1;
             }
 
-            var topicResult = await this.TopicService.QueryCreatedTopicList(user.ID, page, 20);
+            var topicResult = await this.TopicService.QueryByUser(user.ID, page, 20);
 
             return this.View(topicResult);
         }
@@ -82,7 +82,7 @@ namespace DotNetClub.Web.Controllers
                 page = 1;
             }
 
-            var topicResult = await this.TopicService.QueryCommentedTopicList(user.ID, page, 20);
+            var topicResult = await this.TopicService.QueryByUserComment(user.ID, page, 20);
 
             return this.View(topicResult);
         }
@@ -102,7 +102,7 @@ namespace DotNetClub.Web.Controllers
                 page = 1;
             }
 
-            var topicResult = await this.TopicService.QueryCollectedTopicList(user.ID, page, 20);
+            var topicResult = await this.TopicService.QueryByUserCollect(user.ID, page, 20);
 
             return this.View(topicResult);
         }

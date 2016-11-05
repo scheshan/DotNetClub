@@ -10,5 +10,7 @@ namespace DotNetClub.Domain.Consts
         public const string TokenPrefix = "Token_";
 
         public const string User = "User";
+
+        public const string TopicVisit = "TopicVisit";
     }
 }

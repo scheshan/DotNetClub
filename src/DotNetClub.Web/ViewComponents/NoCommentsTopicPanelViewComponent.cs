@@ -23,7 +23,7 @@ namespace DotNetClub.Web.ViewComponents
                 count = 10;
             }
 
-            var topicList = await this.TopicService.QueryNoCommentTopicList(count);
+            var topicList = await this.TopicService.QueryNoComment(count);
 
             return this.View(topicList);
         }

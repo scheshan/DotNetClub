@@ -9,13 +9,13 @@ namespace Share.Infrastructure.Model
     {
         public List<T> Data { get; set; }
 
-        public int Total { get; set; }
+        public long Total { get; set; }
 
         public int PageIndex { get; set; }
 
         public int PageSize { get; set; }
 
-        public static PagedResult<T> SuccessResult(List<T> data, int pageIndex, int pageSize, int total)
+        public static PagedResult<T> SuccessResult(List<T> data, int pageIndex, int pageSize, long total)
         {
             return new PagedResult<T>
             {

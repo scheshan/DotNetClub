@@ -56,7 +56,7 @@ namespace DotNetClub.Web.Controllers
                 category = tab;
             }
 
-            var topicList = await this.TopicService.Query(category, recommand, page, 20);
+            var topicList = await this.TopicService.Query(page, 20, category: category, isRecommand: recommand);
 
             vm.TopicList = topicList;
 
