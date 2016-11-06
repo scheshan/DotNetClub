@@ -26,16 +26,72 @@ namespace DotNetClub.Core.Service
 
         }
 
+        /// <summary>
+        /// 添加一条消息
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
+        public async Task Add(AddMessageModel model)
+        {
+            long messageID;
+
+            using (var uw = this.CreateUnitOfWork())
+            {
+                var entity = new Message
+                {
+                    CommentID = model.Comment,
+                    CreateDate = DateTime.Now,
+                    FromUserID = model.FromUser,
+                    TopicID = model.Topic,
+                    ToUserID = model.ToUser,
+                    Type = model.Type
+                };
+
+                await uw.InsertAsync(entity);
+
+                messageID = entity.ID;
+            }
+
+            var redis = this.RedisProvider.GetDatabase();
+            string key = RedisKeys.GetUserMessageCacheKey(model.ToUser);
+
+            await redis.SetAddAsync(key, messageID);
+        }
+
+        /// <summary>
+        /// 查询未读消息数目
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
+        public async Task<long> QueryUnreadCount(long userID)
+        {
+            var redis = this.RedisProvider.GetDatabase();
+            string key = RedisKeys.GetUserMessageCacheKey(userID);
+
+            return await redis.SetLengthAsync(key);
+        }
+
+        /// <summary>
+        /// 查询用户未读消息列表
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <returns></returns>
         public async Task<List<MessageModel>> QueryUnreadMessageList(long userID)
         {
             using (var uw = this.CreateUnitOfWork())
             {
                 var entityList = await uw.QueryAsync<Message>(t => t.ToUserID == userID && t.IsRead == false);
 
-                return await this.Transform(entityList.ToArray());
+                return await this.Transform(entityList.OrderByDescending(t => t.ID).ToArray());
             }
         }
 
+        /// <summary>
+        /// 查询用户历史消息列表
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="count"></param>
+        /// <returns></returns>
         public async Task<List<MessageModel>> QueryHistory(long userID, int count)
         {
             using (var uw = this.CreateUnitOfWork())
@@ -46,7 +102,13 @@ namespace DotNetClub.Core.Service
             }
         }
 
-        public async Task MarkAsRead(long[] idList)
+        /// <summary>
+        /// 将消息标记为已读
+        /// </summary>
+        /// <param name="userID"></param>
+        /// <param name="idList"></param>
+        /// <returns></returns>
+        public async Task MarkAsRead(long userID, long[] idList)
         {
             if (idList.Length == 0)
             {
@@ -55,8 +117,14 @@ namespace DotNetClub.Core.Service
 
             using (var uw = this.CreateUnitOfWork())
             {
-                await uw.CreateRepository<IMessageRepository>().MarkAsRead(SecurityManager.CurrentUser.ID, idList);
+                await uw.CreateRepository<IMessageRepository>().MarkAsRead(userID, idList);
             }
+
+            var redis = this.RedisProvider.GetDatabase();
+            RedisValue[] values = idList.Select(t => (RedisValue)t).ToArray();
+            string key = RedisKeys.GetUserMessageCacheKey(userID);
+
+            await redis.SetRemoveAsync(key, values);
         }
 
         private async Task<List<MessageModel>> Transform(params Message[] entityList)

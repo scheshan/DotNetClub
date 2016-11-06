@@ -16,6 +16,7 @@ using AutoMapper;
 using DotNetClub.Core.Model.User;
 using DotNetClub.Domain.Model;
 using DotNetClub.Domain.Repository;
+using DotNetClub.Core.Model.Message;
 
 namespace DotNetClub.Core.Service
 {
@@ -78,18 +79,16 @@ namespace DotNetClub.Core.Service
                     {
                         if (this.SecurityManager.CurrentUser.ID != topic.CreateUser)
                         {
-                            var message = new Message
+                            var addMessageModel = new AddMessageModel
                             {
-                                CommentID = entity.ID,
-                                CreateDate = DateTime.Now,
-                                FromUserID = this.SecurityManager.CurrentUser.ID,
-                                IsRead = false,
-                                TopicID = topic.ID,
-                                ToUserID = topic.CreateUser,
+                                Comment = entity.ID,
+                                FromUser = this.SecurityManager.CurrentUser.ID,
+                                Topic = topic.ID,
+                                ToUser = topic.CreateUser,
                                 Type = MessageType.Comment
                             };
 
-                            await uw.InsertAsync(message);
+                            await this.MessageService.Add(addMessageModel);
                         }
                     }
                     #endregion
@@ -100,27 +99,23 @@ namespace DotNetClub.Core.Service
                         if (atUserList.Count > 0)
                         {
                             var userList = await uw.QueryAsync<User>(t => atUserList.Contains(t.UserName));
-                            List<Message> messageList = new List<Message>();
                             foreach (var user in userList)
                             {
                                 if (user.ID == this.SecurityManager.CurrentUser.ID || user.ID == topic.CreateUser) //过滤@自己，过滤重复@作者
                                 {
                                     continue;
                                 }
-                                var message = new Message
+
+                                var addMessageModel = new AddMessageModel
                                 {
-                                    CommentID = entity.ID,
-                                    CreateDate = DateTime.Now,
-                                    FromUserID = this.SecurityManager.CurrentUser.ID,
-                                    IsRead = false,
-                                    TopicID = topic.ID,
-                                    ToUserID = user.ID,
+                                    Comment = entity.ID,
+                                    FromUser = this.SecurityManager.CurrentUser.ID,
+                                    Topic = topic.ID,
+                                    ToUser = user.ID,
                                     Type = MessageType.At
                                 };
-                                messageList.Add(message);
+                                await this.MessageService.Add(addMessageModel);
                             }
-
-                            await uw.InsertAllAsync(messageList);
                         }
                     }
                     #endregion
