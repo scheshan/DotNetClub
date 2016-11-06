@@ -1,36 +1,25 @@
 # DotNetClub
 A Tiny Club Written in Asp.Net Core
 
-How to Build and Run:
+Upgrade:
+1. Add redis support
+2. Use new UnitOfWork pattern to access database
 
-*   Clone the repository
-*   Restore the dependencies
+Begin You Run:
 
-    ```
-    dotnet restore
-    ```
-*   Go to DotNetClub.Web directory
-
-    ```
-    cd src\DotNetClub.Web
-    ```
-*   Edit database connection string by SecretManagerTools
-
-    ```
-    dotnet user-secrets set ConnectionString YourConnectionString
-    ```
-*   Install Database
-
-    ```
-    dotnet ef database update
-    ```
 *   Install client libraries
-
-    ```
-    bower install
-    ```
-*   Run the project
-
-    ```
-    dotnet run
-    ```
+	Go to DotNetClub.Web/wwwroot directory, and run npm install
+*   Set UserSecrets in VisualStudio
+	```
+	{
+	  "ConnectionString": "Your Connection String",
+	  "Redis": {
+		"Host": "Your Redis Host",
+		"Port": 6379,
+		"Password": "",
+		"Db": 1
+	  }
+	}
+	```
+*	Create database
+	The script to create the tables is under the database folder
