@@ -107,7 +107,7 @@ namespace DotNetClub.Web.Controllers
             ViewBag.Title = "编辑主题";
 
             var vm = new PostViewModel();
-            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name", topic.Category);
+            vm.CategoryList = new SelectList(this.CategoryService.All(), "Key", "Name", topic.Category.Key);
             vm.Model = new SaveTopicModel
             {
                 Category = topic.Category.Key,

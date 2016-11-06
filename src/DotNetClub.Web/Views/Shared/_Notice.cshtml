@@ -18,9 +18,9 @@
 </div>
 
 <div class="col-md-3">
-    @await Component.InvokeAsync("LoginInfoPanel")
+    @Html.Partial("_LoginInfo")
 
-    @await Component.InvokeAsync("NewTopicPanel")
+    @Html.Partial("_NewTopic")
 
-    @await Component.InvokeAsync("LinksPanel")
+    @*@await Component.InvokeAsync("LinksPanel")*@
 </div>
