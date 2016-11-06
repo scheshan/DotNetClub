@@ -89,6 +89,27 @@ namespace DotNetClub.Core.Security
             }
         }
 
+        private long? _unreadMessages;
+
+        public long UnreadMessages
+        {
+            get
+            {
+                if (!this.IsLogin)
+                {
+                    return 0;
+                }
+
+                if (_unreadMessages == null)
+                {
+                    var messageService = this.ServiceProvider.GetService<MessageService>();
+                    _unreadMessages = messageService.QueryUnreadCount(this.CurrentUser.ID);
+                }
+
+                return _unreadMessages.Value;
+            }
+        }
+
         public SecurityManager(IServiceProvider serviceProvider)
         {
             this.ServiceProvider = serviceProvider;

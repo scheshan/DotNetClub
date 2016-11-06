@@ -63,12 +63,12 @@ namespace DotNetClub.Core.Service
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        public async Task<long> QueryUnreadCount(long userID)
+        public long QueryUnreadCount(long userID)
         {
             var redis = this.RedisProvider.GetDatabase();
             string key = RedisKeys.GetUserMessageCacheKey(userID);
 
-            return await redis.SetLengthAsync(key);
+            return redis.SetLength(key);
         }
 
         /// <summary>
