@@ -1,19 +1,13 @@
-﻿using DotNetClub.Core.Data;
+﻿using DotNetClub.Core.Model.Auth;
+using DotNetClub.Domain.Consts;
 using DotNetClub.Domain.Entity;
-using DotNetClub.Core.Model;
-using DotNetClub.Core.Utility;
-using Microsoft.Extensions.Configuration;
+using Share.Infrastructure.Model;
+using Share.Infrastructure.Redis;
+using Share.Infrastructure.UnitOfWork;
 using Share.Infrastructure.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Threading.Tasks;
-using Share.Infrastructure.Model;
-using Share.Infrastructure.UnitOfWork;
-using DotNetClub.Core.Model.Auth;
-using Share.Infrastructure.Redis;
-using DotNetClub.Domain.Consts;
 
 namespace DotNetClub.Core.Service
 {

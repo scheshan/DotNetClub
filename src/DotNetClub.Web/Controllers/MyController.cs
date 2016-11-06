@@ -9,6 +9,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using DotNetClub.Core.Model.User;
+using DotNetClub.Web.ViewModels.My;
 
 namespace DotNetClub.Web.Controllers
 {
@@ -18,11 +19,12 @@ namespace DotNetClub.Web.Controllers
     {
         private UserService UserService { get; set; }
 
-        //private MessageService MessageService { get; set; }
+        private MessageService MessageService { get; set; }
 
-        public MyController(UserService userService)
+        public MyController(UserService userService, MessageService messageService)
         {
             this.UserService = userService;
+            this.MessageService = messageService;
         }
 
         public override void OnActionExecuting(ActionExecutingContext context)
@@ -64,7 +66,7 @@ namespace DotNetClub.Web.Controllers
 
             if (!ModelState.IsValid)
             {
-                ViewBag.PasswordResult = OperationResult.Failure(Messages.ModelStateNotValid);
+                ViewBag.PasswordResult = OperationResult.Failure(Core.Resource.Messages.ModelStateNotValid);
             }
 
             var result = await this.UserService.EditPassword(SecurityManager.CurrentUser.ID, model);
@@ -74,19 +76,19 @@ namespace DotNetClub.Web.Controllers
             return this.View("Index");
         }
 
-        //[HttpGet("messages")]
-        //public async Task<IActionResult> Messages(int page)
-        //{
-        //    ViewBag.Title = "消息";
+        [HttpGet("messages")]
+        public async Task<IActionResult> Messages(int page)
+        {
+            ViewBag.Title = "消息";
 
-        //    var vm = new MessagesViewModel();
-        //    vm.UnreadMessageList = await this.MessageService.QueryUnreadMessageList(this.ClientManager.CurrentUser.ID);
-        //    vm.HistoryMessageList = await this.MessageService.QueryHistoryMessgaeList(this.ClientManager.CurrentUser.ID, 20);
+            var vm = new MessagesViewModel();
+            vm.UnreadMessageList = await this.MessageService.QueryUnread(this.SecurityManager.CurrentUser.ID);
+            vm.HistoryMessageList = await this.MessageService.QueryHistory(this.SecurityManager.CurrentUser.ID, 20);
 
-        //    var unreadMessageIDList = vm.UnreadMessageList.Select(t => t.ID).ToArray();
-        //    await this.MessageService.MarkAsRead(unreadMessageIDList);
+            var unreadMessageIDList = vm.UnreadMessageList.Select(t => t.ID).ToArray();
+            await this.MessageService.MarkAsRead(this.SecurityManager.CurrentUser.ID, unreadMessageIDList);
 
-        //    return this.View(vm);
-        //}
+            return this.View(vm);
+        }
     }
 }

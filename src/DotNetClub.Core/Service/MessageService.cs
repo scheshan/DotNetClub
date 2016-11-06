@@ -76,7 +76,7 @@ namespace DotNetClub.Core.Service
         /// </summary>
         /// <param name="userID"></param>
         /// <returns></returns>
-        public async Task<List<MessageModel>> QueryUnreadMessageList(long userID)
+        public async Task<List<MessageModel>> QueryUnread(long userID)
         {
             using (var uw = this.CreateUnitOfWork())
             {

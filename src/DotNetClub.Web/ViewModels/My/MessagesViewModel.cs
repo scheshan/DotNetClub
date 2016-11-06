@@ -1,15 +1,12 @@
-﻿//using DotNetClub.Core.Entity;
-//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Threading.Tasks;
+﻿using DotNetClub.Core.Model.Message;
+using System.Collections.Generic;
 
-//namespace DotNetClub.Web.ViewModels.My
-//{
-//    public class MessagesViewModel
-//    {
-//        public List<Message> UnreadMessageList { get; set; }
+namespace DotNetClub.Web.ViewModels.My
+{
+    public class MessagesViewModel
+    {
+        public List<MessageModel> UnreadMessageList { get; set; }
 
-//        public List<Message> HistoryMessageList { get; set; }
-//    }
-//}
+        public List<MessageModel> HistoryMessageList { get; set; }
+    }
+}

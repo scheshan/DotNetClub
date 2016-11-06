@@ -1,7 +1,7 @@
-﻿@using DotNetClub.Core.Entity
-@using DotNetClub.Core.Enums
+﻿@using DotNetClub.Core.Model.Message
+@using DotNetClub.Domain.Enums
 
-@model List<Message>
+@model List<MessageModel>
 
 <visible condition="Model.Count > 0">
     @foreach(var message in Model)

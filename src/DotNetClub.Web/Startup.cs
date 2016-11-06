@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Autofac;
+using DotNetClub.Core;
+using DotNetClub.Data.EntityFramework;
+using DotNetClub.Domain.Consts;
+using DotNetClub.Web.Middlewares;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using DotNetClub.Core.Data;
-using DotNetClub.Core;
-using Newtonsoft.Json.Serialization;
-using DotNetClub.Web.Middlewares;
-using NLog.Extensions.Logging;
-using Autofac;
 using Share.Infrastructure;
-using DotNetClub.Domain.Consts;
-using DotNetClub.Data.EntityFramework;
 
 namespace DotNetClub.Web
 {
