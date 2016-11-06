@@ -24,7 +24,7 @@
 
     @Html.Partial("_NewTopic")
 
-    @*@await Component.InvokeAsync("NoCommentsTopicPanel")*@
+    @await Component.InvokeAsync("NoCommentsTopic", new { count = 10 })
 
     @*@await Component.InvokeAsync("LinksPanel")*@
 </div>

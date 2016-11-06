@@ -121,13 +121,13 @@ namespace DotNetClub.Data.EntityFramework.Repository
 
         public async Task<List<Topic>> QueryNoComment(int count)
         {
-            var query = from topic in this.CreateDefaultQuery()
-                        join comment in this.Context.Set<Comment>() on topic.ID equals comment.ID into l
-                        from comment in l.DefaultIfEmpty()
-                        where comment == null
-                        select topic;
+            string sql = string.Format(@"
+select top({0}) A.* from Topic A
+left join Comment B on A.ID = B.TopicID
+where B.ID is NULL
+", count.ToString());
 
-            return await query.Take(count).ToListAsync();
+            return await this.Set.FromSql(sql).ToListAsync();
         }
 
         private IQueryable<Topic> CreateDefaultQuery()

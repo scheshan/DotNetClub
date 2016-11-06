@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Web.ViewComponents
 {
-    public class NoCommentsTopicPanelViewComponent : ViewComponent
+    public class NoCommentsTopicViewComponent : ViewComponent
     {
         private TopicService TopicService { get; set; }
 
-        public NoCommentsTopicPanelViewComponent(TopicService topicService)
+        public NoCommentsTopicViewComponent(TopicService topicService)
         {
             this.TopicService = topicService;
         }
