@@ -1,13 +1,12 @@
 ﻿@using DotNetClub.Core
 @inject DotNetClub.Core.Security.SecurityManager SecurityManager
-@inject DotNetClub.Core.Model.Configuration.SiteConfiguration SiteConfiguration
 
 <!DOCTYPE html>
 
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>@SiteConfiguration.Title</title>
+    <title>@SiteConfiguration.Value.Title</title>
     <meta name="keywords" content="@ViewBag.Keywords" />
     <meta name="description" content="@Html.Raw(ViewBag.Description)" />
 

@@ -6,17 +6,18 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using System.Data.SqlClient;
 using DotNetClub.Core.Model.Topic;
-using Share.Infrastructure.UnitOfWork;
-using Share.Infrastructure.Model;
-using Share.Infrastructure.Extensions;
+using Shared.Infrastructure.UnitOfWork;
+using Shared.Infrastructure.Model;
+using Shared.Infrastructure.Extensions;
 using DotNetClub.Domain.Repository;
 using DotNetClub.Domain.Consts;
-using Share.Infrastructure.Redis;
+using Shared.Infrastructure.Redis;
 using StackExchange.Redis;
 using DotNetClub.Core.Model.Category;
 using AutoMapper;
 using DotNetClub.Core.Model.User;
 using DotNetClub.Domain.Model;
+using DotNetClub.Core.Extensions;
 
 namespace DotNetClub.Core.Service
 {

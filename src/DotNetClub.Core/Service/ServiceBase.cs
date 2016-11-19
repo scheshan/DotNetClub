@@ -1,4 +1,4 @@
-﻿using Share.Infrastructure.UnitOfWork;
+﻿using Shared.Infrastructure.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using DotNetClub.Domain.Consts;
 using DotNetClub.Core.Model.Configuration;
-using Share.Infrastructure.Redis;
+using Shared.Infrastructure.Redis;
 
 namespace DotNetClub.Core.Service
 {

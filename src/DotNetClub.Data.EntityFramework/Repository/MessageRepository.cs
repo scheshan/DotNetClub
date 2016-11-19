@@ -1,12 +1,12 @@
 ﻿using DotNetClub.Domain.Entity;
 using DotNetClub.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
-using Share.Infrastructure.UnitOfWork.EntityFramework;
+using Shared.Infrastructure.UnitOfWork.EntityFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Share.Infrastructure.Extensions;
+using Shared.Infrastructure.Extensions;
 
 namespace DotNetClub.Data.EntityFramework.Repository
 {

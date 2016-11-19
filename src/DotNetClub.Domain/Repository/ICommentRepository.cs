@@ -1,6 +1,6 @@
 ﻿using DotNetClub.Domain.Entity;
 using DotNetClub.Domain.Model;
-using Share.Infrastructure.UnitOfWork;
+using Shared.Infrastructure.UnitOfWork;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -1,35 +1,33 @@
 ﻿{
-  "userSecretsId": "aspnet-DotNetClub.Web-74a27842-2b1e-4e2e-8f35-7fee0c6f274e",
+  "userSecretsId": "aspnet-DotNetClub.Web-74a27842-2b1e-4e2e-8f35-7fee0c6f274f",
 
   "dependencies": {
     "Microsoft.NETCore.App": {
-      "version": "1.0.0",
+      "version": "1.1.0",
       "type": "platform"
     },
-    "Microsoft.AspNetCore.Diagnostics": "1.1.0-*",
-    "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.1.0-*",
-    "Microsoft.AspNetCore.Mvc": "1.1.0-*",
+    "Microsoft.AspNetCore.Diagnostics": "1.1.0",
+    "Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore": "1.1.0",
+    "Microsoft.AspNetCore.Mvc": "1.1.0",
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0-*",
-    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0-*",
-    "Microsoft.AspNetCore.StaticFiles": "1.1.0-*",
+    "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
+    "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
+    "Microsoft.AspNetCore.StaticFiles": "1.1.0",
     "Microsoft.EntityFrameworkCore.Tools": {
       "version": "1.0.0-preview2-final",
       "type": "build"
     },
-    "Microsoft.Extensions.Configuration.Json": "1.1.0-*",
-    "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0-*",
+    "Microsoft.Extensions.Configuration.Json": "1.1.0",
+    "Microsoft.Extensions.Configuration.UserSecrets": "1.1.0",
+    "Microsoft.Extensions.Configuration.Binder": "1.1.0",
 
     "NLog.Extensions.Logging": "1.0.0-*",
     "CommonMark.Net": "0.12.0",
     "Humanizer.xproj": "2.1.0",
 
-    "Share.Infrastructure": {
-      "target": "project"
-    },
     "DotNetClub.Data.EntityFramework": {
       "target": "project"
     },
@@ -49,7 +47,6 @@
     "netcoreapp1.0": {
       "imports": [
         "dotnet5.6",
-        "dnxcore50",
         "portable-net45+win8"
       ]
     }
@@ -57,7 +54,13 @@
 
   "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "copyToOutput": {
+      "include": [
+        "appsettings.json",
+        "project.json"
+      ]
+    }
   },
 
   "runtimeOptions": {

@@ -1,12 +1,12 @@
 ﻿using DotNetClub.Domain.Entity;
 using DotNetClub.Domain.Repository;
 using Microsoft.EntityFrameworkCore;
-using Share.Infrastructure.Extensions;
-using Share.Infrastructure.UnitOfWork.EntityFramework;
+using Shared.Infrastructure.Extensions;
+using Shared.Infrastructure.UnitOfWork.EntityFramework;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Share.Infrastructure.Model;
+using Shared.Infrastructure.Model;
 using System;
 
 namespace DotNetClub.Data.EntityFramework.Repository
@@ -40,7 +40,7 @@ namespace DotNetClub.Data.EntityFramework.Repository
                 query = query.Where(t => t.IsTop == isTop.Value);
             }
 
-            var total = await query.LongCountAsync();
+            var total = await query.CountAsync();
 
             query = query.OrderByDescending(t => t.ID).Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
@@ -53,7 +53,7 @@ namespace DotNetClub.Data.EntityFramework.Repository
         {
             var query = this.CreateDefaultQuery().Where(t => t.CreateUser == userID);
 
-            var total = await query.LongCountAsync();
+            var total = await query.CountAsync();
 
             query = query.OrderByDescending(t => t.ID).Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
@@ -82,7 +82,7 @@ namespace DotNetClub.Data.EntityFramework.Repository
                         orderby tc.CreateDate descending
                         select topic;
 
-            var total = await query.LongCountAsync();
+            var total = await query.CountAsync();
 
             query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
 
@@ -110,7 +110,7 @@ namespace DotNetClub.Data.EntityFramework.Repository
                         orderby comment.CreateDate descending
                         select topic;
 
-            var total = await query.LongCountAsync();
+            var total = await query.CountAsync();
 
             query = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
 

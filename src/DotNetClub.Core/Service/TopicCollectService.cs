@@ -4,8 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Share.Infrastructure.Model;
-using Share.Infrastructure.UnitOfWork;
+using Shared.Infrastructure.Model;
+using Shared.Infrastructure.UnitOfWork;
 using DotNetClub.Domain.Entity;
 
 namespace DotNetClub.Core.Service

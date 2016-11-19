@@ -1,6 +1,7 @@
 ﻿using Autofac;
 using DotNetClub.Core;
 using DotNetClub.Data.EntityFramework;
+using DotNetClub.Data.EntityFramework.Context;
 using DotNetClub.Domain.Consts;
 using DotNetClub.Web.Middlewares;
 using Microsoft.AspNetCore.Builder;
@@ -8,7 +9,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Share.Infrastructure;
+using Shared.Infrastructure;
+using Microsoft.EntityFrameworkCore;
+using Shared.Infrastructure.Redis;
+using DotNetClub.Core.Model.Configuration;
 
 namespace DotNetClub.Web
 {
@@ -19,8 +23,8 @@ namespace DotNetClub.Web
         public Startup(IHostingEnvironment env)
         {
             var builder = new ConfigurationBuilder()
-                .SetBasePath(env.ContentRootPath)
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables()
+                .AddJsonFile("appsettings.json", optional: true)
                 .AddUserSecrets();
 
             Configuration = builder.Build();
@@ -30,6 +34,19 @@ namespace DotNetClub.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            services.AddOptions();
+            services.AddDbContext<ClubContext>(builder =>
+            {
+                builder.UseSqlServer(this.Configuration["ConnectionString"], options =>
+                {
+                    options.UseRowNumberForPaging();
+                    options.MigrationsAssembly("DotNetClub.Web");
+                });
+            }, ServiceLifetime.Transient);
+
+            services.Configure<RedisOptions>(Configuration.GetSection("Redis").Bind)
+                .Configure<SiteConfiguration>(Configuration.GetSection("Site").Bind);
+
             services.AddScoped<Core.Security.SecurityManager>();
         }
 
@@ -37,17 +54,12 @@ namespace DotNetClub.Web
         {
             builder.RegisterInstance(this.Configuration).AsImplementedInterfaces();
 
-            builder.AddUnitOfWork(uowBuilder =>
-            {
-                uowBuilder.AddEntityFramework<Data.EntityFramework.Context.ClubContext>(UnitOfWorkNames.EntityFramework, null);
-            });
+            builder.AddRedis()
+                .AddUnitOfWork()
+                .AddEntityFramework<ClubContext>(UnitOfWorkNames.EntityFramework);
 
-            builder.AddEntityFrameworkRepository();
-            builder.AddCoreServices();
-
-            var redisConfiguration = builder.AddConfiguration<Core.Model.Configuration.RedisConfiguration>(this.Configuration.GetSection("Redis"));
-            var siteConfiguration = builder.AddConfiguration<Core.Model.Configuration.SiteConfiguration>(this.Configuration.GetSection("Site"));
-            builder.AddRedis(redisConfiguration.Host, redisConfiguration.Port, redisConfiguration.Password, redisConfiguration.Db);
+            builder.RegisterModule<CoreModule>()
+                .RegisterModule<EntityFrameworkModule>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

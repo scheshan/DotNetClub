@@ -6,15 +6,16 @@ using Microsoft.EntityFrameworkCore;
 using DotNetClub.Domain.Enums;
 using DotNetClub.Domain.Entity;
 using DotNetClub.Core.Model.Message;
-using Share.Infrastructure.Extensions;
-using Share.Infrastructure.UnitOfWork;
+using Shared.Infrastructure.Extensions;
+using Shared.Infrastructure.UnitOfWork;
 using AutoMapper;
 using DotNetClub.Core.Model.User;
 using DotNetClub.Core.Model.Topic;
 using DotNetClub.Domain.Repository;
-using Share.Infrastructure.Redis;
+using Shared.Infrastructure.Redis;
 using StackExchange.Redis;
 using DotNetClub.Domain.Consts;
+using DotNetClub.Core.Extensions;
 
 namespace DotNetClub.Core.Service
 {

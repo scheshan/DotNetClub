@@ -4,12 +4,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using DotNetClub.Domain.Entity;
-using Share.Infrastructure.Model;
-using Share.Infrastructure.UnitOfWork;
+using Shared.Infrastructure.Model;
+using Shared.Infrastructure.UnitOfWork;
 using DotNetClub.Core.Model.Comment;
 using DotNetClub.Domain.Enums;
-using Share.Infrastructure.Extensions;
-using Share.Infrastructure.Redis;
+using Shared.Infrastructure.Extensions;
+using Shared.Infrastructure.Redis;
 using StackExchange.Redis;
 using DotNetClub.Domain.Consts;
 using AutoMapper;
@@ -17,6 +17,7 @@ using DotNetClub.Core.Model.User;
 using DotNetClub.Domain.Model;
 using DotNetClub.Domain.Repository;
 using DotNetClub.Core.Model.Message;
+using DotNetClub.Core.Extensions;
 
 namespace DotNetClub.Core.Service
 {

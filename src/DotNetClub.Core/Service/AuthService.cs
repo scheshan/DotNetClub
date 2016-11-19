@@ -1,10 +1,10 @@
 ﻿using DotNetClub.Core.Model.Auth;
 using DotNetClub.Domain.Consts;
 using DotNetClub.Domain.Entity;
-using Share.Infrastructure.Model;
-using Share.Infrastructure.Redis;
-using Share.Infrastructure.UnitOfWork;
-using Share.Infrastructure.Utilities;
+using Shared.Infrastructure.Model;
+using Shared.Infrastructure.Redis;
+using Shared.Infrastructure.UnitOfWork;
+using Shared.Infrastructure.Utilities;
 using System;
 using System.Linq;
 using System.Threading.Tasks;

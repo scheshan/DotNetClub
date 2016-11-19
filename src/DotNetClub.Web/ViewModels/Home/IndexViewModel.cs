@@ -1,7 +1,7 @@
 ﻿using DotNetClub.Core.Model.Category;
 using DotNetClub.Core.Model.Topic;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Share.Infrastructure.Model;
+using Shared.Infrastructure.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;

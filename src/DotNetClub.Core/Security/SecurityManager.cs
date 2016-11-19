@@ -7,7 +7,7 @@ using DotNetClub.Domain.Consts;
 using DotNetClub.Domain.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using Share.Infrastructure.Redis;
+using Shared.Infrastructure.Redis;
 using System;
 using System.Linq;
 

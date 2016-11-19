@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Share.Infrastructure.UnitOfWork;
+using Shared.Infrastructure.UnitOfWork;
 using DotNetClub.Core.Model.User;
-using Share.Infrastructure.Model;
-using Share.Infrastructure.Utilities;
-using Share.Infrastructure.Redis;
+using Shared.Infrastructure.Model;
+using Shared.Infrastructure.Utilities;
+using Shared.Infrastructure.Redis;
 using DotNetClub.Domain.Consts;
-using Share.Infrastructure.Extensions;
+using Shared.Infrastructure.Extensions;
 
 namespace DotNetClub.Core.Service
 {

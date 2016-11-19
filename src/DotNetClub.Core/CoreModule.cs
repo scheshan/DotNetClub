@@ -1,18 +1,19 @@
-﻿using Autofac;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.Configuration;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
+using Autofac;
+using Microsoft.AspNetCore.Http;
+using System.Reflection;
 
 namespace DotNetClub.Core
 {
-    public static class ContainerBuilderExtensions
+    public class CoreModule : Autofac.Module
     {
-        public static ContainerBuilder AddCoreServices(this ContainerBuilder builder)
+        protected override void Load(ContainerBuilder builder)
         {
+            base.Load(builder);
+
             builder.RegisterType<HttpContextAccessor>().As<IHttpContextAccessor>().SingleInstance();
 
             var assembly = Assembly.Load(new AssemblyName("DotNetClub.Core"));
@@ -25,8 +26,6 @@ namespace DotNetClub.Core
             }
 
             AutoMapperConfig.Configure();
-
-            return builder;
         }
     }
 }

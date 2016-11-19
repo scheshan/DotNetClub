@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
-using Share.Infrastructure.Utilities;
+using Shared.Infrastructure.Utilities;
 using System;
 
 namespace DotNetClub.Web.TagHelpers
