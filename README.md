@@ -18,10 +18,9 @@ Begin You Run:
 	{
 		"ConnectionString": "Your Connection String",
 		"Redis": {
-		"Host": "Your Redis Host",
-		"Port": 6379,
-		"Password": "",
-		"Db": 1
+			"EndPoints": ["Your Redis Host:Your Redis Port"],
+			"Password": "",
+			"Db": 1
 		}
 	}
 	```
