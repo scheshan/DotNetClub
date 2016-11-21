@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using DotNetClub.Domain.Consts;
 using DotNetClub.Core.Model.Configuration;
 using Shared.Infrastructure.Redis;
+using Microsoft.Extensions.Options;
 
 namespace DotNetClub.Core.Service
 {
@@ -22,11 +23,11 @@ namespace DotNetClub.Core.Service
             }
         }
 
-        protected SiteConfiguration SiteConfiguration
+        protected IOptions<SiteConfiguration> SiteConfiguration
         {
             get
             {
-                return this.ServiceProvider.GetService<SiteConfiguration>();
+                return this.ServiceProvider.GetService<IOptions<SiteConfiguration>>();
             }
         }
 
