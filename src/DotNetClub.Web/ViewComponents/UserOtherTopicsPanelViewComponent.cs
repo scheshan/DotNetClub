@@ -16,9 +16,9 @@ namespace DotNetClub.Web.ViewComponents
             this.TopicService = topicService;
         }
 
-        public async Task<IViewComponentResult> InvokeAsync(int userID, int count, params long[] exclude)
+        public async Task<IViewComponentResult> InvokeAsync(long userID, int count, params long[] exclude)
         {
-            var topicList = await this.TopicService.QueryByUser(count, userID, exclude);
+            var topicList = await this.TopicService.QueryByUser(userID, count, exclude);
 
             return this.View(topicList);
         }
