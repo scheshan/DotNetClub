@@ -21,7 +21,7 @@ namespace DotNetClub.Core.Service
 
         public async Task<Result<string>> Register(RegisterModel model)
         {
-            if (!this.SiteConfiguration.AllowRegister)
+            if (!this.SiteConfiguration.Value.AllowRegister)
             {
                 return Result<string>.ErrorResult("站点目前禁止注册");
             }
@@ -45,11 +45,11 @@ namespace DotNetClub.Core.Service
                     Password = EncryptHelper.EncryptMD5(model.Password)
                 };
 
-                if (this.SiteConfiguration.AdminUserList?.Contains(model.UserName, StringComparer.CurrentCultureIgnoreCase) == true)
+                if (this.SiteConfiguration.Value.AdminUserList?.Contains(model.UserName, StringComparer.CurrentCultureIgnoreCase) == true)
                 {
                     entity.Status = Domain.Enums.UserStatus.Active;
                 }
-                else if (this.SiteConfiguration.VerifyRegisterUser)
+                else if (this.SiteConfiguration.Value.VerifyRegisterUser)
                 {
                     entity.Status = Domain.Enums.UserStatus.Verifying;
                 }
