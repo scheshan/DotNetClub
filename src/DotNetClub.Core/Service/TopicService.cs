@@ -17,7 +17,6 @@ using DotNetClub.Core.Model.Category;
 using AutoMapper;
 using DotNetClub.Core.Model.User;
 using DotNetClub.Domain.Model;
-using DotNetClub.Core.Extensions;
 
 namespace DotNetClub.Core.Service
 {
@@ -349,7 +348,7 @@ namespace DotNetClub.Core.Service
             var redis = this.RedisProvider.GetDatabase();
 
             var topicIDList = entityList.Select(t => t.ID).ToList();
-            var userIDList = entityList.Select(t => t.CreateUser).Concat(entityList.Where(t => t.LastReplyUserID.HasValue).Select(t => t.LastReplyUserID.Value)).ToList();
+            var userIDList = entityList.Select(t => t.CreateUser).Concat(entityList.Where(t => t.LastReplyUserID.HasValue).Select(t => t.LastReplyUserID.Value)).Distinct().ToList();
 
             List<CategoryModel> categoryList = this.CategoryService.All();
             List<User> userList = redis.JsonHashGet<User>(RedisKeys.User, userIDList.Select(t => (RedisValue)t).ToArray());

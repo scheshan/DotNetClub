@@ -15,7 +15,6 @@ using DotNetClub.Domain.Repository;
 using Shared.Infrastructure.Redis;
 using StackExchange.Redis;
 using DotNetClub.Domain.Consts;
-using DotNetClub.Core.Extensions;
 
 namespace DotNetClub.Core.Service
 {
@@ -135,7 +134,7 @@ namespace DotNetClub.Core.Service
                 return new List<MessageModel>();
             }
 
-            var userIDList = entityList.Where(t => t.FromUserID.HasValue).Select(t => t.FromUserID.Value).ToList();
+            var userIDList = entityList.Where(t => t.FromUserID.HasValue).Select(t => t.FromUserID.Value).Distinct().ToList();
             var topicIDList = entityList.Where(t => t.TopicID.HasValue).Select(t => t.TopicID.Value).ToList();
 
             List<User> userList = new List<User>();

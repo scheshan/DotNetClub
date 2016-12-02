@@ -17,7 +17,6 @@ using DotNetClub.Core.Model.User;
 using DotNetClub.Domain.Model;
 using DotNetClub.Domain.Repository;
 using DotNetClub.Core.Model.Message;
-using DotNetClub.Core.Extensions;
 
 namespace DotNetClub.Core.Service
 {
@@ -169,7 +168,7 @@ namespace DotNetClub.Core.Service
             var redis = this.RedisProvider.GetDatabase();
 
             var idList = entityList.Select(t => t.ID).ToArray();
-            var userIDList = entityList.Select(t => t.CreateUser).ToList();
+            var userIDList = entityList.Select(t => t.CreateUser).Distinct().ToList();
             var fields = userIDList.Select(t => (RedisValue)t).ToArray();
             List<User> userList = redis.JsonHashGet<User>(RedisKeys.User, fields);
             List<CommentVotes> commentVotesList;
