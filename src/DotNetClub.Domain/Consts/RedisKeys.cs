@@ -7,7 +7,10 @@ namespace DotNetClub.Domain.Consts
 {
     public sealed class RedisKeys
     {
-        public const string TokenPrefix = "Token_";
+        public static string GetTokenCacheKey(string token)
+        {
+            return $"Token:{token}";
+        }
 
         public const string User = "User";
 
@@ -15,7 +18,7 @@ namespace DotNetClub.Domain.Consts
 
         public static string GetUserMessageCacheKey(long userID)
         {
-            return $"Message_User_{userID}";
+            return $"Message:User:{userID}";
         }
     }
 }

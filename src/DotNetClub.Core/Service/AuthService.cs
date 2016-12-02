@@ -117,7 +117,7 @@ namespace DotNetClub.Core.Service
             if (this.SecurityManager.Token != null)
             {
                 var database = this.RedisProvider.GetDatabase();
-                string key = $"{Domain.Consts.RedisKeys.TokenPrefix}{this.SecurityManager.Token}";
+                string key = RedisKeys.GetTokenCacheKey(SecurityManager.Token);
                 database.KeyDelete(key);
             }
         }
@@ -126,7 +126,7 @@ namespace DotNetClub.Core.Service
         {
             var database = this.RedisProvider.GetDatabase();
             string token = EncryptHelper.EncryptMD5(Guid.NewGuid().ToString());
-            string key = $"{Domain.Consts.RedisKeys.TokenPrefix}{token}";
+            string key = RedisKeys.GetTokenCacheKey(token);
             database.StringSet(key, userID.ToString());
             if (!rememberPassword)
             {

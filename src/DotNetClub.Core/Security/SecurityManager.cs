@@ -198,7 +198,7 @@ namespace DotNetClub.Core.Security
             }
 
             var redis = this.RedisProvider.GetDatabase();
-            string tokenKey = $"{RedisKeys.TokenPrefix}{this.Token}";
+            string tokenKey = RedisKeys.GetTokenCacheKey(this.Token);
             var id = redis.StringGet(tokenKey);
 
             if (id.HasValue)

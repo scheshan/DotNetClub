@@ -6,19 +6,11 @@ using System.Threading.Tasks;
 
 namespace DotNetClub.Core.Model.User
 {
-    public class UserModel
+    public class UserModel : UserBasicModel
     {
-        public long ID { get; set; }
-
-        public string UserName { get; set; }
-
-        public string Email { get; set; }
-
         public string WebSite { get; set; }
 
         public string Location { get; set; }
-
-        public string Signature { get; set; }
 
         public DateTime CreateDate { get; set; }
 

@@ -211,7 +211,7 @@
 </div>
 
 <div class="col-md-3">
-    @*@Html.Partial("_UserInfo", Model.Topic.CreateUser)*@
+    @Html.Partial("_UserInfo", Model.Topic.CreateUser)
 
     @await Component.InvokeAsync("UserOtherTopicsPanel", new { userID = Model.Topic.CreateUser.ID, count = 10, exclude = new long[] { Model.Topic.ID } })
 
