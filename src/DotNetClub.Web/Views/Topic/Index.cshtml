@@ -2,8 +2,8 @@
 @model IndexViewModel
 
 @section Header{    
-    <link href="~/lib/editor.md/css/editormd.min.css" rel="stylesheet" />
-    <script src="~/lib/editor.md/editormd.min.js"></script>
+    <link href="~/node_modules/editor.md/css/editormd.min.css" rel="stylesheet" />
+    <script src="~/node_modules/editor.md/editormd.min.js"></script>
 }
 
 <div class="col-md-9">
@@ -137,7 +137,7 @@
             height: 200,
             syncScrolling: "single",
             autoFocus: false,
-            path: "/lib/editor.md/lib/",
+            path: "/node_modules/editor.md/lib/",
             toolbarIcons: function () {
                 return ["bold", "italic", "|", "quote", "list-ul", "list-ol", "|", "link", "image", "|", "preview"]
             },
