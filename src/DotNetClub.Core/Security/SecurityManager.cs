@@ -7,6 +7,7 @@ using DotNetClub.Domain.Consts;
 using DotNetClub.Domain.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Shared.Infrastructure.Redis;
 using System;
 using System.Linq;
@@ -39,11 +40,13 @@ namespace DotNetClub.Core.Security
             }
         }
 
+        private IOptions<SiteConfiguration> _siteConfigurationAccessor;
+
         private SiteConfiguration SiteConfiguration
         {
             get
             {
-                return this.ServiceProvider.GetService<SiteConfiguration>();
+                return _siteConfigurationAccessor.Value;
             }
         }
 
@@ -113,6 +116,7 @@ namespace DotNetClub.Core.Security
         public SecurityManager(IServiceProvider serviceProvider)
         {
             this.ServiceProvider = serviceProvider;
+            this._siteConfigurationAccessor = serviceProvider.GetService<IOptions<SiteConfiguration>>();
         }
 
         public void ReloadUser()
