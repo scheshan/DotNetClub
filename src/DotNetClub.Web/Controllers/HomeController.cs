@@ -2,6 +2,7 @@
 using DotNetClub.Web.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,11 +17,14 @@ namespace DotNetClub.Web.Controllers
         private CategoryService CategoryService { get; set; }
 
         private TopicService TopicService { get; set; }
+        
+        private ILogger<HomeController> Logger { get; set; }
 
-        public HomeController(CategoryService categoryService, TopicService topicService)
+        public HomeController(CategoryService categoryService, TopicService topicService, ILogger<HomeController> logger)
         {
             this.CategoryService = categoryService;
             this.TopicService = topicService;
+            Logger = logger;
         }
 
         [HttpGet("")]

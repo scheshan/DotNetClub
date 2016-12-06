@@ -74,6 +74,8 @@
       "wwwroot",
       "Views",
       "appsettings.json",
+      "projects.json",
+      "nlog.config",
       "web.config"
     ]
   },

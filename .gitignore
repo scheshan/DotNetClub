@@ -9,3 +9,4 @@ obj/
 /src/DotNetClub.Web/wwwroot/lib
 .vs/
 *.lock.json
+log/

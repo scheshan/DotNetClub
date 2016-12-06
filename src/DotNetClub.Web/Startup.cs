@@ -13,6 +13,7 @@ using Shared.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructure.Redis;
 using DotNetClub.Core.Model.Configuration;
+using NLog.Extensions.Logging;
 
 namespace DotNetClub.Web
 {
@@ -65,8 +66,8 @@ namespace DotNetClub.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            //loggerFactory.AddNLog();
-            //env.ConfigureNLog("nlog.config");
+            loggerFactory.AddNLog();
+            env.ConfigureNLog("nlog.config");
 
             if (env.IsDevelopment())
             {
