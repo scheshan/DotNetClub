@@ -1,4 +1,5 @@
 ﻿using DotNetClub.Domain.Entity;
+using DotNetClub.Domain.Model;
 using Shared.Infrastructure.Model;
 using Shared.Infrastructure.UnitOfWork;
 using System;

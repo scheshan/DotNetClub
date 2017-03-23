@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using DotNetClub.Domain.Consts;
 using DotNetClub.Core.Model.Configuration;
-using Shared.Infrastructure.Redis;
+using DotNetClub.Core.Redis;
 using Microsoft.Extensions.Options;
 
 namespace DotNetClub.Core.Service

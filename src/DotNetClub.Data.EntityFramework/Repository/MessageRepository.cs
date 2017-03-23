@@ -12,8 +12,8 @@ namespace DotNetClub.Data.EntityFramework.Repository
 {
     public class MessageRepository : RepositoryBase<Message>, IMessageRepository
     {
-        public MessageRepository(DbContext context)
-            : base(context)
+        public MessageRepository(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
 
         }

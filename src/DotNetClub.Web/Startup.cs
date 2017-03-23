@@ -11,9 +11,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Shared.Infrastructure;
 using Microsoft.EntityFrameworkCore;
-using Shared.Infrastructure.Redis;
 using DotNetClub.Core.Model.Configuration;
 using NLog.Extensions.Logging;
+using DotNetClub.Core.Redis;
 
 namespace DotNetClub.Web
 {
@@ -26,7 +26,7 @@ namespace DotNetClub.Web
             var builder = new ConfigurationBuilder()
                 .AddEnvironmentVariables()
                 .AddJsonFile("appsettings.json", optional: true)
-                .AddUserSecrets();
+                .AddUserSecrets<Startup>();
 
             Configuration = builder.Build();
         }
@@ -55,9 +55,12 @@ namespace DotNetClub.Web
         {
             builder.RegisterInstance(this.Configuration).AsImplementedInterfaces();
 
-            builder.AddRedis()
-                .AddUnitOfWork()
-                .AddEntityFramework<ClubContext>(UnitOfWorkNames.EntityFramework);
+            builder.RegisterType<RedisProvider>().As<IRedisProvider>().SingleInstance();
+
+            builder.AddUnitOfWork(provider =>
+            {
+                provider.Register(new DotNetClub.Data.EntityFramework.ClubUnitOfWorkRegisteration());
+            });
 
             builder.RegisterModule<CoreModule>()
                 .RegisterModule<EntityFrameworkModule>();
@@ -67,7 +70,7 @@ namespace DotNetClub.Web
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
             loggerFactory.AddNLog();
-            env.ConfigureNLog("nlog.config");
+            loggerFactory.ConfigureNLog(System.IO.Path.Combine(env.ContentRootPath, "nlog.config"));
 
             if (env.IsDevelopment())
             {

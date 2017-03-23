@@ -9,7 +9,7 @@ using Shared.Infrastructure.UnitOfWork;
 using DotNetClub.Core.Model.Comment;
 using DotNetClub.Domain.Enums;
 using Shared.Infrastructure.Extensions;
-using Shared.Infrastructure.Redis;
+using DotNetClub.Core.Redis;
 using StackExchange.Redis;
 using DotNetClub.Domain.Consts;
 using AutoMapper;

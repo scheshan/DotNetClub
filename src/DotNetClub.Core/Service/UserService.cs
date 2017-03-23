@@ -8,7 +8,7 @@ using Shared.Infrastructure.UnitOfWork;
 using DotNetClub.Core.Model.User;
 using Shared.Infrastructure.Model;
 using Shared.Infrastructure.Utilities;
-using Shared.Infrastructure.Redis;
+using DotNetClub.Core.Redis;
 using DotNetClub.Domain.Consts;
 using Shared.Infrastructure.Extensions;
 

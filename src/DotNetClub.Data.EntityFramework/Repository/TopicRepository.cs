@@ -8,13 +8,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using Shared.Infrastructure.Model;
 using System;
+using DotNetClub.Domain.Model;
 
 namespace DotNetClub.Data.EntityFramework.Repository
 {
     public class TopicRepository : RepositoryBase<Topic>, ITopicRepository
     {
-        public TopicRepository(DbContext context)
-            : base(context)
+        public TopicRepository(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
 
         }

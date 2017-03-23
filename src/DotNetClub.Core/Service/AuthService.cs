@@ -2,7 +2,7 @@
 using DotNetClub.Domain.Consts;
 using DotNetClub.Domain.Entity;
 using Shared.Infrastructure.Model;
-using Shared.Infrastructure.Redis;
+using DotNetClub.Core.Redis;
 using Shared.Infrastructure.UnitOfWork;
 using Shared.Infrastructure.Utilities;
 using System;

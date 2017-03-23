@@ -11,7 +11,7 @@ using Shared.Infrastructure.Model;
 using Shared.Infrastructure.Extensions;
 using DotNetClub.Domain.Repository;
 using DotNetClub.Domain.Consts;
-using Shared.Infrastructure.Redis;
+using DotNetClub.Core.Redis;
 using StackExchange.Redis;
 using DotNetClub.Core.Model.Category;
 using AutoMapper;

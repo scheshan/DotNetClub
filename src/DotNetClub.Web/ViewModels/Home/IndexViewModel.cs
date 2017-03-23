@@ -1,4 +1,5 @@
-﻿using DotNetClub.Core.Model.Category;
+﻿using DotNetClub.Domain.Model;
+using DotNetClub.Core.Model.Category;
 using DotNetClub.Core.Model.Topic;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Shared.Infrastructure.Model;

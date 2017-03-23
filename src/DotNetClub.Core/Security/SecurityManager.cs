@@ -8,7 +8,7 @@ using DotNetClub.Domain.Entity;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
-using Shared.Infrastructure.Redis;
+using DotNetClub.Core.Redis;
 using System;
 using System.Linq;
 

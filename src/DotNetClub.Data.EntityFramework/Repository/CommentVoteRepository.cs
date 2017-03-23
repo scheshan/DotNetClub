@@ -12,8 +12,8 @@ namespace DotNetClub.Data.EntityFramework.Repository
 {
     public class CommentVoteRepository : RepositoryBase<CommentVote>, ICommentVoteRepository
     {
-        public CommentVoteRepository(DbContext context)
-            : base(context)
+        public CommentVoteRepository(IServiceProvider serviceProvider)
+            : base(serviceProvider)
         {
 
         }

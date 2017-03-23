@@ -12,7 +12,7 @@ using AutoMapper;
 using DotNetClub.Core.Model.User;
 using DotNetClub.Core.Model.Topic;
 using DotNetClub.Domain.Repository;
-using Shared.Infrastructure.Redis;
+using DotNetClub.Core.Redis;
 using StackExchange.Redis;
 using DotNetClub.Domain.Consts;
 
