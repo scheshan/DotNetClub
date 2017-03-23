@@ -14,7 +14,6 @@ using Microsoft.EntityFrameworkCore;
 using Shared.Infrastructure.Redis;
 using DotNetClub.Core.Model.Configuration;
 using NLog.Extensions.Logging;
-using Shared.Infrastructure.UnitOfWork;
 
 namespace DotNetClub.Web
 {
@@ -56,19 +55,12 @@ namespace DotNetClub.Web
         {
             builder.RegisterInstance(this.Configuration).AsImplementedInterfaces();
 
-            RedisOptions redisOptions = new RedisOptions();
-            Configuration.GetSection("Redis").Bind(redisOptions);
+            builder.AddRedis()
+                .AddUnitOfWork()
+                .AddEntityFramework<ClubContext>(UnitOfWorkNames.EntityFramework);
 
-            builder.AddRedis(redisOptions)
-                .AddUnitOfWork(unitOfWorkProvider =>
-                {
-                    unitOfWorkProvider.AddEntityFramework<ClubContext>(UnitOfWorkNames.EntityFramework, repositoryContainer =>
-                    {
-                        repositoryContainer.RegisterModule<EntityFrameworkModule>();
-                    });
-                });
-
-            builder.RegisterModule<CoreModule>();
+            builder.RegisterModule<CoreModule>()
+                .RegisterModule<EntityFrameworkModule>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

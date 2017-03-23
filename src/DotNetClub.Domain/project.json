@@ -3,7 +3,7 @@
 
   "dependencies": {
     "NETStandard.Library": "1.6.1",
-    "Shared.Infrastructure": "0.1.6"
+    "Shared.Infrastructure": "0.1.4"
   },
 
   "frameworks": {
