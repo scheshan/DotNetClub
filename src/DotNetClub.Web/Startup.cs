@@ -19,16 +19,11 @@ namespace DotNetClub.Web
 {
     public class Startup
     {
-        public IConfigurationRoot Configuration { get; private set; }
+        public IConfiguration Configuration { get; private set; }
 
-        public Startup(IHostingEnvironment env)
+        public Startup(IConfiguration configuration)
         {
-            var builder = new ConfigurationBuilder()
-                .AddEnvironmentVariables()
-                .AddJsonFile("appsettings.json", optional: true)
-                .AddUserSecrets<Startup>();
-
-            Configuration = builder.Build();
+            Configuration = configuration;
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -69,9 +64,6 @@ namespace DotNetClub.Web
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
         {
-            loggerFactory.AddNLog();
-            loggerFactory.ConfigureNLog(System.IO.Path.Combine(env.ContentRootPath, "nlog.config"));
-
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
